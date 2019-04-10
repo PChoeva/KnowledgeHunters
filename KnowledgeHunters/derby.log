@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Wed Apr 10 12:43:58 EEST 2019:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-016a-06a1-f302-000016343ad0 
-on database directory memory:D:\Spring STS\STS_Projects\knowledge-hunters\testdb with class loader sun.misc.Launcher$AppClassLoader@659e0bfd 
+Wed Apr 10 21:59:29 EEST 2019:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-016a-089e-8cae-0000104f7d40 
+on database directory memory:C:\Users\Petya\git\KnowledgeHunters\KnowledgeHunters\testdb with class loader sun.misc.Launcher$AppClassLoader@659e0bfd 
 Loaded from file:/C:/Users/Petya/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_152-b16
-user.dir=D:\Spring STS\STS_Projects\knowledge-hunters
+user.dir=C:\Users\Petya\git\KnowledgeHunters\KnowledgeHunters
 os.name=Windows 10
 os.arch=amd64
 os.version=10.0
