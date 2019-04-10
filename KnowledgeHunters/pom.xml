@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>KnowledgeHunters</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Spring Boot Project</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
