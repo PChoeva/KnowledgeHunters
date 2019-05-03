@@ -1,0 +1,121 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  color: white;
+}
+
+.main-bg { 
+  /* The image used */
+  background-image: url("../img/index_background.png");
+
+  /* Full height */
+  height: 100%; 
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.user-bg { 
+  /* The image used */
+  /*background-image: url("../img/user-wallpaper.jpg");*/
+
+  /* Full height */
+  height: 100%; 
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("../img/user-wallpaper.jpg");
+	
+}
+/*
+.login_btn {
+	color: white;	
+	background: rgba(165,165,165,0.8); 
+    width:400px;
+	height:70px;
+	font-size: 38px;
+	margin-top:300px;	
+	
+}
+*/
+
+.big_btn {
+	/*color: white;*/
+	color: #ccc;
+	text-shadow: -0.6px 0 black, 0 0.6px black, 0.6px 0 black, 0 -0.6px black;
+	/* background: rgba(165,165,165,0.8);*/
+	background: rgba(239, 205, 36, 0.8);
+	font-size: 2.2em;
+	width: 70%;
+	border: 2px solid rgba(165,165,165,0.8); /* #A5A5A5 */
+}
+
+.big_btn:hover {
+	color: #CCC; /*lighter gray*/
+	background: #824723; /*brown gold*/
+	border: 2px solid #A5A5A5; /*light gray*/
+}
+.app_title {
+	font-size: 3.2em;
+	/*margin:20px;*/
+	margin: 0;
+	padding:20px;
+	color: #bdb63b;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.app_title_logged {
+	font-size: 3.2em;
+	/*margin:20px;*/
+	margin: 0;
+	padding:20px;
+	color: black;
+	text-shadow: -1px 0 #bdb63b, 0 1px #bdb63b, 1px 0 #bdb63b, 0 -1px #bdb63b;
+}
+
+.jumbotron {
+  position: absolute;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+  background: none;
+  width: 700px;
+}
+
+.container-fluid {
+  position: relative;
+  height: 100%;
+}
+
+div.form-group {
+	margin: 16px auto;
+}
+
+.form-control:focus {
+	border-color: #824723;
+	box-shadow: 0 0 0 0.2rem #824723;
+}
+
+.register_txt {
+	color: white;
+}
+
+.register_txt:hover {
+	color: #bdb63b;
+}
+
+input[type="text"]
+{
+    font-size:24px;
+}
+.form-control, input::placeholder, option, select {
+	font-size:24px;
+}
+
+select {
+	height: 100%;
+}
