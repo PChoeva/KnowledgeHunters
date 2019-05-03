@@ -4,7 +4,7 @@
     xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
   <head>
-    <title>Welcome</title>
+    <title>Списък с потребители</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     
     <link rel="stylesheet" type="text/css" media="all"  
@@ -12,10 +12,13 @@
   </head>
   <body class="user-bg">
 	<div class="container-fluid h-100">
-	  <h1 class="app_title">Търсачи на знания</h1>	    
+	  <h1 class="app_title logged-title">Търсачи на знания</h1>	    
 		  <div class="jumbotron" style="background-color: #d8d8d8; color:black;">
 		 	<center>
-			 	<table class="table">
+		 		<h2>Списък с потребители</h2>
+		 		<br/><br/>
+		 		<h4 th:if="${#lists.isEmpty(users)}"><center>Няма потребители</center></h4>
+			 	<table class="table" th:if="${not #lists.isEmpty(users)}">
 				  <thead class="thead-light">
 				    <tr>
 				      <th scope="col">#</th>

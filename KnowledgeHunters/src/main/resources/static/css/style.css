@@ -17,6 +17,10 @@ body, html {
   background-size: cover;
 }
 
+.logged-title {
+	text-align: right;	
+}
+
 .user-bg { 
   /* The image used */
   /*background-image: url("../img/user-wallpaper.jpg");*/
