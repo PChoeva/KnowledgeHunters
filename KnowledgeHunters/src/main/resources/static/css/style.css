@@ -92,8 +92,8 @@ body, html {
 
 .start-game-btn {
 	cursor: pointer;
-	color: #000 !important; 
-	background: #fff !important; 
+	color: #000 !important;
+	background: rgba(255, 255, 255, 0.8) !important; 
 	border: 2px solid #bdb63b !important;
 	width:400px;
 	height:200px;
