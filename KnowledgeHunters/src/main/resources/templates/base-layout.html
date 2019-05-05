@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head th:include="fragments/head" th:with="pageTitle='Knowledge Hunters'"></head>
+	<body class="user-bg">
+		<header th:include="fragments/header"></header>
+		<div class="container-fluid h-100" style="float: right;" th:include="${view}"></div>
+		<footer th:include="fragments/footer"></footer>
+		<span th:include="fragments/scripts-bundle"></span>
+	</body>
+</html>

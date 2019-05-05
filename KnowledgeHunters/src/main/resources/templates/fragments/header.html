@@ -1,0 +1,51 @@
+<header th:fragment="header">
+<!-- 
+	<div class="bg-cover" class="none"></div>
+	 -->
+	<div class="bg-cover"></div>
+	<a class="hamburger-shell" style="z-index:100; cursor:pointer;">
+		<div class="hamb top"></div>
+		<div class="hamb middle"></div>
+		<div class="menu-name">MENU</div>
+
+		<ul id="menu" style="z-index:100;">
+			<a href="/home" th:href="@{/home}"> <li>Начало</li></a>
+			<a href="#"> <li>Профил</li></a>
+			<a href="#"> <li>Класация</li></a>
+			<a href="/userslist" th:href="@{/userslist}"> <li>Списък потребители</li></a>
+			<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+			<a href="#"> <li>Излез</li></a>
+		</ul>
+	</a>
+	
+<!-- 
+	<div class="navbar navbar-default navbar-static-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a th:href="@{/}" class="navbar-brand">SOFTUNI BLOG</a>
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="isAuthenticated()">
+						<a th:href="@{/profile}"> My Profile </a>
+					</li>
+					<li sec:authorize="isAuthenticated()">
+						<a th:href="@{/logout}"> Logout </a>
+					</li>
+					<li sec:authorize="isAnonymous()">
+						<a th:href="@{/register}"> REGISTER </a>
+					</li>
+					<li sec:authorize="isAnonymous()">
+						<a th:href="@{/login}"> LOGIN </a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	 -->
+</header>

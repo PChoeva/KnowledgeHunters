@@ -1,0 +1,22 @@
+  <h1 class="app_title logged-title">Търсачи на знания</h1>	    
+	  <div class="jumbotron" style="background-color: #d8d8d8; color:black;">
+	 	<center>
+	 		<h2>Списък с предмети</h2>
+	 		<br/><br/>
+	 		<h4 th:if="${#lists.isEmpty(subjects)}"><center>Няма предмети</center></h4>
+		 	<table class="table" th:if="${not #lists.isEmpty(subjects)}">
+			  <thead class="thead-light">
+			    <tr>
+			      <th scope="col">#</th>
+			      <th scope="col">Предмет</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr th:each="subject: ${subjects}">
+				    <td scope="row" th:text="${subject.id}" />
+				    <td th:text="${subject.name}" />
+				</tr>
+			  </tbody>
+			</table>
+	 	</center>
+	  </div>

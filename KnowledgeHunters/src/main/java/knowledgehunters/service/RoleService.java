@@ -16,7 +16,7 @@ public class RoleService {
 	@Autowired RoleRepository roleRepository;
 	
 	public List<Role> getAllRoles(){
-		List<Role> roles =new ArrayList<>();
+		List<Role> roles = new ArrayList<>();
 		roleRepository.findAll().forEach(roles ::add);
 		return roles;
 	}

@@ -11,7 +11,7 @@ public class Service {
 	
 	public List<User> getUsersFromArray(){
 		Role admin = new Role("1","Admin");
-		User user = new User("1", "user1", "pass1", "User1", admin);
+		User user = new User("1", "user1", "pass1", admin);
 		users.add(user);	
 		
 		return users;

@@ -1,0 +1,20 @@
+$(document).ready(function(){
+	console.log("in");
+	//$('.hamburger-shell').click(function(){
+	$('.hamburger-shell').on("click",function(){
+		console.log("hamburger-shell");
+		$('#menu').slideToggle(300);
+		$('.top').toggleClass('rotate');
+		$('.middle').toggleClass('rotate-back');
+		$('.menu-name').toggleClass('bump');
+		$('.bg-cover').toggleClass('reveal');
+	});
+	$('.bg-cover').click(function(){
+		console.log("bg-cover");
+		$('#menu').slideToggle(300);
+		$('.top').toggleClass('rotate');
+		$('.middle').toggleClass('rotate-back');
+		$('.menu-name').toggleClass('bump');
+		$('.bg-cover').toggleClass('reveal');
+	})
+});

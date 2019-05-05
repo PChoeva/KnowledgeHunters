@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head th:include="fragments/head" th:with="pageTitle='Knowledge Hunters'"></head>
+	<body class="main-bg">
+		<h1 class="app_title">Търсачи на знания</h1>	    
+		<div class="jumbotron" style="background-color: transparent;">
+			<center>
+			<div style="color:white;" th:include="${view}"></div>
+			</center>
+		<footer th:include="fragments/footer"></footer>
+		<span th:include="fragments/scripts-bundle"></span>
+	</body>
+</html>
