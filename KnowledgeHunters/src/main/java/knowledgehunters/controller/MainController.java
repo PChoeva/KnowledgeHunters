@@ -49,6 +49,7 @@ public class MainController {
 	@GetMapping("/userslist")
 	public String userslist(Model model) {
 		model.addAttribute("view", "user/userslist");
+		model.addAttribute("users", userService.getAllUsers());
 		return "base-layout";
 	}
 	

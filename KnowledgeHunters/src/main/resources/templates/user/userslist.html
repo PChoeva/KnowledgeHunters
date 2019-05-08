@@ -10,7 +10,6 @@
 			    <tr>
 			      <th scope="col">#</th>
 			      <th scope="col">Username</th>
-			      <th scope="col">Display Name</th>
 			      <th scope="col">Role</th>
 			    </tr>
 			  </thead>
@@ -18,7 +17,6 @@
 			    <tr th:each="user: ${users}">
 				    <td scope="row" th:text="${user.id}" />
 				    <td th:text="${user.username}" />
-				    <td th:text="${user.display_name}" />
 				    <td th:text="${user.role.name}" />
 				</tr>
 			  </tbody>

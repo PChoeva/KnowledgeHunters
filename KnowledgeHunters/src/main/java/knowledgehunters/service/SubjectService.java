@@ -1,6 +1,8 @@
 package knowledgehunters.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +19,8 @@ public class SubjectService {
 	public List<Subject> getAllSubjects(){
 		List<Subject> subjects = new ArrayList<>();
 		subjectRepository.findAll().forEach(subjects ::add);
+		//Collections.sort(subjects, new Comparator<Subject>());
+		Collections.sort(subjects);
 		return subjects;
 	}
 	

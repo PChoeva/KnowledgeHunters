@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="subject")
-public class Subject {
+public class Subject implements Comparable<Subject>{
 	
 	@Id
 	private String id;
@@ -36,6 +36,15 @@ public class Subject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int compareTo(Subject u) {
+		 if (getName() == null || u.getName() == null) {
+		      return 0;
+		    }
+		    return getName().toLowerCase().compareTo(u.getName().toLowerCase());
+		  
 	}
 	
 	
