@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import knowledgehunters.model.Role;
 
-public interface RoleRepository extends CrudRepository<Role,String> {
+public interface RoleRepository extends CrudRepository<Role,Integer> {
 
 }

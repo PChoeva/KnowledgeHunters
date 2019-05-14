@@ -27,7 +27,7 @@ public class LessonController {
 	}
 	
 	@GetMapping ("/lessons/{id}") 
-	public Optional<Lesson> getCityId(@PathVariable String id) {	
+	public Optional<Lesson> getCityId(@PathVariable int id) {	
 		return  lessonService.getLesson(id);
 	}
 	
@@ -38,12 +38,12 @@ public class LessonController {
 	}
 	
 	@PutMapping(value ="/lessons/{id}")
-	public void updateLesson(@RequestBody Lesson lesson,@PathVariable String id) {
+	public void updateLesson(@RequestBody Lesson lesson,@PathVariable int id) {
 		lessonService.updateLesson(id, lesson);
 	}
 	
 	@DeleteMapping(value ="/lesson/{id}")
-	public void deleteLesson(@PathVariable String id) {
+	public void deleteLesson(@PathVariable int id) {
 		lessonService.deleteLesson(id);
 	}
 }

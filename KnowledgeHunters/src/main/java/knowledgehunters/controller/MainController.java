@@ -1,14 +1,21 @@
 package knowledgehunters.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import knowledgehunters.model.School;
+import knowledgehunters.service.LessonService;
 import knowledgehunters.service.PersonService;
+import knowledgehunters.service.RoleService;
 import knowledgehunters.service.SubjectService;
+import knowledgehunters.service.TopicService;
 import knowledgehunters.service.UserService;
+import knowledgehunters.service.SchoolService;
 
 @Controller
 @SpringBootApplication
@@ -20,6 +27,15 @@ public class MainController {
 	PersonService personService;
 	@Autowired
 	SubjectService subjectService;
+	@Autowired
+	SchoolService schoolService;
+	@Autowired
+	TopicService topicService;
+	@Autowired
+	LessonService lessonService;
+	@Autowired
+	RoleService roleService;
+	
 	
 	@GetMapping(value= {"/", "/index"})
 	public String index(Model model) {
@@ -33,9 +49,20 @@ public class MainController {
 		return "start-layout";
 	}
 	
+	/*NOT SURE IF IT WORKS*/
+	@GetMapping("/login?loginError=true")
+	public String loginErr(Model model) {
+		model.addAttribute("view", "user/login");
+		model.addAttribute("loginError", "true");
+		return "start-layout";
+	}
+	
 	@GetMapping("/register")
 	public String register(Model model) {
 		model.addAttribute("view", "user/register");
+		model.addAttribute("schools", schoolService.getAllSchools());
+		List<School> schools = schoolService.getAllSchools();
+		schools.forEach(s -> System.out.println(s.getName()));
 		return "start-layout";
 	}
 	
@@ -57,8 +84,14 @@ public class MainController {
 	public String gainKnowledge(Model model) {
 		model.addAttribute("view", "user/gain-knowledge");
 		model.addAttribute("subjects", subjectService.getAllSubjects());
+		model.addAttribute("lessons", lessonService.getAllLessons());
 		return "base-layout";
 	}
 	
-
+	@GetMapping("/errorPage")
+	public String error(Model model) {
+		model.addAttribute("view", "errorPage");
+		System.out.println("---Entered error controller!");
+		return "base-layout";
+	}
 }

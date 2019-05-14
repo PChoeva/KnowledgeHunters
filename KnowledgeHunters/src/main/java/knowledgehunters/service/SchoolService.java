@@ -20,7 +20,7 @@ public class SchoolService {
 		return schools;
 	}
 	
-	public Optional<School> getSchool(String id){
+	public Optional<School> getSchool(int id){
 		
 		return  schoolRepository.findById(id);
 	}
@@ -30,12 +30,12 @@ public class SchoolService {
 		schoolRepository.save(school);
 	}
 	
-	public void updateSchool(String id, School school) {
+	public void updateSchool(int id, School school) {
 		schoolRepository.save(school);
 		
 	}
 	
-	public void deleteSchool(String id) {
+	public void deleteSchool(int id) {
 		
 		schoolRepository.deleteById(id);
 		

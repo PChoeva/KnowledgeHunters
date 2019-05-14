@@ -20,7 +20,7 @@ public class PersonService {
 		return people;
 	}
 	
-	public Optional<Person> getPerson(String id){
+	public Optional<Person> getPerson(int id){
 		
 		return  personRepository.findById(id);
 	}
@@ -29,11 +29,11 @@ public class PersonService {
 		
 		personRepository.save(person);
 	}
-	public void updatePerson(String id, Person person) {
+	public void updatePerson(int id, Person person) {
 		personRepository.save(person);
 		
 	}
-	public void deletePerson(String id) {
+	public void deletePerson(int id) {
 		
 		personRepository.deleteById(id);
 		

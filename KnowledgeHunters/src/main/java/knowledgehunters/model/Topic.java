@@ -1,16 +1,17 @@
 package knowledgehunters.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
-@Table(name="topic")
 public class Topic {
 	
 	@Id
-	private String id;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int id;
 	private String name;
 	@ManyToOne
 	private Subject subject;
@@ -19,17 +20,17 @@ public class Topic {
 		
 	}
 
-	public Topic(String id, String name, Subject subject) {
+	public Topic(int id, String name, Subject subject) {
 		this.id = id;
 		this.name = name;
 		this.subject = subject;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

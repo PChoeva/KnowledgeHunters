@@ -9,12 +9,14 @@
 		<div class="menu-name">MENU</div>
 
 		<ul id="menu" style="z-index:100;">
+			<a><li th:unless="${session == null}"> <h4 th:text="${session.sessionUsername}" style="color:#bdb63b; text-transform: none !important;margin-bottom:50px; text-align: center;">[...]</h4></li></a>
+		
 			<a href="/home" th:href="@{/home}"> <li>Начало</li></a>
 			<a href="#"> <li>Профил</li></a>
 			<a href="#"> <li>Класация</li></a>
 			<a href="/userslist" th:href="@{/userslist}"> <li>Списък потребители</li></a>
-			<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-			<a href="#"> <li>Излез</li></a>
+			<br/><br/><br/><br/><br/><br/><br/><br/>
+			<a href="/logout"> <li>Излез</li></a>
 		</ul>
 	</a>
 	

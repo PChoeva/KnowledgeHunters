@@ -27,7 +27,7 @@ public class UserController {
 	}
 	
 	@GetMapping ("/users/{id}") 
-	public Optional<User> getUserId(@PathVariable String id) {	
+	public Optional<User> getUserId(@PathVariable int id) {	
 		return  userService.getUser(id);
 	}
 	
@@ -38,12 +38,12 @@ public class UserController {
 	}
 	
 	@PutMapping(value ="/users/{id}")
-	public void updateUser(@RequestBody User user,@PathVariable String id) {
+	public void updateUser(@RequestBody User user,@PathVariable int id) {
 		userService.updateUser(id, user);
 	}
 	
 	@DeleteMapping(value ="/users/{id}")
-	public void deleteUser(@PathVariable String id) {
+	public void deleteUser(@PathVariable int id) {
 		userService.deleteUser(id);
 	}
 }

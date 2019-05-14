@@ -1,5 +1,5 @@
 
-	    <form class="col-12" th:action="@{/register.html}" method="post">
+	    <form class="col-12" th:action="@{/login}" method="post">
 		    <div style="background:#a5a5a5; padding:8px 16px; width:70%">
 				<div class="form-group">
 		        	<!-- <label for="username">Потребителско име</label> -->
@@ -16,16 +16,19 @@
 				<div class="form-group">
 		        
 		        <!-- <input type="text" class="form-control" id="username" autofocus="autofocus" placeholder="Училище">-->
-					<div class="form-group">
+					
 	<!-- 				      <label for="schools">Училище</label> --> 
-						<select class="form-control" id="schools" style="width:100%; height:100%">
-							<option value="" disabled selected>Училище</option>
-							<option value="pmg">ПМГ-Хасково</option>
-							<option value="pgds">ПГДС-Хасково</option>
-							<option value="pgmet">ПГМЕТ-Хасково</option>
-							<option value="tues">ТУЕС</option>
-						</select>
-					</div>
+					<select class="form-control" id="schools" style="width:100%; height:100%">
+	<!-- 
+						<option value="" disabled selected>Училище</option>
+						<option value="pmg">ПМГ-Хасково</option>
+						<option value="pgds">ПГДС-Хасково</option>
+						<option value="pgmet">ПГМЕТ-Хасково</option>
+						<option value="tues">ТУЕС</option>
+	-->
+						<option th:each="school : ${schools}" th:value="${school.id}" th:text="${school.name}"></option>
+						<!-- <td th:each="school: ${schools}" th:text="${school.name}" />-->
+					</select>
 				</div>
 				<div class="form-group">
 					<!-- <label for="password">Парола</label> -->

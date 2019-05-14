@@ -27,7 +27,7 @@ public class CityController {
 	}
 	
 	@GetMapping ("/cities/{id}") 
-	public Optional<City> getCityId(@PathVariable String id) {	
+	public Optional<City> getCityId(@PathVariable int id) {	
 		return  cityService.getCity(id);
 	}
 	
@@ -38,12 +38,12 @@ public class CityController {
 	}
 	
 	@PutMapping(value ="/cities/{id}")
-	public void updateCity(@RequestBody City city,@PathVariable String id) {
+	public void updateCity(@RequestBody City city,@PathVariable int id) {
 		cityService.updateCity(id, city);
 	}
 	
 	@DeleteMapping(value ="/cities/{id}")
-	public void deleteCity(@PathVariable String id) {
+	public void deleteCity(@PathVariable int id) {
 		cityService.deleteCity(id);
 	}
 }

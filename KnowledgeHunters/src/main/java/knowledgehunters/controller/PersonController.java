@@ -27,7 +27,7 @@ public class PersonController {
 	}
 	
 	@GetMapping ("/people/{id}") 
-	public Optional<Person> getPersonId(@PathVariable String id) {	
+	public Optional<Person> getPersonId(@PathVariable int id) {	
 		return  personService.getPerson(id);
 	}
 	
@@ -38,12 +38,12 @@ public class PersonController {
 	}
 	
 	@PutMapping(value ="/people/{id}")
-	public void updatePerson(@RequestBody Person person,@PathVariable String id) {
+	public void updatePerson(@RequestBody Person person,@PathVariable int id) {
 		personService.updatePerson(id, person);
 	}
 	
 	@DeleteMapping(value ="/people/{id}")
-	public void deletePerson(@PathVariable String id) {
+	public void deletePerson(@PathVariable int id) {
 		personService.deletePerson(id);
 	}
 }

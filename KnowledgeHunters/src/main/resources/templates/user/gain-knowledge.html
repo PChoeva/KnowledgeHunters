@@ -1,5 +1,5 @@
   <h1 class="app_title logged-title">Търсачи на знания</h1>	    
-	  <div class="jumbotron" style="background-color: #d8d8d8; color:black;">
+	  <div class="jumbotron" style="background-color: #d8d8d8; color:black; width:800px;">
 	 	<center>
 	 		<h2>Списък с предмети</h2>
 	 		<br/><br/>
@@ -15,6 +15,28 @@
 			    <tr th:each="subject: ${subjects}">
 				    <td scope="row" th:text="${subject.id}" />
 				    <td th:text="${subject.name}" />
+				</tr>
+			  </tbody>
+			</table>
+			<br/><br/>
+			<h2>Списък с уроци</h2>
+	 		<br/><br/>
+	 		<h4 th:if="${#lists.isEmpty(subjects)}"><center>Няма уроци</center></h4>
+		 	<table class="table" th:if="${not #lists.isEmpty(lessons)}">
+			  <thead class="thead-light">
+			    <tr>
+			      <th scope="col">Урок</th>
+				  <th scope="col">Тема</th>
+				  <th scope="col">Предмет</th>
+			      <th scope="col">Автор</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr th:each="lesson: ${lessons}">
+				    <td scope="row" th:text="${lesson.title}" />
+				    <td th:text="${lesson.topic.name}" />
+				    <td th:text="${lesson.topic.subject.name}" />
+				    <td th:text="${lesson.author.displayName}" />
 				</tr>
 			  </tbody>
 			</table>

@@ -21,7 +21,7 @@ public class RoleService {
 		return roles;
 	}
 	
-	public Optional<Role> getRole(String id){
+	public Optional<Role> getRole(int id){
 		
 		return  roleRepository.findById(id);
 	}
@@ -30,11 +30,11 @@ public class RoleService {
 		
 		roleRepository.save(role);
 	}
-	public void updateRole(String id, Role role) {
+	public void updateRole(int id, Role role) {
 		roleRepository.save(role);
 		
 	}
-	public void deleteRole(String id) {
+	public void deleteRole(int id) {
 		
 		roleRepository.deleteById(id);
 		

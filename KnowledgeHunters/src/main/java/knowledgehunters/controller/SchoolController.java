@@ -27,7 +27,7 @@ public class SchoolController {
 	}
 	
 	@GetMapping ("/schools/{id}") 
-	public Optional<School> getSchoolId(@PathVariable String id) {	
+	public Optional<School> getSchoolId(@PathVariable int id) {	
 		return  schoolService.getSchool(id);
 	}
 	
@@ -38,12 +38,12 @@ public class SchoolController {
 	}
 	
 	@PutMapping(value ="/schools/{id}")
-	public void updateSchool(@RequestBody School school,@PathVariable String id) {
+	public void updateSchool(@RequestBody School school,@PathVariable int id) {
 		schoolService.updateSchool(id, school);
 	}
 	
 	@DeleteMapping(value ="/schools/{id}")
-	public void deleteSchool(@PathVariable String id) {
+	public void deleteSchool(@PathVariable int id) {
 		schoolService.deleteSchool(id);
 	}
 }

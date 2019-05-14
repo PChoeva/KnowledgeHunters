@@ -24,7 +24,7 @@ public class SubjectService {
 		return subjects;
 	}
 	
-	public Optional<Subject> getSubject(String id){
+	public Optional<Subject> getSubject(int id){
 		
 		return  subjectRepository.findById(id);
 	}
@@ -34,12 +34,12 @@ public class SubjectService {
 		subjectRepository.save(subject);
 	}
 	
-	public void updateSubject(String id, Subject subject) {
+	public void updateSubject(int id, Subject subject) {
 		
 		subjectRepository.save(subject);
 	}
 	
-	public void deleteSubject(String id) {
+	public void deleteSubject(int id) {
 		
 		subjectRepository.deleteById(id);
 	}

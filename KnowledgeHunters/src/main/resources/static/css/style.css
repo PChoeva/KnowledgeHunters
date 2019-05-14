@@ -205,19 +205,21 @@ select {
 
 #menu {
 	position: fixed;
-	right: calc(100% - 292px);
+	/*right: calc(100% - 292px);*/
+	right: calc(100% - 238px);
 	top: 10px;
 	color: #bdb63b;
 	display: none;
-	margin: 120px 30px;
+	/*margin: 120px 30px;*/
+	margin-top: 150px;
 	text-decoration: none;
 	font-family: Arial, sans-serif;
 	font-weight: 100;
 	font-size: 20px;
 	text-transform: uppercase;
 	color: #333;
-	padding: 24px;
-	width: 200px;
+	/*padding: 24px;*/
+	width: 250px;
 	text-align: left;
 }
 
@@ -289,4 +291,20 @@ select {
 	top: 64px;
 	color: #bdb63b;
 }
+
+
+
+/*
+#menu a li h4 {
+	text-decoration: none!important;
+	padding-bottom: 10px;
+	margin-bottom: 12px;
+	border-bottom: 1px solid black;
+	list-style: none;
+	text-transform: none !important;
+	
+	color: #bdb63b;
+	transition: all 150ms ease;
+}
+*/
 /* end hamburger menu */

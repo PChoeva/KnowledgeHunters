@@ -20,7 +20,7 @@ public class LessonService {
 		return lessons;
 	}
 	
-	public Optional<Lesson> getLesson(String id){
+	public Optional<Lesson> getLesson(int id){
 		
 		return  lessonRepository.findById(id);
 	}
@@ -30,12 +30,12 @@ public class LessonService {
 		lessonRepository.save(lesson);
 	}
 	
-	public void updateLesson(String id, Lesson lesson) {
+	public void updateLesson(int id, Lesson lesson) {
 		
 		lessonRepository.save(lesson);
 	}
 	
-	public void deleteLesson(String id) {
+	public void deleteLesson(int id) {
 		
 		lessonRepository.deleteById(id);
 	}

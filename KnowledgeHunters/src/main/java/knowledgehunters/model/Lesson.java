@@ -1,38 +1,44 @@
 package knowledgehunters.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
-@Table(name="lesson")
 public class Lesson {
 	
 	@Id
-	private String id;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int id;
 	private String title;
 	@ManyToOne
 	private Topic topic;
 	@ManyToOne
 	private Person author;
+	@Lob
+	private String description;
 	
 	public Lesson() {
 		
 	}
 
-	public Lesson(String id, String title, Topic topic, Person author) {
+	public Lesson(int id, String title, Topic topic, Person author, String description) {
 		this.id = id;
 		this.title = title;
 		this.topic = topic;
 		this.author = author;
+		this.description = description;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -58,5 +64,13 @@ public class Lesson {
 
 	public void setAuthor(Person author) {
 		this.author = author;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

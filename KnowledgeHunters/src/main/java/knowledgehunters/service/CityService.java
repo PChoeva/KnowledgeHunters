@@ -20,7 +20,7 @@ public class CityService {
 		return cities;
 	}
 	
-	public Optional<City> getCity(String id){
+	public Optional<City> getCity(int id){
 		
 		return  cityRepository.findById(id);
 	}
@@ -30,12 +30,12 @@ public class CityService {
 		cityRepository.save(city);
 	}
 	
-	public void updateCity(String id, City city) {
+	public void updateCity(int id, City city) {
 		
 		cityRepository.save(city);
 	}
 	
-	public void deleteCity(String id) {
+	public void deleteCity(int id) {
 		
 		cityRepository.deleteById(id);
 	}

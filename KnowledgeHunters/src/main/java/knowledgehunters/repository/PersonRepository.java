@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import knowledgehunters.model.Person;
 
-public interface PersonRepository extends CrudRepository<Person,String> {
+public interface PersonRepository extends CrudRepository<Person,Integer> {
 
 }

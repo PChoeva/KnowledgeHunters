@@ -20,7 +20,7 @@ public class TopicService {
 		return topics;
 	}
 	
-	public Optional<Topic> getTopic(String id){
+	public Optional<Topic> getTopic(int id){
 		
 		return  topicRepository.findById(id);
 	}
@@ -30,12 +30,12 @@ public class TopicService {
 		topicRepository.save(topic);
 	}
 	
-	public void updateTopic(String id, Topic topic) {
+	public void updateTopic(int id, Topic topic) {
 		
 		topicRepository.save(topic);
 	}
 	
-	public void deleteTopic(String id) {
+	public void deleteTopic(int id) {
 		
 		topicRepository.deleteById(id);
 	}

@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import knowledgehunters.model.Subject;
 
-public interface SubjectRepository extends CrudRepository<Subject,String> {
+public interface SubjectRepository extends CrudRepository<Subject,Integer> {
 
 }
