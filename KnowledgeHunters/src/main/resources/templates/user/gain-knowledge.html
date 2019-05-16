@@ -1,26 +1,25 @@
   <h1 class="app_title logged-title">Търсачи на знания</h1>	    
-	  <div class="jumbotron" style="background-color: #d8d8d8; color:black; width:800px;">
+	  <div class="jumbotron" style="background-color: rgba(220, 220, 220, 0.8); color:black; width:1000px;">
 	 	<center>
-	 		<h2>Списък с предмети</h2>
-	 		<br/><br/>
-	 		<h4 th:if="${#lists.isEmpty(subjects)}"><center>Няма предмети</center></h4>
-		 	<table class="table" th:if="${not #lists.isEmpty(subjects)}">
-			  <thead class="thead-light">
-			    <tr>
-			      <th scope="col">#</th>
-			      <th scope="col">Предмет</th>
-			    </tr>
-			  </thead>
-			  <tbody>
-			    <tr th:each="subject: ${subjects}">
-				    <td scope="row" th:text="${subject.id}" />
-				    <td th:text="${subject.name}" />
-				</tr>
-			  </tbody>
-			</table>
+	 		<div id="mixedSlider">
+				<div class="MS-content">
+					<div class="item" th:each="subject: ${subjects}">
+						<div class="imgTitle">
+							<h2 class="blogTitle" th:text="${subject.name}">Animals</h2>
+							<!-- <img src="${'/img/subject-' + subject.id + '.png'}" alt="" /> -->
+							<img th:attr="src=@{'/img/subjects/subject-' + ${subject.id} + '.png'},alt=''" />
+							
+						</div>
+					</div>
+				
+				<div class="MS-controls">
+					<button class="MS-left"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
+					<button class="MS-right"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+				</div>
+			</div>
 			<br/><br/>
 			<h2>Списък с уроци</h2>
-	 		<br/><br/>
+	 		<br/>
 	 		<h4 th:if="${#lists.isEmpty(subjects)}"><center>Няма уроци</center></h4>
 		 	<table class="table" th:if="${not #lists.isEmpty(lessons)}">
 			  <thead class="thead-light">

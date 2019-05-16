@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import knowledgehunters.model.Person;
+import knowledgehunters.model.Role;
 import knowledgehunters.model.School;
 import knowledgehunters.model.User;
+import knowledgehunters.service.PersonService;
 import knowledgehunters.service.UserService;
 
 
@@ -27,6 +30,8 @@ import knowledgehunters.service.UserService;
 public class BaseController {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private PersonService personService;
 	
 	@PostMapping("/home")
 	public void homeLogged(HttpSession session, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("password") String password) throws IOException {
@@ -62,22 +67,16 @@ public class BaseController {
 		}
 	}
 	
-//	@PostMapping("/login")
-//	public void saveRegistrationAndLogin(HttpServletResponse response, @RequestBody School school) throws IOException {
-//		System.out.println("---Entered saveRegistrationAndLogin controller!");
-//		
-//		System.out.println("School:" + school.getId() + " | " + school.getName() + " | " + school.getCity().getName());
-//
-//		response.sendRedirect("login"); 
-//	}
-	
-	/* NOT WORKING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-	@PostMapping(path = "/login", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-	public void saveRegistrationAndLogin(HttpServletResponse response, @RequestBody School school) throws IOException {
+
+	@PostMapping("/login")
+	public void saveRegistrationAndLogin(HttpServletResponse response, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password) throws IOException {
+			
 		System.out.println("---Entered saveRegistrationAndLogin controller!");
 		
-		System.out.println("School:" + school.getId() + " | " + school.getName() + " | " + school.getCity().getName());
-
+		System.out.println(username + " | " + displayName + " | " + email + " | " + school + " | " + password);
+		
+		userService.addUser(new User(0, username, password, new Role(3,null)));
+		personService.addPerson(new Person(0,userService.findUser(username), new School(school,null, null), displayName, email));
 		response.sendRedirect("login"); 
 	}
 	
@@ -86,8 +85,7 @@ public class BaseController {
 	  public void logout(HttpSession session, HttpServletResponse response) throws IOException {
 	    session.invalidate();
 	    System.out.println("Logout controller post");
-	    response.sendRedirect("login"); 
-//	    return "redirect:/login";
+	    response.sendRedirect("login");
 	}
 	
 }

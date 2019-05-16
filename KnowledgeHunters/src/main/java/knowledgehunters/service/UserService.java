@@ -39,7 +39,16 @@ public class UserService {
 		userRepository.deleteById(id);
 		
 	}
-	
+	public User findUser(String username) {
+		List<User> users = new ArrayList<>();
+		userRepository.findAll().forEach(users ::add);
+		for(User user : users) {
+			if(user.getUsername().equals(username)) {
+				return user;
+			}
+		}
+		return null;
+	}
 	
 }
 

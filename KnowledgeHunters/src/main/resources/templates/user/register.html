@@ -3,22 +3,22 @@
 		    <div style="background:#a5a5a5; padding:8px 16px; width:70%">
 				<div class="form-group">
 		        	<!-- <label for="username">Потребителско име</label> -->
-		        	<input type="text" class="form-control" id="username" autofocus="autofocus" placeholder="Потребителско име">
+		        	<input type="text" class="form-control" name="username" id="username" autofocus="autofocus" placeholder="Потребителско име">
 		        </div>
 				<div class="form-group">
 		        	<!-- <label for="username">Екранно име</label> -->
-		        	<input type="text" class="form-control" id="display_name" placeholder="Екранно име">
+		        	<input type="text" class="form-control" name="displayName" id="displayName" placeholder="Екранно име">
 				</div>
 				<div class="form-group">
 					<!-- <label for="username">Имейл</label> -->
-					<input type="text" class="form-control" id="email" placeholder="Имейл">
+					<input type="text" class="form-control" name="email" id="email" placeholder="Имейл">
 				</div>
 				<div class="form-group">
 		        
 		        <!-- <input type="text" class="form-control" id="username" autofocus="autofocus" placeholder="Училище">-->
 					
 	<!-- 				      <label for="schools">Училище</label> --> 
-					<select class="form-control" id="schools" style="width:100%; height:100%">
+					<select class="form-control" name="school" id="schools" style="width:100%; height:100%">
 	<!-- 
 						<option value="" disabled selected>Училище</option>
 						<option value="pmg">ПМГ-Хасково</option>
@@ -26,13 +26,13 @@
 						<option value="pgmet">ПГМЕТ-Хасково</option>
 						<option value="tues">ТУЕС</option>
 	-->
-						<option th:each="school : ${schools}" th:value="${school.id}" th:text="${school.name}"></option>
+						<option th:each="school : ${schools}" th:value="${school.id}" th:text="${school.name + ' - ' + school.city.name}"></option>
 						<!-- <td th:each="school: ${schools}" th:text="${school.name}" />-->
 					</select>
 				</div>
 				<div class="form-group">
 					<!-- <label for="password">Парола</label> -->
-			        <input type="password" class="form-control" id="password" placeholder="Парола">
+			        <input type="password" class="form-control" name="password" id="password" placeholder="Парола">
 				</div>
 				<div class="form-group">
 			        <!-- <label for="password">Повтори парола</label> -->
