@@ -17,14 +17,18 @@ public class Game {
 	
 	@ManyToMany
 	private List<Question> questions;
+	
+	@ManyToMany
+	private List<Topic> topics;
 		
 	public Game() {
 		
 	}
 
-	public Game(int id, List<Question> questions) {
+	public Game(int id, List<Question> questions, List<Topic> topics) {
 		this.id = id;
 		this.questions = questions;
+		this.topics = topics;
 	}
 
 	public int getId() {
@@ -41,5 +45,13 @@ public class Game {
 
 	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
+	}
+
+	public List<Topic> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(List<Topic> topics) {
+		this.topics = topics;
 	}
 }
