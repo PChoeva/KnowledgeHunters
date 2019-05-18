@@ -1,7 +1,8 @@
-
-		<p th:if="${loginError}" class="error">Wrong user or password</p>
-		<form class="col-12" th:action="@{/home}" method="post">
-			<div style="background:#a5a5a5; padding:8px 16px; width:70%">
+<div class="jumbotron" style="background-color: rgba(220, 220, 220, 0.8); color:black; margin:0px; width:600px !important;">
+	<div class="row justify-content-md-center">
+	    <p th:if="${loginError}" class="error">Wrong user or password</p>
+		<form class="col-12 align-self-center" th:action="@{/home}" method="post">
+			<div style="padding:8px 16px; width:70%">
 				<div class="form-group">
 		        <!-- <label for="username">Потребителско име</label> -->
 		        <input type="text" name="username" class="form-control" id="username" autofocus="autofocus" placeholder="Потребителско име">
@@ -15,3 +16,5 @@
 			<input type="submit" value="Влез" class="big_btn p-2">
 			<h4>Все още нямаш акаунт?<br/><u><a href="/register" th:href="@{/register}" class="register_txt">Регистрирай се.</a></u></h4>
 		</form>  
+	</div>
+</div>

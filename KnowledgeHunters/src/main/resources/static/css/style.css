@@ -63,6 +63,9 @@ body, html {
 	background: #824723; /*brown gold*/
 	border: 2px solid #A5A5A5; /*light gray*/
 }
+.big_btn:focus {
+	box-shadow: 1px 1px 10px 1px rgba(0,0,0,0.60) !important;
+}
 .app_title {
 	font-size: 3.2em;
 	/*margin:20px;*/
@@ -131,9 +134,17 @@ div.form-group {
 	margin: 16px auto;
 }
 
+.form-control {
+	border: none !important;
+    border-bottom: 2px solid #555 !important;
+    background-color: transparent !important;
+    height: 50px !important;
+}
 .form-control:focus {
-	border-color: #824723;
-	box-shadow: 0 0 0 0.2rem #824723;
+	/*border-color: #824723;*/
+	border-color: none !important;
+	box-shadow: none !important;
+	/*box-shadow: 0 0 0 0.2rem #824723;*/
 }
 
 .register_txt {
@@ -141,7 +152,12 @@ div.form-group {
 }
 
 .register_txt:hover {
-	color: #bdb63b;
+	color: #824723;
+}
+
+.btn:focus {
+	/*box-shadow: none !important;*/
+	box-shadow: 1px 1px 10px 1px rgba(0,0,0,0.60) !important;
 }
 
 input[type="text"]
@@ -161,7 +177,7 @@ select {
 	position: fixed;
 	left: 0;
 	top: 0;
-	width: 300px;
+	width: 280px;
 	height: 100%;
 	background-color: #1A2820;
 	z-index: 0;
@@ -308,3 +324,23 @@ select {
 }
 */
 /* end hamburger menu */
+
+
+/* profile buttons*/
+.save_btn {
+	width: 150px;
+	height: 40px;
+	background-color: #bdb63b;
+	color: black;
+	border: 1px solid #1C2A24 !important;
+}
+.close_btn {
+	width: 150px;
+	height: 40px;
+	background-color: #1C2A24;
+	color: #bdb63b;
+	border: 1px solid #bdb63b !important;
+	margin-bottom: 10px;
+	/*color: white;*/
+}
+/* end profile buttons*/

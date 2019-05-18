@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import knowledgehunters.model.Person;
+import knowledgehunters.model.User;
 import knowledgehunters.repository.PersonRepository;
 
 @Service
 public class PersonService {
 	@Autowired PersonRepository personRepository;
+	private Person sessionPerson;
 	
 	public List<Person> getAllPeople(){
 		List<Person> people = new ArrayList<>();
@@ -37,6 +39,25 @@ public class PersonService {
 		
 		personRepository.deleteById(id);
 		
+	}
+	
+	public Person findPersonByUserID(int userID) {
+		List<Person> people = new ArrayList<>();
+		personRepository.findAll().forEach(people ::add);
+		for(Person person : people) {
+			if(person.getUser().getId() == userID) {
+				return person;
+			}
+		}
+		return null;
+	}
+	
+	public void saveSessionPerson(Person sessionPerson) {
+		this.sessionPerson = sessionPerson;
+	}
+	
+	public Person getSessionPerson() {
+		return this.sessionPerson;
 	}
 	
 	

@@ -2,19 +2,13 @@ package knowledgehunters.controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,7 +44,16 @@ public class BaseController {
 			if (user.getUsername().equals(username) && user.getPassword().equals(password)) 
 			{
 				System.out.println("in if for users");
+				session.setAttribute("sessionUserID", user.getId());
+				Person person = personService.findPersonByUserID(user.getId());
+				personService.saveSessionPerson(person);
+				
+				System.out.println(session.getAttribute("sessionUserID"));
 				session.setAttribute("sessionUsername", username);
+				
+				session.setAttribute("sessionDisplayName", person.getDisplayName());
+				System.out.println("sessionGet: " + session.getAttribute("sessionDisplayName"));
+				
 		        session.setAttribute("sessionPassword", password);
 
 		        isUserInDB = true;
@@ -67,6 +70,28 @@ public class BaseController {
 		}
 	}
 	
+	@PostMapping("/profile")
+//	public void saveProfile(HttpServletResponse response, @RequestParam("id") String id,@RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password) throws IOException {
+	public void saveProfile(HttpServletResponse response, @RequestParam("id") String id, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password) throws IOException {
+//	public void saveProfile(HttpServletResponse response, @RequestBody Person person) throws IOException {
+		
+		System.out.println("---Entered saveProfile controller!");
+		System.out.println("profile-id: " + id);
+		System.out.println("profile-username: " + username);
+		System.out.println("profile-displayName: " + displayName);
+		System.out.println("profile-email: " + email);
+		System.out.println("profile-school: " + school);
+		System.out.println("profile-password: " + password);
+		
+		User user_old = userService.findUser(username);
+		userService.updateUser(user_old.getId(), new User(user_old.getId(), username, password, user_old.getRole()));
+		
+		
+		userService.getUser(user_old.getId()).ifPresent(
+				user -> personService.updatePerson(Integer.parseInt(id), new Person(Integer.parseInt(id),user, new School(school,null, null), displayName, email)));
+		
+		response.sendRedirect("profile"); 
+	}
 
 	@PostMapping("/login")
 	public void saveRegistrationAndLogin(HttpServletResponse response, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password) throws IOException {
