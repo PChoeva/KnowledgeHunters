@@ -147,6 +147,17 @@ div.form-group {
 	/*box-shadow: 0 0 0 0.2rem #824723;*/
 }
 
+textarea {
+	border-bottom: 2px solid #555 !important;
+	background-color: transparent !important;
+	max-height:400px;
+	min-height: 100px !important;
+}
+textarea:focus {
+	box-shadow: none !important;
+	outline: none !important;
+}
+
 .register_txt {
 	color: white;
 }
@@ -333,6 +344,7 @@ select {
 	background-color: #bdb63b;
 	color: black;
 	border: 1px solid #1C2A24 !important;
+	margin-bottom: 10px;
 }
 .close_btn {
 	width: 150px;
@@ -344,3 +356,16 @@ select {
 	/*color: white;*/
 }
 /* end profile buttons*/
+
+
+.fas {
+	font-size:24px;
+	margin:4px;
+}
+.fa-pencil-alt {
+	color: #824723;
+}
+.fa-times{
+	font-size:28px !important;
+	color: red;
+}

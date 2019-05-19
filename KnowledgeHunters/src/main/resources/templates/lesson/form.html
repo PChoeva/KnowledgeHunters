@@ -1,0 +1,45 @@
+<h1 class="app_title logged-title">Търсачи на знания</h1>	    
+<div class="jumbotron" style="background-color: rgba(220, 220, 220, 0.8); color:black; width:66%; height:80%; margin:0px;">
+	<div class="row justify-content-md-center">
+		<div class="col-12">
+			<center><h2 th:text="${sectionTitle}">Добави/промени урок</h2></center>
+			<br/>
+		</div>
+		<form class="col-12 align-self-center" th:action="@{/lessons/index}" method="post">
+			<div class="form-group">
+	        	<input type="hidden" class="form-control" name="id" id="id" autofocus="autofocus" placeholder="ID" th:value="${lesson?.id}" readonly>
+	        </div>
+			<div class="form-group row">
+	        	<input type="text" class="form-control col-md-5 col-sm-12" name="title" id="title" autofocus="autofocus" placeholder="Заглавие" th:value="${lesson?.title}">
+	        	
+	        	
+				<select class="form-control col-md-5 col-sm-12 offset-md-2" name="topic" id="topic" style="width:100%; height: 50px;">
+					<option th:each="topic : ${topics}" th:if="${topic.id == lesson?.topic?.id}" th:value="${lesson?.topic?.id}" th:text="${topic.name}">...</option>
+					<option th:each="topic : ${topics}" th:if="${topic.id != lesson?.topic?.id}" th:value="${topic.id}" th:text="${topic.name}"></option>
+				</select>
+	        <!-- 	<input type="text" class="form-control col-md-5 col-sm-12 offset-md-2" name="topic" id="topic" placeholder="Раздел" th:value="${lesson?.topic?.name}"> -->
+	        	
+	        	
+	        	<input type="hidden" class="form-control" name="author" id="author" placeholder="Автор" th:value="${lesson?.author?.displayName}">
+	        </div>
+			<div class="form-group row">
+				<!-- <textarea  class="form-control col-12" name="description" th:text="${lesson.description}" style="min-height:200px;"></textarea> -->
+				 <textarea class="col-12" name="description" rows="10" cols="30" th:text="${lesson?.description}" >...</textarea>
+			</div>
+			
+		    <br/>
+		    <div class="row align-items-end">
+			  <div class="col-auto mr-auto">
+			  	<a href="/lessons/index" th:href="@{/lessons/index}">
+			  		<input type="button" value="Отказ" class="btn close_btn" style="width:150px;">
+			  	</a>
+			  </div>
+			  <div class="col-auto">
+			  	<a href="/lessons/index" th:href="@{/lessons/index}">
+			  		<input type="submit" value="Запази" class="btn save_btn" style="width:150px;">
+			  	</a>
+			  </div>			
+			</div>
+		</form>  
+	</div>
+</div>

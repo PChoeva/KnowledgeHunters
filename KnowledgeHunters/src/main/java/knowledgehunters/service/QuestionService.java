@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import knowledgehunters.model.Lesson;
+import knowledgehunters.model.Person;
 import knowledgehunters.model.Question;
 import knowledgehunters.repository.QuestionRepository;
 
@@ -38,6 +40,18 @@ public class QuestionService {
 	public void deleteQuestion(int id) {
 		
 		questionRepository.deleteById(id);
+	}
+	
+	public List<Question> getAllQuestionsByAuthor(Person author){
+		List<Question> questionsByAuthor = new ArrayList<>();
+		System.out.println("getAllQuestionsByAuthor: " + questionRepository.findAll());
+		for (Question question: questionRepository.findAll()) {
+			if (question.getAuthor().getId() == author.getId()) {
+				questionsByAuthor.add(question);
+			}
+		}
+		questionsByAuthor.forEach(q -> System.out.println("getAllQuestionsByAuthor -> Question: " + q));
+		return questionsByAuthor;
 	}
 }
 

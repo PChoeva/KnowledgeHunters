@@ -7,15 +7,22 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import knowledgehunters.model.Lesson;
 import knowledgehunters.model.Person;
 import knowledgehunters.model.Role;
 import knowledgehunters.model.School;
+import knowledgehunters.model.Topic;
 import knowledgehunters.model.User;
+import knowledgehunters.service.LessonService;
 import knowledgehunters.service.PersonService;
 import knowledgehunters.service.UserService;
 
@@ -26,6 +33,8 @@ public class BaseController {
 	private UserService userService;
 	@Autowired
 	private PersonService personService;
+	@Autowired
+	private LessonService lessonService;
 	
 	@PostMapping("/home")
 	public void homeLogged(HttpSession session, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("password") String password) throws IOException {
@@ -111,6 +120,24 @@ public class BaseController {
 	    session.invalidate();
 	    System.out.println("Logout controller post");
 	    response.sendRedirect("login");
+	}
+	
+	@PostMapping("/lessons/index")
+	  public void LessonsIndex(HttpSession session, HttpServletResponse response, @RequestParam("id") String lessonID, @RequestParam("title") String title, @RequestParam("topic") String topicID, @RequestParam("description") String description) throws IOException {
+		Person person = personService.getSessionPerson();
+	    System.out.println("REST Lessons index controller post");
+	    
+	    lessonService.addLesson(new Lesson(lessonID.isEmpty()?0:Integer.parseInt(lessonID), title, new Topic(Integer.parseInt(topicID), null, null),person, description));
+	    response.sendRedirect("/lessons/index");
+	}
+	@GetMapping("/lessons/delete/{id}")
+//	@RequestMapping(value = "/lessons/delete/{id}", method = {RequestMethod.GET, RequestMethod.DELETE})
+	  public void LessonsDelete(HttpSession session, HttpServletResponse response, @PathVariable int id) throws IOException {
+		
+	    System.out.println("REST Lessons delete controller post");
+	    
+	    lessonService.deleteLesson(id);
+	    response.sendRedirect("/lessons/index");
 	}
 	
 }

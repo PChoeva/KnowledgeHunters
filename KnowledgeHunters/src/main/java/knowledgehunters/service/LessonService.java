@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import knowledgehunters.model.Lesson;
+import knowledgehunters.model.Person;
 import knowledgehunters.repository.LessonRepository;
 
 @Service
@@ -38,6 +39,18 @@ public class LessonService {
 	public void deleteLesson(int id) {
 		
 		lessonRepository.deleteById(id);
+	}
+	
+	public List<Lesson> getAllLessonsByAuthor(Person author){
+		List<Lesson> lessonsByAuthor = new ArrayList<>();
+		System.out.println("getAllLessonsByAuthor: " + lessonRepository.findAll());
+		for (Lesson lesson: lessonRepository.findAll()) {
+			if (lesson.getAuthor().getId() == author.getId()) {
+				lessonsByAuthor.add(lesson);
+			}
+		}
+		lessonsByAuthor.forEach(l -> System.out.println("getAllLessonsByAuthor -> Lesson: " + l));
+		return lessonsByAuthor;
 	}
 }
 
