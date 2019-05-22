@@ -39,8 +39,13 @@
 			        <!-- <label for="password">Повтори парола</label> -->
 			        <input type="password" class="form-control" id="repeat_password" placeholder="Повтори парола">
 				</div>
+				<br/>
+				<div class="form-group" style="text-align:left; margin:0;">
+				 	<!-- <input type="checkbox" th:field="*{features}" th:value="${feat}" />-->
+				 	<input type="checkbox" name="isTeacher" style="width:20px; height:20px;"/>
+				    <label style="font-size:20px;">Аз съм учител*</label>
+				</div>
 			</div>
-		    <br/>
 		    <input type="submit" value="Регистрирай се" class="big_btn p-2">
 		 	<h4>Имаш акаунт?<br/><u><a href="/login" th:href="@{/login}" class="register_txt">Влез.</a></u></h4>
 		</form>

@@ -201,6 +201,23 @@ System.out.println("---------in questionIndex controller");
 		return "base-layout";
 	}
 	
+	@GetMapping("/questions/add")
+	public String questionAdd(HttpSession session, Model model) {
+		model.addAttribute("sectionTitle", "Добави въпрос");
+		model.addAttribute("topics", topicService.getAllTopics());
+		
+		List<QuestionDifficulty> difficulties = new ArrayList<QuestionDifficulty>(EnumSet.allOf(QuestionDifficulty.class));
+		model.addAttribute("difficulties", difficulties);
+		difficulties.forEach(d -> System.out.println("Difficulty: " + d));
+		
+		List<QuestionType> types = new ArrayList<QuestionType>(EnumSet.allOf(QuestionType.class));
+		model.addAttribute("types", types);
+		types.forEach(t -> System.out.println("Type: " + t));
+		
+		model.addAttribute("view", "question/form");
+		return "base-layout";
+	}
+	
 	
 	@GetMapping("/userslist")
 	public String userslist(Model model) {

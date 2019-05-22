@@ -103,11 +103,12 @@ public class BaseController {
 	}
 
 	@PostMapping("/login")
-	public void saveRegistrationAndLogin(HttpServletResponse response, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password) throws IOException {
+	public void saveRegistrationAndLogin(HttpServletResponse response, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password, @RequestParam("isTeacher") boolean isTeacher) throws IOException {
 			
 		System.out.println("---Entered saveRegistrationAndLogin controller!");
-		
 		System.out.println(username + " | " + displayName + " | " + email + " | " + school + " | " + password);
+		
+		System.out.println("isTeacher: " + isTeacher);
 		
 		userService.addUser(new User(0, username, password, new Role(3,null)));
 		personService.addPerson(new Person(0,userService.findUser(username), new School(school,null, null), displayName, email));
