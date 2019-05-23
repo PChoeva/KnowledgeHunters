@@ -22,8 +22,6 @@
 					<option th:each="difficulty : ${difficulties}" th:if="${difficulty == question?.difficulty}" th:value="${question?.difficulty}" th:text="${difficulty}">...</option>
 					<option th:each="difficulty : ${difficulties}" th:if="${difficulty != question?.difficulty}" th:value="${difficulty}" th:text="${difficulty}"></option>
 				</select>
-				
-				<!-- <select class="form-control col-md-3 col-sm-12 offset-md-1" name="type" id="type" style="width:100%; height: 50px;" onChange="changeQuestionType(this)">-->
 				<select class="form-control col-md-3 col-sm-12 offset-md-1" name="type" id="type" style="width:100%; height: 50px;">
 					<option th:each="type : ${types}" th:if="${type == question?.type}" th:value="${question?.type}" th:text="${type}">...</option>
 					<option th:each="type : ${types}" th:if="${type != question?.type}" th:value="${type}" th:text="${type}"></option>
@@ -73,39 +71,9 @@
 	        	<input th:each="option : ${options}" th:if="${option?.correct} == false" type="text" class="form-control col-5" name="option" id="option" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;color:red;">
 	        	 -->
 	        </div>
-	        <!-- 
-	        <div th:if="${quesiton} == null" id="question-multiple-choice" class="multiple-choice row">
-		        <div th:each="iterator:${#numbers.sequence(0,3)}" class="input-group col-md-6 col-sm-12">
-				  <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
-				  <div class="input-group-append">
-				    <div th:each="option : ${options}" th:if="${iterator}==0 and ${option?.correct} == true" class="btn btn-success" th:value="${option?.description}" type="button" style="width:140px; padding:10px;">Верен отговор</div>
-				    <div th:each="option : ${options}" th:if="${iterator}!=0 and ${option?.correct} == false" class="btn btn-danger" th:value="${option?.description}" type="button" style="width:140px; padding:10px;">Грешен отговор</div>
-				  </div>
-				</div>
-			</div>
-			<div th:if="${quesiton} == null" id="question-true-false" class="true-false row">
-		        <div th:each="iterator:${#numbers.sequence(0,1)}" class="input-group col-md-6 col-sm-12">
-				  <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
-				  <div class="input-group-append">
-				    <div th:each="option : ${options}" th:if="${iterator}==0 and ${option?.correct} == true" class="btn btn-success" th:value="${option?.description}" type="button" style="width:140px; padding:10px;">Верен отговор</div>
-				    <div th:each="option : ${options}" th:if="${iterator}!=0 and ${option?.correct} == false" class="btn btn-danger" th:value="${option?.description}" type="button" style="width:140px; padding:10px;">Грешен отговор</div>
-				  </div>
-				</div>
-			</div>
-			<div th:if="${quesiton} == null" id="question-open" class="open-option row">
-		        <div class="input-group col-md-6 col-sm-12">
-				  <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
-				  <div class="input-group-append">
-				    <div class="btn btn-success" th:each="option : ${options}" th:if="${option?.correct} == true" th:value="${option?.description}" type="button" style="width:140px; padding:10px;">Верен отговор</div>
-				  </div>
-				</div>
-			</div>
-			 -->
-			<!-- 
-			<div class="form-group row">
-				 <textarea class="col-12" name="description" rows="10" cols="30" th:text="${lesson?.description}" >...</textarea>
-			</div>
-			 -->
+	        <div class="form-group row">
+	        	<input type="text" class="form-control col-12" name="hint" id="hint" autofocus="autofocus" placeholder="Подсказка" th:value="${question != null} ? ${question?.hint} : ''">
+	        </div>
 		    <br/>
 		    <div class="row align-items-end">
 			  <div class="col-auto mr-auto">

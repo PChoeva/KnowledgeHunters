@@ -1,6 +1,7 @@
 package knowledgehunters.controller;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -136,6 +137,7 @@ public class BaseController {
 	    lessonService.addLesson(new Lesson(lessonID.isEmpty()?0:Integer.parseInt(lessonID), title, new Topic(Integer.parseInt(topicID), null, null),person, description));
 	    response.sendRedirect("/lessons/index");
 	}
+	
 	@GetMapping("/lessons/delete/{id}")
 	  public void LessonsDelete(HttpSession session, HttpServletResponse response, @PathVariable int id) throws IOException {
 		
@@ -143,6 +145,75 @@ public class BaseController {
 	    
 	    lessonService.deleteLesson(id);
 	    response.sendRedirect("/lessons/index");
+	}
+	
+	@PostMapping("/questions/index")
+	  public void questionsIndex(
+			  HttpSession session,
+			  HttpServletResponse response,
+			  @RequestParam("id") String questionID,
+			  @RequestParam("title") String description,
+			  @RequestParam("difficulty") String difficulty,
+			  @RequestParam("author") String authorID,
+			  @RequestParam("hint") String hint,
+			  @RequestParam("topic") String topicID,
+			  @RequestParam("type") String type,
+			  @RequestParam(value = "radio-multiple-choice-filled", required=false) String multipleFilled,
+			  @RequestParam(value = "radio-multiple-choice-empty", required=false) String multipleEmpty,
+			  @RequestParam(value = "radio-true-false-filled", required=false) String trueFalseFilled,
+			  @RequestParam(value = "radio-true-false-empty", required=false) String trueFalseEmpty,
+			  @RequestParam(value = "radio-open-filled", required=false) String openFilled,
+			  @RequestParam(value = "radio-open-empty", required=false) String openEmpty,
+			  //@RequestParam(value = "option") String option
+			  @RequestParam(value="option") List<String> option
+		) throws IOException {
+		
+		Person person = personService.getSessionPerson();
+	    System.out.println("REST Questions index controller post");
+	    System.out.println(questionID + " | " + description + " | " + difficulty + " | " + authorID + " | " + hint + " | " + topicID + " | " + type);
+	   
+	    System.out.println("Option:" + option);
+	    for (int i = 0; i< option.size(); i++) {
+	    	System.out.println("Option " + i + ": " + option.get(i));
+	    }
+
+	    // clear all empty elements from option list
+	    option.removeAll(Collections.singleton(""));
+	    
+	    for (int i = 0; i< option.size(); i++) {
+	    	System.out.println("Option " + i + ": " + option.get(i));
+	    }
+	    
+	    switch(type) {
+	  		case "MULTIPLE_CHOICE": {
+	  			System.out.println("Switch: multiple");
+	  			System.out.println("Multiple filled:" + multipleFilled);
+		    	System.out.println("Multiple empty:" + multipleEmpty);
+	  			break;
+	  		}
+	  		case "TRUE_FALSE": {	
+	  			System.out.println("Switch: true-false");
+	  			System.out.println("True False filled:" + trueFalseFilled);
+		    	System.out.println("True False empty:" + trueFalseEmpty);
+	  			break;
+	  		}
+	  		case "OPEN": {
+	  			System.out.println("Switch: open");
+	  			System.out.println("Open filled:" + openFilled);
+		    	System.out.println("Open empty:" + openEmpty);
+	  			break;
+	  		}
+	  		case "MATCH": break;
+	  		case "SORT": break;
+	      }
+	    /*
+	    if (type.equals("MULTIPLE_CHOICE")) {
+	    	System.out.println("Multiple filled:" + multipleFilled);
+	    	System.out.println("Multiple empty:" + multipleEmpty);
+	    }
+	    */
+//	    lessonService.addLesson(new Lesson(lessonID.isEmpty()?0:Integer.parseInt(lessonID), title, new Topic(Integer.parseInt(topicID), null, null),person, description));
+	    response.sendRedirect("/questions/index");
 	}
 	
 }
