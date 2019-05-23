@@ -91,32 +91,19 @@ public class MainController {
 	@GetMapping("/profile")
 	public String profile(HttpSession session, Model model) {
 		model.addAttribute("schools", schoolService.getAllSchools());
-		
-//		session.getAttribute("sessionUserID");
-//		System.out.println("profileController - userID:" + session.getAttribute("userID"));
-		
+
 		Person person = personService.getSessionPerson();
 		model.addAttribute("person", person);
 		
-//		personService.getPerson(2).ifPresent(p -> model.addAttribute("person", p));
-//		model.addAttribute("person", personService.getPerson(1));
 		model.addAttribute("view", "user/profile");
 		return "base-layout";
 	}
 	
 	@GetMapping("/lessons/index")
 	public String lessonIndex(HttpSession session, Model model) {
-System.out.println("---------in lessonIndex controller");
-//		Lesson lesson = personService.getSessionPerson();
 		Person person = personService.getSessionPerson();
-		System.out.println("person: " + person.getDisplayName());
-		System.out.println(lessonService.getAllLessonsByAuthor(person));
-//		model.addAttribute("personID", person.getId());
 		model.addAttribute("lessons", lessonService.getAllLessonsByAuthor(person));
 		lessonService.getAllLessonsByAuthor(person).forEach(l -> System.out.println("Lesson:" + l));
-//		model.addAttribute("topics", topicService.getAllTopics());
-//		lessonService.getLesson(1).ifPresent(lesson -> model.addAttribute("lesson", lesson));
-//		model.addAttribute("lesson", lesson);
 		
 		model.addAttribute("view", "lesson/index");
 		return "base-layout";
@@ -125,15 +112,10 @@ System.out.println("---------in lessonIndex controller");
 	@GetMapping("/lessons/add")
 	public String lessonAdd(HttpSession session, Model model) {
 		model.addAttribute("schools", schoolService.getAllSchools());
-		
-//		Lesson lesson = personService.getSessionPerson();
-		
-		
+				
 		model.addAttribute("lesson", null);
 		model.addAttribute("sectionTitle", "Добави урок");
 		model.addAttribute("topics", topicService.getAllTopics());
-//		lessonService.getLesson(1).ifPresent(lesson -> model.addAttribute("lesson", lesson));
-//		model.addAttribute("lesson", lesson);
 		
 		model.addAttribute("view", "lesson/form");
 		return "base-layout";
@@ -143,14 +125,11 @@ System.out.println("---------in lessonIndex controller");
 	public String lessonEdit(HttpSession session, Model model, @PathVariable int id) {
 		model.addAttribute("schools", schoolService.getAllSchools());
 		System.out.println("lessonEdit->id: " + id);
-//		Lesson lesson = personService.getSessionPerson();
 		
 		lessonService.getLesson(id).ifPresent(lesson -> model.addAttribute("lesson", lesson));
 		
 		model.addAttribute("sectionTitle", "Промени урок");
 		model.addAttribute("topics", topicService.getAllTopics());
-//		lessonService.getLesson(1).ifPresent(lesson -> model.addAttribute("lesson", lesson));
-//		model.addAttribute("lesson", lesson);
 		
 		model.addAttribute("view", "lesson/form");
 		return "base-layout";
@@ -160,9 +139,6 @@ System.out.println("---------in lessonIndex controller");
 	public String questionIndex(HttpSession session, Model model) {
 System.out.println("---------in questionIndex controller");
 		Person person = personService.getSessionPerson();
-		System.out.println("person: " + person.getDisplayName());
-		System.out.println(questionService.getAllQuestionsByAuthor(person));
-//		model.addAttribute("personID", person.getId());
 		model.addAttribute("questions", questionService.getAllQuestionsByAuthor(person));
 		questionService.getAllQuestionsByAuthor(person).forEach(q -> System.out.println("Question:" + q));
 		
@@ -172,9 +148,7 @@ System.out.println("---------in questionIndex controller");
 	
 	@GetMapping("/questions/edit/{id}")
 	public String questionEdit(HttpSession session, Model model, @PathVariable int id) {
-//		model.addAttribute("schools", schoolService.getAllSchools());
 		System.out.println("questionEdit->id: " + id);
-//		Lesson lesson = personService.getSessionPerson();
 		
 		questionService.getQuestion(id).ifPresent(question -> model.addAttribute("question", question));
 		
@@ -193,9 +167,6 @@ System.out.println("---------in questionIndex controller");
 		
 		model.addAttribute("options",optionService.getAllOptionsByQuestionId(id));
 		optionService.getAllOptionsByQuestionId(id).forEach(o -> System.out.println("Option is true?: " + o.isCorrect()));
-		
-//		lessonService.getLesson(1).ifPresent(lesson -> model.addAttribute("lesson", lesson));
-//		model.addAttribute("lesson", lesson);
 		
 		model.addAttribute("view", "question/form");
 		return "base-layout";

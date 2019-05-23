@@ -36,6 +36,8 @@ public class BaseController {
 	@Autowired
 	private LessonService lessonService;
 	
+	Person editedPerson;
+	
 	@PostMapping("/home")
 	public void homeLogged(HttpSession session, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("password") String password) throws IOException {
 		System.out.println("---Entered home logged controller!");
@@ -66,7 +68,6 @@ public class BaseController {
 		        session.setAttribute("sessionPassword", password);
 
 		        isUserInDB = true;
-//			    response.sendRedirect("home");
 			}
 			
 		}
@@ -80,10 +81,8 @@ public class BaseController {
 	}
 	
 	@PostMapping("/profile")
-//	public void saveProfile(HttpServletResponse response, @RequestParam("id") String id,@RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password) throws IOException {
-	public void saveProfile(HttpServletResponse response, @RequestParam("id") String id, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password) throws IOException {
-//	public void saveProfile(HttpServletResponse response, @RequestBody Person person) throws IOException {
-		
+	public void saveProfile(HttpSession session, HttpServletResponse response, @RequestParam("id") String id, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password) throws IOException {
+	
 		System.out.println("---Entered saveProfile controller!");
 		System.out.println("profile-id: " + id);
 		System.out.println("profile-username: " + username);
@@ -95,11 +94,17 @@ public class BaseController {
 		User user_old = userService.findUser(username);
 		userService.updateUser(user_old.getId(), new User(user_old.getId(), username, password, user_old.getRole()));
 		
-		
+	
 		userService.getUser(user_old.getId()).ifPresent(
-				user -> personService.updatePerson(Integer.parseInt(id), new Person(Integer.parseInt(id),user, new School(school,null, null), displayName, email)));
+				user -> editedPerson = new Person(Integer.parseInt(id),user, new School(school,null, null), displayName, email));
 		
-		response.sendRedirect("profile"); 
+		personService.updatePerson(Integer.parseInt(id), editedPerson);
+		personService.getPerson(Integer.parseInt(id)).ifPresent(person -> personService.saveSessionPerson(person));
+		
+		session.setAttribute("sessionUsername", username);
+		session.setAttribute("sessionDisplayName", displayName);
+		
+		response.sendRedirect("home"); 
 	}
 
 	@PostMapping("/login")
@@ -132,7 +137,6 @@ public class BaseController {
 	    response.sendRedirect("/lessons/index");
 	}
 	@GetMapping("/lessons/delete/{id}")
-//	@RequestMapping(value = "/lessons/delete/{id}", method = {RequestMethod.GET, RequestMethod.DELETE})
 	  public void LessonsDelete(HttpSession session, HttpServletResponse response, @PathVariable int id) throws IOException {
 		
 	    System.out.println("REST Lessons delete controller post");
