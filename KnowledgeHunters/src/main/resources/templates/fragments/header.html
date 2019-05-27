@@ -9,15 +9,20 @@
 		<div class="menu-name">МЕНЮ</div>
 
 		<ul id="menu" style="z-index:100;">
-			<a><li th:unless="${session == null}"> <h4 th:text="${session.sessionDisplayName}" style="color:#bdb63b; text-transform: none !important;margin-bottom:50px; text-align: center;">[...]</h4></li></a>
+			<a>
+				<li th:unless="${session == null}">
+					<h4 th:text="${session.sessionDisplayName}" style="color:#bdb63b; text-transform: none !important;margin-bottom:50px; text-align: center;">[...]</h4>
+					<h4 th:text="${@personService.getSessionPerson().getUser().getRole().getName()}" style="color:#bdb63b; text-transform: none !important;margin-bottom:50px; text-align: center;">[...]</h4>
+				</li>
+			</a>
 		
 			<a href="/home" th:href="@{/home}"> <li>Начало</li></a>
 			<a href="/profile" th:href="@{/profile}"> <li>Профил</li></a>
 			<a href="#"> <li>Класация</li></a>
-			<a href="/lessons/index" th:href="@{/lessons/index}"> <li>Моите уроци</li></a>
-			<a href="/questions/index" th:href="@{/questions/index}"> <li>Моите въпроси</li></a>
-			<a href="/userslist" th:href="@{/userslist}"> <li>Списък потребители</li></a>
-			<br/><br/><br/><br/><br/><br/><br/><br/>
+			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}" href="/lessons/index" th:href="@{/lessons/index}"> <li>Моите уроци</li></a>
+			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}" href="/questions/index" th:href="@{/questions/index}"> <li>Моите въпроси</li></a>
+			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}" href="/userslist" th:href="@{/userslist}"> <li>Списък потребители</li></a>
+			<br/><br/><br/><br/><br/>
 			<a href="/logout"> <li>Излез</li></a>
 		</ul>
 	</a>

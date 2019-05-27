@@ -71,4 +71,15 @@ public class Person {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public Boolean isAdmin() {
+		return this.getUser().getRole().getName().equals("Admin") ? true : false;
+	}
+	
+	public Boolean isTeacher() {
+		return this.getUser().getRole().getName().equals("Teacher") ? true : false;
+	}
+	public Boolean isStudent() {
+		return this.getUser().getRole().getName().equals("Student") ? true : false;
+	}
 }

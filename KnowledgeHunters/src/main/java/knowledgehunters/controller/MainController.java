@@ -1,6 +1,7 @@
 package knowledgehunters.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -51,6 +52,10 @@ public class MainController {
 	@Autowired
 	OptionService optionService;
 	
+	private static String ADMIN = "Admin";
+	private static String TEACHER = "Teacher";
+	private static String STUDENT = "Student";
+	
 	
 	@GetMapping(value= {"/", "/index"})
 	public String index(Model model) {
@@ -83,6 +88,8 @@ public class MainController {
 	
 	@GetMapping("/home")
 	public String home(Model model) {
+		if (isLogged(model)) return "start-layout"; 
+
 		model.addAttribute("view", "user/home");
 		System.out.println("---Entered home controller!");
 		return "base-layout";
@@ -90,6 +97,8 @@ public class MainController {
 	
 	@GetMapping("/profile")
 	public String profile(HttpSession session, Model model) {
+		if (isLogged(model)) return "start-layout"; 
+
 		model.addAttribute("schools", schoolService.getAllSchools());
 
 		Person person = personService.getSessionPerson();
@@ -101,6 +110,11 @@ public class MainController {
 	
 	@GetMapping("/lessons/index")
 	public String lessonIndex(HttpSession session, Model model) {
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
+			return "base-layout";
+		}
+
 		Person person = personService.getSessionPerson();
 		model.addAttribute("lessons", lessonService.getAllLessonsByAuthor(person));
 		lessonService.getAllLessonsByAuthor(person).forEach(l -> System.out.println("Lesson:" + l));
@@ -111,6 +125,12 @@ public class MainController {
 	
 	@GetMapping("/lessons/add")
 	public String lessonAdd(HttpSession session, Model model) {
+		
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
+			return "base-layout";
+		}
+
 		model.addAttribute("schools", schoolService.getAllSchools());
 				
 		model.addAttribute("lesson", null);
@@ -123,6 +143,12 @@ public class MainController {
 	
 	@GetMapping("/lessons/edit/{id}")
 	public String lessonEdit(HttpSession session, Model model, @PathVariable int id) {
+		
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
+			return "base-layout";
+		}
+		
 		model.addAttribute("schools", schoolService.getAllSchools());
 		System.out.println("lessonEdit->id: " + id);
 		
@@ -138,6 +164,13 @@ public class MainController {
 	@GetMapping("/questions/index")
 	public String questionIndex(HttpSession session, Model model) {
 System.out.println("---------in questionIndex controller");
+
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
+			return "base-layout";
+		}
+		// if (hasRights(model, ADMIN) || hasRights(model, TEACHER)) return "base-layout";
+
 		Person person = personService.getSessionPerson();
 		model.addAttribute("questions", questionService.getAllQuestionsByAuthor(person));
 		questionService.getAllQuestionsByAuthor(person).forEach(q -> System.out.println("Question:" + q));
@@ -148,6 +181,12 @@ System.out.println("---------in questionIndex controller");
 	
 	@GetMapping("/questions/edit/{id}")
 	public String questionEdit(HttpSession session, Model model, @PathVariable int id) {
+		
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
+			return "base-layout";
+		}
+		
 		System.out.println("questionEdit->id: " + id);
 		
 		questionService.getQuestion(id).ifPresent(question -> model.addAttribute("question", question));
@@ -174,6 +213,12 @@ System.out.println("---------in questionIndex controller");
 	
 	@GetMapping("/questions/add")
 	public String questionAdd(HttpSession session, Model model) {
+		
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
+			return "base-layout";
+		}
+		
 		model.addAttribute("sectionTitle", "Добави въпрос");
 		model.addAttribute("topics", topicService.getAllTopics());
 		
@@ -189,9 +234,14 @@ System.out.println("---------in questionIndex controller");
 		return "base-layout";
 	}
 	
-	
 	@GetMapping("/userslist")
 	public String userslist(Model model) {
+
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN)))) {
+			return "base-layout";
+		}
+
 		model.addAttribute("view", "user/userslist");
 		model.addAttribute("users", userService.getAllUsers());
 		return "base-layout";
@@ -199,16 +249,55 @@ System.out.println("---------in questionIndex controller");
 	
 	@GetMapping("/gain-knowledge")
 	public String gainKnowledge(Model model) {
+		
+		if (isLogged(model)) return "start-layout"; 
+
 		model.addAttribute("view", "user/gain-knowledge");
 		model.addAttribute("subjects", subjectService.getAllSubjects());
 		model.addAttribute("lessons", lessonService.getAllLessons());
 		return "base-layout";
 	}
 	
-	@GetMapping("/errorPage")
+	@GetMapping("/error")
 	public String error(Model model) {
-		model.addAttribute("view", "errorPage");
+		if (isLogged(model)) return "start-layout"; 
+
+		model.addAttribute("view", "error");
 		System.out.println("---Entered error controller!");
 		return "base-layout";
+	}
+	
+	public Boolean isLogged(Model model) {
+		if (personService.getSessionPerson() == null) {
+			model.addAttribute("view", "/error");
+			model.addAttribute("errorMsg", "403 - Трябва да се регистрирате за тази страница!");
+			return true;
+		}
+		return false;
+	}
+	
+	public Boolean hasRights(Model model, List<String> roles) {
+		System.out.println("hasRights Has: " + personService.getSessionPerson().getUser().getRole().getName());
+		//System.out.println("hasRights Given: " + role);
+		roles.forEach(r -> System.out.println("hasRights Given: " + r));
+		Boolean hasPermission = false;
+		for (String role : roles) {
+			if (personService.getSessionPerson().getUser().getRole().getName().equals(role)) {
+				hasPermission = true;
+			}
+		}
+		
+		
+		if (!hasPermission) {
+			model.addAttribute("view", "/error");
+			model.addAttribute("errorMsg", "403 - Нямате права за тази страница!");
+			// replace with setView ??????
+		} 
+		return hasPermission;
+	}
+		
+	public void setView(Model model) {
+		model.addAttribute("view", "/error");
+		model.addAttribute("errorMsg", "403 - Нямате права за тази страница!");
 	}
 }

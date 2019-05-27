@@ -23,7 +23,7 @@
 			<br/><br/>
 			<div class="row">
 				<h2 class="col-md-6 col-sm-8 offset-md-3">Списък с уроци</h2>
-				<div class="col-3 align-self-end text-right">
+				<div th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}" class="col-3 align-self-end text-right">
 			 		<a href="/lessons/add" th:href="@{/lessons/add}">
 			 			<button type="button" class="btn save_btn" style="width:150px; color:black">Добави урок</button>
 			 		</a>
