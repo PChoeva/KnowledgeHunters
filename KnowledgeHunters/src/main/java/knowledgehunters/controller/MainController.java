@@ -169,7 +169,6 @@ System.out.println("---------in questionIndex controller");
 		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
 			return "base-layout";
 		}
-		// if (hasRights(model, ADMIN) || hasRights(model, TEACHER)) return "base-layout";
 
 		Person person = personService.getSessionPerson();
 		model.addAttribute("questions", questionService.getAllQuestionsByAuthor(person));
@@ -261,10 +260,44 @@ System.out.println("---------in questionIndex controller");
 				teachersForApproval.add(person);
 			}
 		}
-		//personService.getAllPeople().forEach(person -> person.getIsApproved().FALSE? teachersForApproval.add(person): null);
+		
 		model.addAttribute("view", "user/teachers-for-approval");
 		model.addAttribute("teachers", teachersForApproval);
 		return "base-layout";
+	}
+	
+	
+	@GetMapping("/teachers-for-approval/approve/{id}")
+	public String teachersApprove(Model model, @PathVariable int id) {
+
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN)))) {
+			return "base-layout";
+		}
+
+		
+		System.out.println("teachersApprove->id: " + id);
+		Person teacher = personService.getPerson(id).get();
+		teacher.setIsApproved(true);
+		
+		personService.updatePerson(id, teacher);
+		System.out.println("teachersApprove->getApproved: " + personService.getPerson(id).get().getIsApproved());
+		
+		return "redirect:/teachers-for-approval";
+	}
+	
+	@GetMapping("/teachers-for-approval/deny/{id}")
+	public String teachersDeny(Model model, @PathVariable int id) {
+
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN)))) {
+			return "base-layout";
+		}
+
+		System.out.println("teachersApprove->id: " + id);		
+		personService.deletePerson(id);
+		
+		return "redirect:/teachers-for-approval";
 	}
 	
 	@GetMapping("/gain-knowledge")
@@ -298,7 +331,7 @@ System.out.println("---------in questionIndex controller");
 	
 	public Boolean hasRights(Model model, List<String> roles) {
 		System.out.println("hasRights Has: " + personService.getSessionPerson().getUser().getRole().getName());
-		//System.out.println("hasRights Given: " + role);
+		
 		roles.forEach(r -> System.out.println("hasRights Given: " + r));
 		Boolean hasPermission = false;
 		for (String role : roles) {

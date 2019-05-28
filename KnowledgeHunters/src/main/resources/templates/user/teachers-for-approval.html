@@ -20,10 +20,10 @@
 		    <td th:text="${teacher.email}" />
 		    <td th:text="${teacher.school.name}" />
 		     <td>
-		    	<a th:href="@{#}">
+		    	<a th:href="@{'/teachers-for-approval/approve/' + ${teacher.id}}">
 		    		<i class="fas fa-check"></i>
 		    	</a>
-		    	<a th:href="@{#}">
+		    		<a th:href="@{'/teachers-for-approval/deny/' + ${teacher.id}}">
 		    		<i class="fas fa-ban"></i>
 		    	</a>
 		    </td>
