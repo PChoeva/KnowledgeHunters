@@ -1,4 +1,3 @@
-<h1 class="app_title logged-title">Търсачи на знания</h1>	    
 <div class="jumbotron" style="background-color: rgba(220, 220, 220, 0.8); color:black; width:66%; height:80%; margin:0px;">
 	<div class="row justify-content-md-center">
 		<div class="col-12">
@@ -60,16 +59,6 @@
 	        		<input type="radio" name="radio-open-empty" checked style="width:20px; height:20px;float:left;"/>
 	        		<input type="text" class="form-control" name="option" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">
 	        	</div>
-	        	
-	        	
-	        	
-	        	
-	        	
-	        	
-	        	<!-- 
-	        	<input th:each="option : ${options}" th:if="${option?.correct} == true" type="text" class="form-control col-5" name="option" id="option" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px; color:green;">
-	        	<input th:each="option : ${options}" th:if="${option?.correct} == false" type="text" class="form-control col-5" name="option" id="option" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;color:red;">
-	        	 -->
 	        </div>
 	        <div class="form-group row">
 	        	<input type="text" class="form-control col-12" name="hint" id="hint" autofocus="autofocus" placeholder="Подсказка" th:value="${question != null} ? ${question?.hint} : ''">

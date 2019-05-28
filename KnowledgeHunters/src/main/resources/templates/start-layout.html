@@ -5,7 +5,7 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 	<head th:include="fragments/head" th:with="pageTitle='Knowledge Hunters'"></head>
 	<body class="main-bg">
-		<h1 class="app_title">Търсачи на знания</h1>	    
+		<a href="/" th:href="@{/}" style="cursor:pointer;text-decoration: none;"><h1 class="app_title">Търсачи на знания</h1></a>	    
 		<div class="jumbotron" style="background-color: transparent;">
 			<center>
 			<div style="color:white;" th:include="${view}"></div>

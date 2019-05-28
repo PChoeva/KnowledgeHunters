@@ -6,7 +6,10 @@
 	<head th:include="fragments/head" th:with="pageTitle='Knowledge Hunters'"></head>
 	<body class="user-bg">
 		<header th:include="fragments/header"></header>
-		<div class="container-fluid h-100" style="float: right;" th:include="${view}"></div>
+		<div class="container-fluid h-100" style="float: right;">
+			<a href="/home" th:href="@{/home}" style="cursor:pointer;text-decoration: none;"><h1 class="app_title logged-title">Търсачи на знания</h1></a>	
+			<div th:replace="${view}"></div>
+		</div>
 		<footer th:include="fragments/footer"></footer>
 		<span th:include="fragments/scripts-bundle"></span>
 	</body>
