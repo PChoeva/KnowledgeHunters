@@ -247,6 +247,26 @@ System.out.println("---------in questionIndex controller");
 		return "base-layout";
 	}
 	
+	@GetMapping("/teachers-for-approval")
+	public String teachersForApproval(Model model) {
+
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN)))) {
+			return "base-layout";
+		}
+
+		List<Person> teachersForApproval = new ArrayList<Person>();
+		for (Person person : personService.getAllPeople()) {
+			if(!person.getIsApproved()) {
+				teachersForApproval.add(person);
+			}
+		}
+		//personService.getAllPeople().forEach(person -> person.getIsApproved().FALSE? teachersForApproval.add(person): null);
+		model.addAttribute("view", "user/teachers-for-approval");
+		model.addAttribute("teachers", teachersForApproval);
+		return "base-layout";
+	}
+	
 	@GetMapping("/gain-knowledge")
 	public String gainKnowledge(Model model) {
 		

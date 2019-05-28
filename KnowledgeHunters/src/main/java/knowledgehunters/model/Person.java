@@ -1,11 +1,14 @@
 package knowledgehunters.model;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.Type;
 
 @Entity
 public class Person {
@@ -19,17 +22,30 @@ public class Person {
 	private School school;
 	private String displayName;
 	private String email;
+	@Column(name = "is_approved", nullable = false)
+	@Type(type = "org.hibernate.type.NumericBooleanType")
+	private boolean isApproved=true;
 	
 	public Person() {
 		
 	}
 
+	public Person(int id, User user, School school, String displayName, String email, Boolean isApproved) {
+		this.id = id;
+		this.user = user;
+		this.school = school;
+		this.displayName = displayName;
+		this.email = email;
+		this.isApproved = isApproved;
+	}
+	
 	public Person(int id, User user, School school, String displayName, String email) {
 		this.id = id;
 		this.user = user;
 		this.school = school;
 		this.displayName = displayName;
 		this.email = email;
+		this.isApproved = true;
 	}
 
 	public int getId() {
@@ -72,6 +88,14 @@ public class Person {
 		this.email = email;
 	}
 	
+	public Boolean getIsApproved() {
+		return isApproved;
+	}
+
+	public void setIsApproved(Boolean approved) {
+		this.isApproved = approved;
+	}
+
 	public Boolean isAdmin() {
 		return this.getUser().getRole().getName().equals("Admin") ? true : false;
 	}

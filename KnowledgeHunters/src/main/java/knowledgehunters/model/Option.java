@@ -1,10 +1,13 @@
 package knowledgehunters.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.Type;
 
 @Entity
 public class Option {
@@ -17,6 +20,8 @@ public class Option {
 	private Question question;
 	
 	private String description;
+	@Column(name = "is_corrrect", nullable = false)
+	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean isCorrect;
 	private int position;
 	

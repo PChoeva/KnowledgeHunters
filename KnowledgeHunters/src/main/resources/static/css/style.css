@@ -369,3 +369,16 @@ select {
 	font-size:28px !important;
 	color: red;
 }
+
+.fa-check {
+	color: green;
+}
+
+.fa-ban {
+	color: red;
+}
+
+a:hover {
+	text-decoration: none !important;
+	color: transparent !important;
+}

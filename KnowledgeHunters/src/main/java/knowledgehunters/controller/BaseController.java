@@ -52,8 +52,11 @@ public class BaseController {
 
 	        System.out.println("DBUser:" + user.getUsername());
 			System.out.println("DBPass:" + user.getPassword());
+
+			System.out.println("Is Approved? " );
+			// System.out.println("Is Approved: " + personService.findPersonByUserID(userService.findUser(username).getId()).getIsApproved());
 			
-			if (user.getUsername().equals(username) && user.getPassword().equals(password)) 
+			if (user.getUsername().equals(username) && user.getPassword().equals(password) && personService.findPersonByUserID(userService.findUser(username).getId()).getIsApproved()) 
 			{
 				System.out.println("in if for users");
 				session.setAttribute("sessionUserID", user.getId());
@@ -117,7 +120,7 @@ public class BaseController {
 		System.out.println("isTeacher: " + isTeacher);
 		
 		userService.addUser(new User(0, username, password, new Role(3,null)));
-		personService.addPerson(new Person(0,userService.findUser(username), new School(school,null, null), displayName, email));
+		personService.addPerson(new Person(0,userService.findUser(username), new School(school,null, null), displayName, email, !isTeacher));
 		response.sendRedirect("login"); 
 	}
 	
