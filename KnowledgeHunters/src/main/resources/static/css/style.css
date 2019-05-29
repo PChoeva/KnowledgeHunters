@@ -358,7 +358,7 @@ select {
 /* end profile buttons*/
 
 
-.fas {
+.fas, .far {
 	font-size:24px;
 	margin:4px;
 }
@@ -378,7 +378,23 @@ select {
 	color: red;
 }
 
+.fa-eye {
+	color: #824723;
+}
+
 a:hover {
 	text-decoration: none !important;
 	color: transparent !important;
+}
+
+.index-a {
+	color: #000 !important;	
+}
+
+.index-a:hover {
+	color: #824723 !important;
+}
+
+.label-span {
+	font-size: 20px;
 }

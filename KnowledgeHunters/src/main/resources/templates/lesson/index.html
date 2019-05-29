@@ -23,7 +23,9 @@
 		  </thead>
 		  <tbody>
 		    <tr th:each="lesson: ${lessons}">
-			    <td scope="row" th:text="${lesson.title}" />
+			    <td scope="row">
+					<a class="index-a" th:href="@{'/lessons/view/' + ${lesson.id}}" th:text="${lesson.title}"></a>    
+				</td>
 			    <td th:text="${lesson.topic.name}" />
 			    <td th:text="${lesson.topic.subject.name}" />
 			    <td th:text="${lesson.author.displayName}" />
@@ -33,6 +35,9 @@
 			    	</a>
 			    	<a th:href="@{'/lessons/delete/' + ${lesson.id}}">
 			    		<i class="fas fa-times"></i>
+			    	</a>
+			    	<a th:href="@{'/lessons/view/' + ${lesson.id}}">
+			    		<i class="far fa-eye"></i>
 			    	</a>
 			    </td>
 			</tr>

@@ -161,6 +161,23 @@ public class MainController {
 		return "base-layout";
 	}
 	
+	@GetMapping("/lessons/view/{id}")
+	public String lessonView(HttpSession session, Model model, @PathVariable int id) {
+		
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
+			return "base-layout";
+		}
+		
+		lessonService.getLesson(id).ifPresent(lesson -> model.addAttribute("lesson", lesson));
+		lessonService.getLesson(id).ifPresent(lesson -> System.out.println("View lesson: " + lesson.getTitle()));
+		
+		model.addAttribute("sectionTitle", "Урок");		
+		model.addAttribute("view", "lesson/view");
+		return "base-layout";
+	}
+	
+	
 	@GetMapping("/questions/index")
 	public String questionIndex(HttpSession session, Model model) {
 System.out.println("---------in questionIndex controller");
@@ -323,7 +340,8 @@ System.out.println("---------in questionIndex controller");
 	public Boolean isLogged(Model model) {
 		if (personService.getSessionPerson() == null) {
 			model.addAttribute("view", "/error");
-			model.addAttribute("errorMsg", "403 - Трябва да се регистрирате за тази страница!");
+			model.addAttribute("errorCode", "403");
+			model.addAttribute("errorMsg", "Трябва да се регистрирате за тази страница!");
 			return true;
 		}
 		return false;
@@ -343,7 +361,8 @@ System.out.println("---------in questionIndex controller");
 		
 		if (!hasPermission) {
 			model.addAttribute("view", "/error");
-			model.addAttribute("errorMsg", "403 - Нямате права за тази страница!");
+			model.addAttribute("errorCode", "403");
+			model.addAttribute("errorMsg", "Нямате права за тази страница!");
 			// replace with setView ??????
 		} 
 		return hasPermission;
@@ -351,6 +370,7 @@ System.out.println("---------in questionIndex controller");
 		
 	public void setView(Model model) {
 		model.addAttribute("view", "/error");
-		model.addAttribute("errorMsg", "403 - Нямате права за тази страница!");
+		model.addAttribute("errorCode", "403");
+		model.addAttribute("errorMsg", "Нямате права за тази страница!");
 	}
 }
