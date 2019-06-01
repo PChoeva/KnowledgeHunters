@@ -219,7 +219,7 @@ System.out.println("---------in questionIndex controller");
 		types.forEach(t -> System.out.println("Type: " + t));
 		
 		
-		
+		model.addAttribute("currPerson", personService.getSessionPerson());
 		model.addAttribute("options",optionService.getAllOptionsByQuestionId(id));
 		optionService.getAllOptionsByQuestionId(id).forEach(o -> System.out.println("Option is true?: " + o.isCorrect()));
 		
@@ -246,6 +246,7 @@ System.out.println("---------in questionIndex controller");
 		model.addAttribute("types", types);
 		types.forEach(t -> System.out.println("Type: " + t));
 		
+		model.addAttribute("currPerson", personService.getSessionPerson());
 		model.addAttribute("view", "question/form");
 		return "base-layout";
 	}

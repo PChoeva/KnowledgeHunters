@@ -11,6 +11,7 @@
 			<div class="form-group row">
 	        	<input type="text" class="form-control col-12" name="title" id="title" autofocus="autofocus" placeholder="Въпрос" th:value="${question != null} ? ${question?.description} : ''">	        	
 	        	<input type="hidden" class="form-control" name="author" id="author" placeholder="Автор" th:value="${question?.author?.displayName}">
+	        	<input type="hidden" name="authorID" th:value="${currPerson?.id}">
 	        </div>
 	        <div class="form-group row">
 	        	<select class="form-control col-md-4 col-sm-12" name="topic" id="topic" style="width:100%; height: 50px;">
@@ -30,34 +31,37 @@
 	        	
 	        	<!-- question-multiple-choice -->
 	        	<div class="col-5 question-multiple-choice question-filled" th:each="option : ${options}">
-	        		<input type="radio" name="radio-multiple-choice-filled" th:checked="${option?.correct}" style="width:20px; height:20px;float:left;"/>
-	        		<!-- <input type="radio" name="isChecked" th:if="${option?.correct} == false" style="width:20px; height:20px;float:left;"/> -->
-	        		<input type="text" class="form-control" name="option" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">	
+	        		<input type="radio" name="radio-multiple-choice-filled" th:checked="${option?.correct}" th:value = "${option?.id}" style="width:20px; height:20px;float:left;"/>
+	        		<!-- <input type="text" class="form-control" th:name="${'multiple-option-filled['+option?.id+']'}" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;"> -->	
+	        		<input type="text" class="form-control" name="multiple-option-filled[]" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">
+	        		<input type="hidden" name="multiple-index-filled[]" th:value="${option?.id}">
 	        	</div>
 	        	<div class="col-5 question-multiple-choice question-empty" th:each="iterator:${#numbers.sequence(0,3)}">
-	        		<input type="radio" name="radio-multiple-choice-empty" style="width:20px; height:20px;float:left;"/>
-	        		<input type="text" class="form-control" name="option" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">	
+	        		<input type="radio" name="radio-multiple-choice-empty" th:value = "${iterator}" style="width:20px; height:20px;float:left;"/>
+	        		<input type="text" class="form-control" name="multiple-option-empty[]" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">	
 	        	</div>
 	        	
 	        	<!-- question-true-false -->
 	        	<div class="col-5 question-true-false question-filled" th:each="option : ${options}">
-	        		<input type="radio" name="radio-true-false-filled" th:checked="${option?.correct}" style="width:20px; height:20px;float:left;"/>
-	        		<input type="text" class="form-control" name="option" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">	
+	        		<input type="radio" name="radio-true-false-filled" th:checked="${option?.correct}" th:value = "${option?.id}" style="width:20px; height:20px;float:left;"/>
+	        		<input type="text" class="form-control" name="true-false-option-filled[]" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">
+	        		<input type="hidden" name="true-false-index-filled[]" th:value="${option?.id}">	
 	        	</div>
 	        	<div class="col-5 question-true-false question-empty" th:each="iterator:${#numbers.sequence(0,1)}">
-	        		<input type="radio" name="radio-true-false-empty" style="width:20px; height:20px;float:left;"/>
-	        		<input type="text" class="form-control" name="option" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">
+	        		<input type="radio" name="radio-true-false-empty" th:value = "${iterator}" style="width:20px; height:20px;float:left;"/>
+	        		<input type="text" class="form-control" name="true-false-option-empty[]" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">
 	        	</div>
 	        	
 	        	
 	        	<!-- question-open -->
 	        	<div class="col-5 question-open question-filled" th:each="option : ${options}">
-	        		<input type="radio" name="radio-open-filled" th:checked="${option?.correct}" style="width:20px; height:20px;float:left;"/>
-	        		<input type="text" class="form-control" name="option" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">	
+	        		<input type="radio" name="radio-open-filled" th:checked="${option?.correct}" th:value = "${option?.id}" style="width:20px; height:20px;float:left; display:none;"/>
+	        		<input type="text" class="form-control" name="open-option-filled[]" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">
+	        		<input type="hidden" name="open-index-filled[]" th:value="${option?.id}">
 	        	</div>
 	        	<div class="col-5 question-open question-empty">
-	        		<input type="radio" name="radio-open-empty" checked style="width:20px; height:20px;float:left;"/>
-	        		<input type="text" class="form-control" name="option" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">
+	        		<input type="radio" name="radio-open-empty" checked th:value = "0" style="width:20px; height:20px;float:left; display:none;"/>
+	        		<input type="text" class="form-control" name="open-option-empty[]" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">
 	        	</div>
 	        </div>
 	        <div class="form-group row">

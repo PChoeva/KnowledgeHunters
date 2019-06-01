@@ -398,3 +398,10 @@ a:hover {
 .label-span {
 	font-size: 20px;
 }
+
+.hide-thead th{
+	padding: 0 12px !important;
+	margin:0 !important;
+	line-height:0 !important;
+	height:0 !important;
+}

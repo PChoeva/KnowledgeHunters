@@ -53,6 +53,11 @@ public class QuestionService {
 		questionsByAuthor.forEach(q -> System.out.println("getAllQuestionsByAuthor -> Question: " + q));
 		return questionsByAuthor;
 	}
+		
+	public Question saveQuestion(Question question) {
+	    return questionRepository.save(question);
+	}
+	
 }
 
 

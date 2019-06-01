@@ -11,36 +11,72 @@
 			
 	 	<br/>
 	 	<h4 th:if="${#lists.isEmpty(questions)}"><center>Няма въпроси</center></h4>
-		<table class="table" th:if="${not #lists.isEmpty(questions)}">
-		  <thead class="thead-light">
-		    <tr>
-		      <th scope="col">Въпрос</th>
-		      <th scope="col">Сложност</th>
-		      <th scope="col">Тип</th>
-			  <th scope="col">Тема</th>
-			  <th scope="col">Предмет</th>
-		      <th scope="col">Автор</th>
-		      <th scope="col">Действия</th>
-		    </tr>
-		  </thead>
-		  <tbody>
-		    <tr th:each="question: ${questions}">
-			    <td scope="row" th:text="${question.description}" />
-			    <td th:text="${question.difficulty}" />
-			    <td th:text="${question.type}" />
-			    <td th:text="${question.topic.name}" />
-			    <td th:text="${question.topic.subject.name}" />
-			    <td th:text="${question.author.displayName}" />
-			    <td>
-			    	<a th:href="@{'/questions/edit/' + ${question.id}}">
-			    		<i class="fas fa-pencil-alt"></i>
-			    	</a>
-			    	<a th:href="@{'/questions/delete/' + ${question.id}}">
-			    		<i class="fas fa-times"></i>
-			    	</a>
-			    </td>
-			</tr>
-		  </tbody>
-		</table>
+		<div style="overflow-y: hidden; padding-right: 17px; height: 50px; ">
+		 	<table class="table" th:if="${not #lists.isEmpty(questions)}">
+			  <thead class="thead-light">
+			    <tr>
+			      <th scope="col">Въпрос</th>
+			      <th scope="col">Сложност</th>
+			      <th scope="col">Тип</th>
+				  <th scope="col">Тема</th>
+				  <th scope="col">Предмет</th>
+			      <th scope="col">Автор</th>
+			      <th scope="col">Действия</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr th:each="question: ${questions}">
+				    <td scope="row" th:text="${question.description}" />
+				    <td th:text="${question.difficulty}" />
+				    <td th:text="${question.type}" />
+				    <td th:text="${question.topic.name}" />
+				    <td th:text="${question.topic.subject.name}" />
+				    <td th:text="${question.author.displayName}" />
+				    <td>
+				    	<a th:href="@{'/questions/edit/' + ${question.id}}">
+				    		<i class="fas fa-pencil-alt"></i>
+				    	</a>
+				    	<a th:href="@{'/questions/delete/' + ${question.id}}">
+				    		<i class="fas fa-times"></i>
+				    	</a>
+				    </td>
+				</tr>
+			  </tbody>
+			</table>
+	 	</div>
+		<div style="overflow-y: scroll; padding-top: -50px; height: 500px; ">
+		 	<table class="table" th:if="${not #lists.isEmpty(questions)}">
+			  <thead class="thead-light hide-thead">
+			    <tr>
+			      <th scope="col">Въпрос</th>
+			      <th scope="col">Сложност</th>
+			      <th scope="col">Тип</th>
+				  <th scope="col">Тема</th>
+				  <th scope="col">Предмет</th>
+			      <th scope="col">Автор</th>
+			      <th scope="col">Действия</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr th:each="question: ${questions}">
+				    <td scope="row" th:text="${question.description}" />
+				    <td th:text="${question.difficulty}" />
+				    <td th:text="${question.type}" />
+				    <td th:text="${question.topic.name}" />
+				    <td th:text="${question.topic.subject.name}" />
+				    <td th:text="${question.author.displayName}" />
+				    <td>
+				    	<a th:href="@{'/questions/edit/' + ${question.id}}">
+				    		<i class="fas fa-pencil-alt"></i>
+				    	</a>
+				    	<a th:href="@{'/questions/delete/' + ${question.id}}">
+				    		<i class="fas fa-times"></i>
+				    	</a>
+				    </td>
+				</tr>
+			  </tbody>
+			</table>
+	 	</div>
+				
 	</center>
 </div>
