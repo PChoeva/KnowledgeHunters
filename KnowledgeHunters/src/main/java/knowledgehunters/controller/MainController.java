@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import knowledgehunters.enums.QuestionDifficulty;
 import knowledgehunters.enums.QuestionType;
 import knowledgehunters.model.Lesson;
+import knowledgehunters.model.Option;
 import knowledgehunters.model.Person;
 import knowledgehunters.model.School;
 import knowledgehunters.service.LessonService;
@@ -249,6 +250,25 @@ System.out.println("---------in questionIndex controller");
 		model.addAttribute("currPerson", personService.getSessionPerson());
 		model.addAttribute("view", "question/form");
 		return "base-layout";
+	}
+	
+	@GetMapping("/questions/delete/{id}")
+	public String questionDelete(Model model, @PathVariable int id) {
+
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
+			return "base-layout";
+		}
+
+		System.out.println("questionDelete->id: " + id);
+		
+		for (Option option : optionService.getAllOptionsByQuestionId(id)) {
+			System.out.println("Delete option: " + option.getDescription());
+			optionService.deleteOption(option.getId());
+		}
+		questionService.deleteQuestion(id);
+		
+		return "redirect:/questions/index";
 	}
 	
 	@GetMapping("/userslist")
