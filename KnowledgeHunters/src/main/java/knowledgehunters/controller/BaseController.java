@@ -137,29 +137,12 @@ public class BaseController {
 		response.sendRedirect("login"); 
 	}
 	
-
-	@GetMapping("/logout")
-	  public void logout(HttpSession session, HttpServletResponse response) throws IOException {
-	    session.invalidate();
-	    System.out.println("Logout controller post");
-	    response.sendRedirect("login");
-	}
-	
 	@PostMapping("/lessons/index")
 	  public void LessonsIndex(HttpSession session, HttpServletResponse response, @RequestParam("id") String lessonID, @RequestParam("title") String title, @RequestParam("topic") String topicID, @RequestParam("description") String description) throws IOException {
 		Person person = personService.getSessionPerson();
 	    System.out.println("REST Lessons index controller post");
 	    
 	    lessonService.addLesson(new Lesson(lessonID.isEmpty()?0:Integer.parseInt(lessonID), title, new Topic(Integer.parseInt(topicID), null, null),person, description));
-	    response.sendRedirect("/lessons/index");
-	}
-	
-	@GetMapping("/lessons/delete/{id}")
-	  public void LessonsDelete(HttpSession session, HttpServletResponse response, @PathVariable int id) throws IOException {
-		
-	    System.out.println("REST Lessons delete controller post");
-	    
-	    lessonService.deleteLesson(id);
 	    response.sendRedirect("/lessons/index");
 	}
 	

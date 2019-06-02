@@ -1,10 +1,12 @@
 package knowledgehunters.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +70,14 @@ public class MainController {
 	public String login(Model model) {
 		model.addAttribute("view", "user/login");
 		return "start-layout";
+	}
+	
+	@GetMapping("/logout")
+	  public void logout(HttpSession session, HttpServletResponse response) throws IOException {
+	    session.invalidate();
+	    personService.deleteSessionPerson();
+	    System.out.println("Logout controller post");
+	    response.sendRedirect("login");
 	}
 	
 	/*NOT SURE IF IT WORKS*/
@@ -178,6 +188,14 @@ public class MainController {
 		return "base-layout";
 	}
 	
+	@GetMapping("/lessons/delete/{id}")
+	  public void LessonsDelete(HttpSession session, HttpServletResponse response, @PathVariable int id) throws IOException {
+		
+	    System.out.println("REST Lessons delete controller post");
+	    
+	    lessonService.deleteLesson(id);
+	    response.sendRedirect("/lessons/index");
+	}	
 	
 	@GetMapping("/questions/index")
 	public String questionIndex(HttpSession session, Model model) {

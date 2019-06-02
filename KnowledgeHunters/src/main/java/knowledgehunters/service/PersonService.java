@@ -60,6 +60,10 @@ public class PersonService {
 		return this.sessionPerson;
 	}
 	
+	public Person deleteSessionPerson() {
+		return this.sessionPerson = null;
+	}
+	
 	
 }
 
