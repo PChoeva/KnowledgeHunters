@@ -22,7 +22,7 @@
 			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}" href="/lessons/index" th:href="@{/lessons/index}"> <li>Моите уроци</li></a>
 			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}" href="/questions/index" th:href="@{/questions/index}"> <li>Моите въпроси</li></a>
 			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}" href="/userslist" th:href="@{/userslist}"> <li>Списък потребители</li></a>
-			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}" href="/teachers-for-approval" th:href="@{/teachers-for-approval}"> <li>Учители за одобрение</li></a>
+			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}" href="/teachers-for-approval" th:href="@{/teachers-for-approval}"> <li>Учители за одобрение</li></a>
 			<br/><br/><br/><br/>
 			<a href="/logout"> <li>Излез</li></a>
 		</ul>

@@ -21,17 +21,13 @@
 			</div>
 
  			<br/>			
-			<div class="col-12" th:text="${lesson?.description}" style="border: 1px solid #555; border-radius:10px; min-height:100px !important; max-height:400px !important; text-align: justify;"></div>
-			<!-- 			
+			<div class="col-12" th:text="${lesson?.description}" style="border: 1px solid #555; border-radius:10px; min-height:100px !important; max-height:400px !important; text-align: justify;"></div>			
 		    <br/>
 		    <div class="row align-items-end">
 			  <div class="col-auto mr-auto">
-			  	<a href="/lessons/index" th:href="@{/lessons/index}">
-			  		<input type="button" value="Назад" class="btn close_btn" style="width:150px;">
-			  	</a>
+			  		<input type="button" onclick="window.history.go(-1);" value="Назад" class="btn close_btn" style="width:150px;">
 			  </div>		
 			</div>
-			 -->
 		</div>  
 	</div>
 </div>

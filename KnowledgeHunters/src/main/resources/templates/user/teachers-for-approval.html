@@ -19,7 +19,7 @@
 		    <td th:text="${teacher.displayName}" />
 		    <td th:text="${teacher.email}" />
 		    <td th:text="${teacher.school.name}" />
-		     <td>
+		    <td align="center">
 		    	<a th:href="@{'/teachers-for-approval/approve/' + ${teacher.id}}">
 		    		<i class="fas fa-check"></i>
 		    	</a>

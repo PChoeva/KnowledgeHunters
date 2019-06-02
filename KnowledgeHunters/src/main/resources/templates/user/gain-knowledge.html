@@ -38,6 +38,7 @@
 		  <th scope="col">Тема</th>
 		  <th scope="col">Предмет</th>
 	      <th scope="col">Автор</th>
+	       <th scope="col">Действия</th>
 	    </tr>
 	  </thead>
 	  <tbody>
@@ -48,6 +49,11 @@
 		    <td th:text="${lesson.topic.name}" />
 		    <td th:text="${lesson.topic.subject.name}" />
 		    <td th:text="${lesson.author.displayName}" />
+			<td align="center">
+				<a th:href="@{'/lessons/view/' + ${lesson.id}}">
+					<i class="far fa-eye"></i>
+				</a>
+			</td>
 		</tr>
 	  </tbody>
 	</table>
