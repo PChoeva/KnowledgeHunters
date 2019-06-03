@@ -52,6 +52,18 @@ public class LessonService {
 		lessonsByAuthor.forEach(l -> System.out.println("getAllLessonsByAuthor -> Lesson: " + l));
 		return lessonsByAuthor;
 	}
+	
+	public List<Lesson> getAllLessonsBySubjectId(int subjectId){
+		List<Lesson> lessonsBySubject = new ArrayList<>();
+		System.out.println("getAllLessonsByAuthor: " + lessonRepository.findAll());
+		for (Lesson lesson: lessonRepository.findAll()) {
+			if (lesson.getTopic().getSubject().getId() == subjectId) {
+				lessonsBySubject.add(lesson);
+			}
+		}
+		lessonsBySubject.forEach(l -> System.out.println("getAllLessonsBySubjectId -> Lesson: " + l));
+		return lessonsBySubject;
+	}
 }
 
 

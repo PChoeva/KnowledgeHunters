@@ -3,7 +3,7 @@
 		<div id="mixedSlider">
 		<div class="MS-content">
 			<div class="item" th:each="subject: ${subjects}">
-				<a th:href="@{'/subjects/' + ${subject.id}}">
+				<a th:href="@{'/lessons/list/' + ${subject.id}}">
 					<div class="imgTitle">
 				
 					<h2 class="blogTitle" th:text="${subject.name}">Subjects</h2>

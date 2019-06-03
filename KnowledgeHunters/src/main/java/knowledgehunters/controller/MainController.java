@@ -134,6 +134,22 @@ public class MainController {
 		return "base-layout";
 	}
 	
+	@GetMapping("/lessons/list/{id}")
+	public String lessonList(HttpSession session, Model model, @PathVariable int id) {
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER, STUDENT)))) {
+			return "base-layout";
+		}
+
+		
+		model.addAttribute("lessons", lessonService.getAllLessonsBySubjectId(id));
+		lessonService.getAllLessonsBySubjectId(id).forEach(l -> System.out.println("Lesson:" + l));
+		
+		model.addAttribute("subject", subjectService.getSubject(id).get().getName());
+		model.addAttribute("view", "lesson/list");
+		return "base-layout";
+	}
+	
 	@GetMapping("/lessons/add")
 	public String lessonAdd(HttpSession session, Model model) {
 		
