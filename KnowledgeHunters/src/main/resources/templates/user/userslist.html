@@ -2,22 +2,43 @@
 	<center>
 		<h2>Списък с потребители</h2>
 		<br/><br/>
-		<h4 th:if="${#lists.isEmpty(users)}"><center>Няма потребители</center></h4>
- 	<table class="table" th:if="${not #lists.isEmpty(users)}">
-	  <thead class="thead-light">
-	    <tr>
-	      <th scope="col">#</th>
-	      <th scope="col">Потребител</th>
-	      <th scope="col">Роля</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr th:each="user: ${users}">
-		    <td scope="row" th:text="${user.id}" />
-		    <td th:text="${user.username}" />
-		    <td th:text="${user.role.name}" />
-		</tr>
-	  </tbody>
-	</table>
+		<h4 th:if="${#lists.isEmpty(people)}"><center>Няма потребители</center></h4>
+		
+		<table th:if="${not #lists.isEmpty(people)}" class="table" cellspacing="0" cellpadding="0" border="0" width="325" style="border-top: none;">
+		  <tr>
+		    <td style="padding: 0; padding-bottom:20px;">
+		       <table class="table" cellspacing="0" cellpadding="1" width="100%" style="margin-bottom: 0rem !important; background-color: transparent; border:0; " >
+		         <thead class="thead-light" style="text-align:center;">
+				    <tr>
+				      <th scope="col" width="20%">Потребителско име</th>
+				      <th scope="col" width="20%">Екранно име</th>
+				      <th scope="col" width="25%">Имейл</th>
+				      <th scope="col" width="20%">Училище</th>
+				      <th scope="col" width="15%">Роля</th>
+				    </tr>
+				  </thead>
+		       </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td style="padding: 0;">
+		       <div style="width:100%; height:480px; overflow:auto;">
+		         <table class="table" cellspacing="0" cellpadding="1" width="100%"  style="border:0; margin-bottom: 0;">
+		           <tbody>
+				     <tr th:each="person: ${people}" style="background-color:rgba(220, 220, 220, 0.8);">
+					    <td scope="row" width="20%" >
+							<a class="index-a" th:href="@{'/person/view/' + ${person.id}}" th:text="${person.user.username}"></a>    
+						</td>
+					    <td width="20%" th:text="${person.displayName}" />
+					    <td width="25%" th:text="${person.email}" />
+					    <td width="20%" th:text="${person.school.name + ' - ' + person.school.city.name}" />
+					    <td width="15%" th:text="${person.user.role.getRoleValue()}" style="text-align:center;"/>
+					 </tr>
+				  </tbody>
+		         </table>  
+		       </div>
+		    </td>
+		  </tr>
+		</table>
 	</center>
 </div>

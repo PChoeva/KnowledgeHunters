@@ -35,5 +35,15 @@ public class Role {
 		this.name = name;
 	}
 	
+	public String getRoleValue() {
+		String roleValue = null;
+		switch(this.name) {
+			case "Admin": roleValue = "Администратор"; break;
+			case "Teacher": roleValue = "Учител"; break;
+			case "Student": roleValue = "Ученик"; break;
+		}
+		return roleValue;
+	}
+	
 	
 }

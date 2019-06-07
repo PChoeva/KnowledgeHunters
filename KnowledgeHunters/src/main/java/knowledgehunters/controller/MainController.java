@@ -314,7 +314,7 @@ System.out.println("---------in questionIndex controller");
 		}
 
 		model.addAttribute("view", "user/userslist");
-		model.addAttribute("users", userService.getAllUsers());
+		model.addAttribute("people", personService.getAllPeople());
 		return "base-layout";
 	}
 	

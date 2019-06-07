@@ -5,31 +5,46 @@
 		</div>
 	 	<br/>
 	 	<h4 th:if="${#lists.isEmpty(lessons)}"><center>Няма уроци</center></h4>
-		<table class="table" th:if="${not #lists.isEmpty(lessons)}">
-		  <thead class="thead-light">
-		    <tr>
-		      <th scope="col">Урок</th>
-			  <th scope="col">Тема</th>
-			  <th scope="col">Предмет</th>
-		      <th scope="col">Автор</th>
-		      <th scope="col">Действия</th>
-		    </tr>
-		  </thead>
-		  <tbody>
-		    <tr th:each="lesson: ${lessons}">
-			    <td scope="row">
-					<a class="index-a" th:href="@{'/lessons/view/' + ${lesson.id}}" th:text="${lesson.title}"></a>    
-				</td>
-			    <td th:text="${lesson.topic.name}" />
-			    <td th:text="${lesson.topic.subject.name}" />
-			    <td th:text="${lesson.author.displayName}" />
-			    <td align="center">
-			    	<a th:href="@{'/lessons/view/' + ${lesson.id}}">
-			    		<i class="far fa-eye"></i>
-			    	</a>
-			    </td>
-			</tr>
-		  </tbody>
+	 	<table th:if="${not #lists.isEmpty(lessons)}" class="table" cellspacing="0" cellpadding="0" border="0" width="325" style="border-top: none;">
+		  <tr>
+		    <td style="padding: 0; padding-bottom:20px;">
+		       <table class="table" cellspacing="0" cellpadding="1" width="100%" style="margin-bottom: 0rem !important; background-color: transparent; border:0; " >
+		         <thead class="thead-light" style="text-align:center;">
+				    <tr>
+				      <th scope="col" width="40%">Урок</th>
+				      <th scope="col" width="20%">Тема</th>
+				      <th scope="col" width="15%">Предмет</th>
+				      <th scope="col" width="15%">Автор</th>
+				      <th scope="col" width="10%">Действия</th>
+				    </tr>
+				  </thead>
+		       </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td style="padding: 0;">
+		       <div style="width:100%; height:460px; overflow:auto;">
+		         <table class="table" cellspacing="0" cellpadding="1" width="100%"  style="border:0; margin-bottom: 0;">
+		           <tbody>
+				     <tr th:each="lesson: ${lessons}" style="background-color:rgba(220, 220, 220, 0.8);">
+					    <td scope="row" width="35%" >
+							<a class="index-a" th:href="@{'/lessons/view/' + ${lesson.id}}" th:text="${lesson.title}"></a>    
+						</td>
+					    
+					    <td  width="20%" th:text="${lesson.topic.name}" />
+					    <td  width="15%" th:text="${lesson.topic.subject.name}" />
+					    <td  width="15%" th:text="${lesson.author.displayName}" />
+					    <td  width="10%" align="center">
+					    	<a th:href="@{'/lessons/view/' + ${lesson.id}}">
+					    		<i class="far fa-eye"></i>
+					    	</a>
+					    </td>
+					 </tr>
+				  </tbody>
+		         </table>  
+		       </div>
+		    </td>
+		  </tr>
 		</table>
 		<div class="row align-items-end">
 		  <div class="col-auto mr-auto">

@@ -3,32 +3,49 @@
 		<h2>Списък с учители, чакащи одобрение</h2>
 		<br/><br/>
 		<h4 th:if="${#lists.isEmpty(teachers)}"><center>Няма чакащи учители</center></h4>
- 	<table class="table" th:if="${not #lists.isEmpty(teachers)}">
-	  <thead class="thead-light">
-	    <tr>
-	      <th scope="col">Потребителско име</th>
-	      <th scope="col">Екранно име</th>
-	      <th scope="col">Имейл</th>
-	      <th scope="col">Училище</th>
-	       <th scope="col">Действия</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr th:each="teacher: ${teachers}">
-		    <td th:text="${teacher.user.username}" />
-		    <td th:text="${teacher.displayName}" />
-		    <td th:text="${teacher.email}" />
-		    <td th:text="${teacher.school.name}" />
-		    <td align="center">
-		    	<a th:href="@{'/teachers-for-approval/approve/' + ${teacher.id}}">
-		    		<i class="fas fa-check"></i>
-		    	</a>
-		    		<a th:href="@{'/teachers-for-approval/deny/' + ${teacher.id}}">
-		    		<i class="fas fa-ban"></i>
-		    	</a>
+		<table th:if="${not #lists.isEmpty(teachers)}" class="table" cellspacing="0" cellpadding="0" border="0" width="325" style="border-top: none;">
+		  <tr>
+		    <td style="padding: 0; padding-bottom:20px;">
+		       <table class="table" cellspacing="0" cellpadding="1" width="100%" style="margin-bottom: 0rem !important; background-color: transparent; border:0; " >
+		         <thead class="thead-light" style="text-align:center;">
+				    <tr>
+				      <th scope="col" width="20%">Потребителско име</th>
+				      <th scope="col" width="20%">Екранно име</th>
+				      <th scope="col" width="30%">Имейл</th>
+				      <th scope="col" width="20%">Училище</th>
+				      <th scope="col" width="10%">Действия</th>
+				    </tr>
+				  </thead>
+		       </table>
 		    </td>
-		</tr>
-	  </tbody>
-	</table>
+		  </tr>
+		  <tr>
+		    <td style="padding: 0;">
+		       <div style="width:100%; height:460px; overflow:auto;">
+		         <table class="table" cellspacing="0" cellpadding="1" width="100%"  style="border:0; margin-bottom: 0;">
+		           <tbody>
+				     <tr  th:each="teacher: ${teachers}" style="background-color:rgba(220, 220, 220, 0.8);">
+					    <td scope="row" width="20%" >
+							<a class="index-a" th:href="@{'/person/view/' + ${teacher.id}}" th:text="${teacher.user.username}"></a>    
+						</td>
+					    
+					    <td  width="20%" th:text="${teacher.displayName}" />
+					    <td  width="30%" th:text="${teacher.email}" />
+					    <td  width="20%" th:text="${teacher.school.name + ' - ' + teacher.school.city.name}" />
+					    <td  width="10%" align="center">
+					    	<a th:href="@{'/teachers-for-approval/approve/' + ${teacher.id}}">
+					    		<i class="fas fa-check"></i>
+					    	</a>
+					    		<a th:href="@{'/teachers-for-approval/deny/' + ${teacher.id}}">
+					    		<i class="fas fa-ban"></i>
+					    	</a>
+					    </td>
+					 </tr>
+				  </tbody>
+		         </table>  
+		       </div>
+		    </td>
+		  </tr>
+		</table>
 	</center>
 </div>

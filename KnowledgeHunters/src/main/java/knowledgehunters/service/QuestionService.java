@@ -58,6 +58,12 @@ public class QuestionService {
 	    return questionRepository.save(question);
 	}
 	
+	public Question updateAndGetQuestion(int id, Question question) {
+		
+		return questionRepository.save(question);
+	}
+	
+	
 }
 
 

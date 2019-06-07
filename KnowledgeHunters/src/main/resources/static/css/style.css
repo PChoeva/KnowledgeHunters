@@ -150,7 +150,7 @@ div.form-group {
 textarea {
 	border-bottom: 2px solid #555 !important;
 	background-color: transparent !important;
-	max-height:400px;
+	max-height:460px;
 	min-height: 100px !important;
 }
 textarea:focus {
@@ -404,4 +404,13 @@ a:hover {
 	margin:0 !important;
 	line-height:0 !important;
 	height:0 !important;
+}
+
+.save_btn:disabled {
+	background-color: #CCC !important;
+}
+
+/*===TABLE CSS===*/
+.table td, .table th{
+	border: none !important;	
 }

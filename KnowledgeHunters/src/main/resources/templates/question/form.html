@@ -4,27 +4,37 @@
 			<center><h2 th:text="${sectionTitle}">Добави/промени урок</h2></center>
 			<br/>
 		</div>
-		<form class="col-12 align-self-center" th:action="@{/questions/index}" method="post">
+		<form class="col-12 align-self-center" th:action="@{/questions/index}" method="post" style="position:absolute; top:120px; bottom:10px;">
 			<div class="form-group">
 	        	<input type="hidden" class="form-control" name="id" id="id" autofocus="autofocus" placeholder="ID" th:value="${question?.id}" readonly>
 	        </div>
 			<div class="form-group row">
-	        	<input type="text" class="form-control col-12" name="title" id="title" autofocus="autofocus" placeholder="Въпрос" th:value="${question != null} ? ${question?.description} : ''">	        	
+	        	<input type="text" class="form-control col-12" name="title" id="title" autofocus="autofocus" title="Задължително поле" placeholder="Въпрос" th:value="${question != null} ? ${question?.description} : ''">	        	
 	        	<input type="hidden" class="form-control" name="author" id="author" placeholder="Автор" th:value="${question?.author?.displayName}">
 	        	<input type="hidden" name="authorID" th:value="${currPerson?.id}">
 	        </div>
 	        <div class="form-group row">
-	        	<select class="form-control col-md-4 col-sm-12" name="topic" id="topic" style="width:100%; height: 50px;">
+	        	<select class="form-control col-md-4 col-sm-12" name="topic" title="Задължително поле" id="topic" style="width:100%; height: 50px;">
+	        		<option th:each="topic : ${topics}" th:selected="${topic.id == question?.topic?.id}" th:value="${topic.id}" th:text="${topic.name}"></option>
+	        		<!-- 
 					<option th:each="topic : ${topics}" th:if="${topic.id == question?.topic?.id}" th:value="${question?.topic?.id}" th:text="${topic.name}">...</option>
 					<option th:each="topic : ${topics}" th:if="${topic.id != question?.topic?.id}" th:value="${topic.id}" th:text="${topic.name}"></option>
+					 -->
 				</select>
-				<select class="form-control col-md-3 col-sm-12 offset-md-1" name="difficulty" id="difficulty" style="width:100%; height: 50px;">
-					<option th:each="difficulty : ${difficulties}" th:if="${difficulty == question?.difficulty}" th:value="${question?.difficulty}" th:text="${difficulty}">...</option>
-					<option th:each="difficulty : ${difficulties}" th:if="${difficulty != question?.difficulty}" th:value="${difficulty}" th:text="${difficulty}"></option>
+				<select class="form-control col-md-3 col-sm-12 offset-md-1" name="difficulty" title="Задължително поле" id="difficulty" style="width:100%; height: 50px;">
+					<option th:each="difficulty : ${difficulties}" th:selected="${difficulty == question?.difficulty}" th:value="${difficulty}" th:text="${difficulty.getValue()}"></option>
+					<!-- 
+					<option th:each="difficulty : ${difficulties}" th:if="${difficulty == question?.difficulty}" th:value="${question?.difficulty}" th:text="${difficulty.getValue()}">...</option>
+					<option th:each="difficulty : ${difficulties}" th:if="${difficulty != question?.difficulty}" th:value="${difficulty}" th:text="${difficulty.getValue()}"></option>
+					 -->
 				</select>
-				<select class="form-control col-md-3 col-sm-12 offset-md-1" name="type" id="type" style="width:100%; height: 50px;">
-					<option th:each="type : ${types}" th:if="${type == question?.type}" th:value="${question?.type}" th:text="${type}">...</option>
-					<option th:each="type : ${types}" th:if="${type != question?.type}" th:value="${type}" th:text="${type}"></option>
+				<select class="form-control col-md-3 col-sm-12 offset-md-1" name="type" title="Задължително поле" id="type" style="width:100%; height: 50px;">
+					
+					<option th:each="type : ${types}" th:selected="${type == question?.type}" th:value="${type?.name()}" th:text="${type.getValue()}">...</option>
+					<!-- 
+					<option th:each="type : ${types}" th:if="${type == question?.type}" th:value="${question?.type?.name()}" th:text="${type.getValue()}">...</option>
+					<option th:each="type : ${types}" th:if="${type != question?.type}" th:value="${type?.name()}" th:text="${type.getValue()}"></option>
+					 -->
 				</select>
 	        </div>
 	        <div class="form-group row justify-content-md-center">
@@ -33,42 +43,42 @@
 	        	<div class="col-5 question-multiple-choice question-filled" th:each="option : ${options}">
 	        		<input type="radio" name="radio-multiple-choice-filled" th:checked="${option?.correct}" th:value = "${option?.id}" style="width:20px; height:20px;float:left;"/>
 	        		<!-- <input type="text" class="form-control" th:name="${'multiple-option-filled['+option?.id+']'}" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;"> -->	
-	        		<input type="text" class="form-control" name="multiple-option-filled[]" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">
+	        		<input type="text" title="Задължително поле" class="form-control" name="multiple-option-filled[]" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">
 	        		<input type="hidden" name="multiple-index-filled[]" th:value="${option?.id}">
 	        	</div>
 	        	<div class="col-5 question-multiple-choice question-empty" th:each="iterator:${#numbers.sequence(0,3)}">
 	        		<input type="radio" name="radio-multiple-choice-empty" th:value = "${iterator}" style="width:20px; height:20px;float:left;"/>
-	        		<input type="text" class="form-control" name="multiple-option-empty[]" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">	
+	        		<input type="text" title="Задължително поле" class="form-control" name="multiple-option-empty[]" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">	
 	        	</div>
 	        	
 	        	<!-- question-true-false -->
 	        	<div class="col-5 question-true-false question-filled" th:each="option : ${options}">
 	        		<input type="radio" name="radio-true-false-filled" th:checked="${option?.correct}" th:value = "${option?.id}" style="width:20px; height:20px;float:left;"/>
-	        		<input type="text" class="form-control" name="true-false-option-filled[]" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">
+	        		<input type="text" title="Задължително поле" class="form-control" name="true-false-option-filled[]" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">
 	        		<input type="hidden" name="true-false-index-filled[]" th:value="${option?.id}">	
 	        	</div>
 	        	<div class="col-5 question-true-false question-empty" th:each="iterator:${#numbers.sequence(0,1)}">
 	        		<input type="radio" name="radio-true-false-empty" th:value = "${iterator}" style="width:20px; height:20px;float:left;"/>
-	        		<input type="text" class="form-control" name="true-false-option-empty[]" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">
+	        		<input type="text" title="Задължително поле" class="form-control" name="true-false-option-empty[]" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">
 	        	</div>
 	        	
 	        	
 	        	<!-- question-open -->
 	        	<div class="col-5 question-open question-filled" th:each="option : ${options}">
 	        		<input type="radio" name="radio-open-filled" th:checked="${option?.correct}" th:value = "${option?.id}" style="width:20px; height:20px;float:left; display:none;"/>
-	        		<input type="text" class="form-control" name="open-option-filled[]" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">
+	        		<input type="text" title="Задължително поле" class="form-control" name="open-option-filled[]" autofocus="autofocus" placeholder="Отговор" th:value="${option?.description}" style="margin: 0 20px;">
 	        		<input type="hidden" name="open-index-filled[]" th:value="${option?.id}">
 	        	</div>
 	        	<div class="col-5 question-open question-empty">
 	        		<input type="radio" name="radio-open-empty" checked th:value = "0" style="width:20px; height:20px;float:left; display:none;"/>
-	        		<input type="text" class="form-control" name="open-option-empty[]" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">
+	        		<input type="text" title="Задължително поле" class="form-control" name="open-option-empty[]" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">
 	        	</div>
 	        </div>
 	        <div class="form-group row">
 	        	<input type="text" class="form-control col-12" name="hint" id="hint" autofocus="autofocus" placeholder="Подсказка" th:value="${question != null} ? ${question?.hint} : ''">
 	        </div>
 		    <br/>
-		    <div class="row align-items-end">
+		    <div class="row align-items-end" style="position:absolute; bottom: 0; width:100%;">
 			  <div class="col-auto mr-auto">
 			  	<a href="/questions/index" th:href="@{/questions/index}">
 			  		<input type="button" value="Отказ" class="btn close_btn" style="width:150px;">
@@ -76,7 +86,7 @@
 			  </div>
 			  <div class="col-auto">
 			  	<a href="/questions/index" th:href="@{/questions/index}">
-			  		<input type="submit" value="Запази" class="btn save_btn" style="width:150px;">
+			  		<input name="save" type="submit" value="Запази" class="btn save_btn" style="width:150px;">
 			  	</a>
 			  </div>			
 			</div>
@@ -89,14 +99,47 @@ $(document).ready(function() {
 	console.log(document.getElementById("question-multiple-choice"));
     console.log(document.getElementById("question-true-false"));
     console.log(document.getElementById("question-open"));
-
-    //changeQuestionType($("#type option:selected").text());
-	
+    
+    $('form').on("change input", function() {
+    	var canSave = true;
+    	canSave &= ($("input[name='title']").val() != '');
+    	
+    	switch ($("select#type option").filter(":selected").val()) {
+    		case "MULTIPLE_CHOICE": {
+    			$("input[name^='multiple-option']").each(function () {
+    				canSave &= ($(this).val() != '');
+    			});
+    			canSave &= ($("input[name^='radio-multiple-choice']:visible:checked").length > 0);
+    			break;
+    		}
+    		case "TRUE_FALSE": {
+    			$("input[name^='true-false-option']").each(function () {
+    				canSave &= ($(this).val() != '');
+    			});
+    			canSave &= ($("input[name^='radio-true-false']:visible:checked").length > 0);
+    			break;
+    		}
+    		case "OPEN": {
+    			canSave &= ($("input[name^='open-option']").val() != '');
+    			break;
+    		}
+			case "MATCH": break;
+			case "SORT": break;
+    	}
+    	
+    	$("input[name='save']").prop('disabled', !canSave);
+    	/*$("input[name='save']").disabled = canSave;*/
+    });
+	$('form').trigger('change');
+    
+    console.log(document.getElementById("type"));
+    console.log($("select#type option").filter(":selected").val());
 	setQuestionType();
     
     document.getElementById('type').onchange = function() {
     	
-    	changeQuestionType($("#type option:selected").text());
+    	//changeQuestionType($("#type option:selected").val());
+    	changeQuestionType($("select#type option").filter(":selected").val());
     }
 });
 function setQuestionType() {
@@ -104,7 +147,7 @@ function setQuestionType() {
 	$(".question-empty").hide();
 	$(".question-filled").hide();
 
-    var question_type = /*[[${question?.type}]]*/ '-';
+    var question_type = /*[[${question?.type?.name()}]]*/ '-';
     console.log(question_type);
     
     switch(question_type) {
@@ -127,7 +170,10 @@ function setQuestionType() {
 		case "SORT": break;
 		case null:{
 			$(".question-filled").hide();
-			changeQuestionType($("#type option:selected").text());
+			//changeQuestionType($("#type option:selected").val());
+			
+			//$("select#type option").filter(":selected").val();
+			changeQuestionType($("select#type option").filter(":selected").val());
 			
 			break;
 		}

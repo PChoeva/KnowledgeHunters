@@ -4,15 +4,15 @@
 			<center><h2 th:text="${sectionTitle}">Добави/промени урок</h2></center>
 			<br/>
 		</div>
-		<form class="col-12 align-self-center" th:action="@{/lessons/index}" method="post">
+		<form class="col-12 align-self-center" th:action="@{/lessons/index}" method="post" style="position:absolute; top:120px; bottom:10px;">
 			<div class="form-group">
 	        	<input type="hidden" class="form-control" name="id" id="id" autofocus="autofocus" placeholder="ID" th:value="${lesson?.id}" readonly>
 	        </div>
 			<div class="form-group row">
-	        	<input type="text" class="form-control col-md-5 col-sm-12" name="title" id="title" autofocus="autofocus" placeholder="Заглавие" th:value="${lesson?.title}">
+	        	<input type="text" class="form-control col-md-5 col-sm-12" name="title" id="title" title="Задължително поле" autofocus="autofocus" placeholder="Заглавие" th:value="${lesson?.title}">
 	        	
 	        	
-				<select class="form-control col-md-5 col-sm-12 offset-md-2" name="topic" id="topic" style="width:100%; height: 50px;">
+				<select class="form-control col-md-5 col-sm-12 offset-md-2" name="topic" id="topic" title="Задължително поле" style="width:100%; height: 50px;">
 					<option th:each="topic : ${topics}" th:if="${topic.id == lesson?.topic?.id}" th:value="${lesson?.topic?.id}" th:text="${topic.name}">...</option>
 					<option th:each="topic : ${topics}" th:if="${topic.id != lesson?.topic?.id}" th:value="${topic.id}" th:text="${topic.name}"></option>
 				</select>
@@ -23,11 +23,11 @@
 	        </div>
 			<div class="form-group row">
 				<!-- <textarea  class="form-control col-12" name="description" th:text="${lesson.description}" style="min-height:200px;"></textarea> -->
-				 <textarea class="col-12" name="description" rows="10" cols="30" th:text="${lesson?.description}" >...</textarea>
+				 <textarea class="col-12" name="description" rows="10" cols="30" title="Задължително поле" th:text="${lesson?.description}" >...</textarea>
 			</div>
 			
 		    <br/>
-		    <div class="row align-items-end">
+		    <div class="row align-items-end" style="position:absolute; bottom: 0; width:100%;">
 			  <div class="col-auto mr-auto">
 			  	<a href="/lessons/index" th:href="@{/lessons/index}">
 			  		<input type="button" value="Отказ" class="btn close_btn" style="width:150px;">
@@ -35,10 +35,22 @@
 			  </div>
 			  <div class="col-auto">
 			  	<a href="/lessons/index" th:href="@{/lessons/index}">
-			  		<input type="submit" value="Запази" class="btn save_btn" style="width:150px;">
+			  		<input type="submit" name="save" value="Запази" class="btn save_btn" style="width:150px;">
 			  	</a>
 			  </div>			
 			</div>
 		</form>  
 	</div>
 </div>
+<script>
+$(document).ready(function() {
+	$('form').on("change input", function() {
+		var canSave = true;
+		canSave &= ($("input[name='title']").val() != '');
+		canSave &= ($("textarea[name='description']").val() != '');
+		
+		$("input[name='save']").prop('disabled', !canSave);
+	});
+	$('form').trigger('change');
+});
+</script>

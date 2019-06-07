@@ -153,7 +153,6 @@ public class BaseController {
 			  @RequestParam("id") String questionID,
 			  @RequestParam("title") String description,
 			  @RequestParam("difficulty") String difficulty,
-			  //@RequestParam("author") String author,
 			  @RequestParam("authorID") String authorID,
 			  @RequestParam("hint") String hint,
 			  @RequestParam("topic") String topicID,
@@ -191,15 +190,17 @@ public class BaseController {
 	  			System.out.println("radio Multiple filled:" + radioMultipleFilled);
 		    	System.out.println("radio Multiple empty:" + radioMultipleEmpty);
 		    	
-		    	if (radioMultipleFilled != null) {
-		    		System.out.println("IN IF, authorID:" + authorID);
-		    		editQuestion(Integer.parseInt(questionID), description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexMultipleFilled, optionMultipleFilled, radioMultipleFilled);
-			    	break;
-		    	}
 		    	if (radioMultipleEmpty != null) {
 
 		    		System.out.println("SWITCH CASE optionOpenEmpty: " + optionMultipleEmpty);
 		    		addQuestion((questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0, description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexMultipleEmpty, optionMultipleEmpty, radioMultipleEmpty);		    		
+		    		break;
+		    	}
+		    	
+		    	if (radioMultipleFilled != null) {
+		    		System.out.println("IN IF, authorID:" + authorID);
+		    		editQuestion(Integer.parseInt(questionID), description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexMultipleFilled, optionMultipleFilled, radioMultipleFilled);
+			    	break;
 		    	}
 		    	
 		    	System.out.println("option Multiple empty:" + optionMultipleEmpty);
@@ -213,14 +214,16 @@ public class BaseController {
 		    	System.out.println("option True False filled:" + optionTrueFalseFilled);
 		    	System.out.println("option True False empty:" + optionTrueFalseEmpty);
 		    	
+		    	if (radioTrueFalseEmpty != null) {
+		    		addQuestion((questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0, description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexTrueFalseEmpty, optionTrueFalseEmpty, radioTrueFalseEmpty);		    		
+		    		break;
+		    	}
 		    	
 		    	if (radioTrueFalseFilled != null) {
 		    		editQuestion(Integer.parseInt(questionID), description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexTrueFalseFilled, optionTrueFalseFilled, radioTrueFalseFilled);
 			    	break;
 		    	}
-		    	if (radioTrueFalseEmpty != null) {
-		    		addQuestion((questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0, description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexTrueFalseEmpty, optionTrueFalseEmpty, radioTrueFalseEmpty);		    		
-		    	}
+		    	
 	  			break;
 	  		}
 	  		case "OPEN": {
@@ -228,16 +231,17 @@ public class BaseController {
 	  			System.out.println("radio Open filled:" + radioOpenFilled);
 		    	System.out.println("radio Open empty:" + radioOpenEmpty);
 		    	
+		    	System.out.println("===========ADD MODE===========");
+		    	System.out.println("radioOpenEmpty: <" + radioOpenEmpty.getClass().getName() + ">:" + radioOpenEmpty);
+		    	if (radioOpenEmpty != null) {
+		    		addQuestion((questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0, description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexOpenEmpty, optionOpenEmpty, radioOpenEmpty);
+		    		break;
+		    	}
+		    	
 		    	System.out.println("===========EDIT MODE===========");
 		    	if (radioOpenFilled != null) {
 		    		editQuestion(Integer.parseInt(questionID), description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexOpenFilled, optionOpenFilled, radioOpenFilled);
 			    	break;
-		    	}
-		    	
-		    	System.out.println("===========ADD MODE===========");
-		    	System.out.println("radioOpenEmpty: <" + radioOpenEmpty.getClass().getName() + ">:" + radioOpenEmpty);
-		    	if (radioOpenEmpty != null) {
-		    		addQuestion((questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0, description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexOpenEmpty, optionOpenEmpty, radioOpenEmpty);		    		
 		    	}
 
 	  			break;
@@ -250,7 +254,7 @@ public class BaseController {
 	
 	
 	public void addQuestion(int questionID, String description, String difficulty, String hint, String type, int topicID, int authorID, List<String> indexOpenEmpty, List<String> optionOpenEmpty, String radioOpenEmpty) {
-		System.out.println("IN??");
+		System.out.println("IN ADD??");
 		if(questionID != 0) 	{
 			System.out.println("Question ID: " + questionID	);
 			System.out.println("Open empty in questionID!=null if");
@@ -261,17 +265,18 @@ public class BaseController {
     		}
     	
     	}
-		
 		System.out.println("Open empty between ifs");
 		System.out.println("optionOpenEmpty: " + optionOpenEmpty);
 		Question question = null;
-	
-		question = new Question(0, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint, new Topic(topicID, null, null), QuestionType.valueOf(type));
+		if (questionID !=0) {
+			question = questionService.updateAndGetQuestion(questionID, new Question(questionID, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint, new Topic(topicID, null, null), QuestionType.valueOf(type)));
+		} else {
+			question = new Question(0, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint, new Topic(topicID, null, null), QuestionType.valueOf(type));
+			question = questionService.saveQuestion(question);
+		}
 		
-		question = questionService.saveQuestion(question);
 		for(int index = 0; index < optionOpenEmpty.size(); index++) {
-			//String option: optionOpenEmpty) {
-		
+
 			System.out.println("Option: " + optionOpenEmpty.get(index));
 			
 			System.out.println("After question, before addOption:");
@@ -283,8 +288,6 @@ public class BaseController {
 				isCorrect = true;
 			}
 			optionService.addOption(new Option(0, question, optionOpenEmpty.get(index), isCorrect, 0, null));
-			
-			System.out.println("Unreachable?");
 		}
 		
 	}
@@ -292,19 +295,49 @@ public class BaseController {
 	public void editQuestion(int questionID, String description, String difficulty, String hint, String type, int topicID, int authorID, List<String> indexOpenFilled, List<String> optionOpenFilled, String radioOpenFilled) {
 		System.out.println("IN editQuestion, authorID:" + authorID);
 		List<Option> options = optionService.getAllOptionsByQuestionId(questionID);
-    	
-    	for (Option option : options) {
-    		for(int index = 0; index < indexOpenFilled.size(); index++) {
-    			if (option.getId() == Integer.parseInt(indexOpenFilled.get(index))) {
-    				option.setDescription(optionOpenFilled.get(index));
-    				option.setCorrect(option.getId() == Integer.parseInt(radioOpenFilled));
-    				optionService.updateOption(option.getId(), option);
-    			}
-    		}
-    	}
-    	System.out.println("description before update question: " + description);
-    	questionService.updateQuestion(questionID, new Question(questionID, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint, new Topic(topicID, null, null), QuestionType.valueOf(type)));
 		
+		System.out.println("EDIT TEST new: " + type);
+		System.out.println("EDIT TEST from question: " + questionService.getQuestion(questionID).get().getType());
+		
+		Question updatedQuestion = questionService.updateAndGetQuestion(questionID, new Question(questionID, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint, new Topic(topicID, null, null), QuestionType.valueOf(type)));
+    	System.out.println("QuestionType EDIT:" + QuestionType.valueOf(type));
+    	
+		
+		if (!questionService.getQuestion(questionID).get().getType().equals(type)) {
+			for (Option option: options) {
+				System.out.println("DELETE OPTION: " + option.getId());
+				optionService.deleteOption(option.getId());
+				
+				for(int index = 0; index < optionOpenFilled.size(); index++) {
+				
+					System.out.println("Option: " + optionOpenFilled.get(index));
+					
+					System.out.println("After question, before addOption:");
+					System.out.println("After question, before addOption authorID:" + authorID);
+					System.out.println("After question, before addOption questionID:" + updatedQuestion.getId());
+					
+					boolean isCorrect = false;
+					if (index == Integer.parseInt(radioOpenFilled)) {
+						isCorrect = true;
+					}
+					optionService.addOption(new Option(0, updatedQuestion, optionOpenFilled.get(index), isCorrect, 0, null));
+					
+					
+					System.out.println("Unreachable?");
+				}
+			}
+		} else {
+			for (Option option : options) {
+	    		for(int index = 0; index < indexOpenFilled.size(); index++) {
+	    			if (option.getId() == Integer.parseInt(indexOpenFilled.get(index))) {
+	    				option.setDescription(optionOpenFilled.get(index));
+	    				option.setCorrect(option.getId() == Integer.parseInt(radioOpenFilled));
+	    				optionService.updateOption(option.getId(), option);
+	    			}
+	    		}
+	    	}
+		}
+
     	for (String option : optionOpenFilled) {
 	    	System.out.println("option Open filled:" + option);
     	}
