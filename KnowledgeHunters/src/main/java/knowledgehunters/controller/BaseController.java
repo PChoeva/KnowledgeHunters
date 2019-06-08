@@ -116,6 +116,16 @@ public class BaseController {
 		System.out.println("In profile POST: " + session.getAttribute("successMsg"));
 		response.sendRedirect("/home"); 
 	}
+	
+	@PostMapping("/change-password")
+	public void saveProfile(HttpSession session, HttpServletResponse response, @RequestParam("password-old") String passwordОld, @RequestParam("password") String passwordNew, @RequestParam("password-repeat") String passwordNewRepeat) throws IOException {
+		Person sessionPerson = personService.getSessionPerson();
+		sessionPerson.getUser().setPassword(passwordNew);
+		userService.updateUser(sessionPerson.getUser().getId(), sessionPerson.getUser());
+		
+		session.setAttribute("successMsg", "Успешна промяна на паролата!");
+		response.sendRedirect("/home"); 
+	}
 
 	@PostMapping("/login")
 	public void saveRegistrationAndLogin(HttpSession session, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password, @RequestParam("isTeacher") boolean isTeacher) throws IOException {

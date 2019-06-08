@@ -20,6 +20,7 @@
 		
 			<li><a href="/home" th:href="@{/home}">Начало</a></li>
 			<li><a href="/profile" th:href="@{/profile}">Профил</a></li>
+			<li><a href="/user/change-password">Промени парола</a></li>
 			<li><a href="#">Класация</a></li>
 			<li th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}"><a href="/lessons/index" th:href="@{/lessons/index}">Моите уроци</a></li>
 			<li th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}"><a href="/questions/index" th:href="@{/questions/index}">Моите въпроси</a></li>

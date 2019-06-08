@@ -25,11 +25,11 @@
 				    <tr>
 				      <th scope="col" width="30%">Въпрос</th>
 				      <th scope="col" width="5%">Сложност</th>
-				      <th scope="col" width="15%">Тип въпрос</th>
+				      <th scope="col" width="10%">Тип</th>
 					  <th scope="col" width="20%">Тема</th>
 					  <th scope="col" width="10%">Предмет</th>
 				      <th scope="col" width="10%">Автор</th>
-				      <th scope="col" width="10%">Действия</th>
+				      <th scope="col" width="15%">Действия</th>
 				    </tr>
 				  </thead>
 		       </table>
@@ -45,7 +45,7 @@
 							<a class="index-a" th:href="@{'/questions/view/' + ${question.id}}" th:text="${question.description}"></a>    
 						</td>
 					    <td  width="5%" th:text="${question.difficulty.getValue()}" style="text-align:center;"/>
-					    <td  width="15%" th:text="${question.type.getValue()}" style="text-align:center;"/>
+					    <td  width="10%" th:text="${question.type.getValue()}" style="text-align:center;"/>
 					    <td  width="20%" th:text="${question.topic.name}" />
 					    <td  width="10%" th:text="${question.topic.subject.name}" />
 					    <td  width="10%" th:text="${question.author.displayName}" />

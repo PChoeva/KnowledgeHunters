@@ -133,6 +133,17 @@ public class MainController {
 		return "base-layout";
 	}
 	
+	@GetMapping("/user/change-password")
+	public String changePassword(HttpSession session, Model model) {
+		if (isLogged(model)) return "start-layout"; 
+
+		Person person = personService.getSessionPerson();
+		model.addAttribute("person", person);
+		
+		model.addAttribute("view", "user/change-password");
+		return "base-layout";
+	}
+	
 	@GetMapping("/lessons/index")
 	public String lessonIndex(HttpSession session, Model model) {
 		if (isLogged(model)) return "start-layout"; 
