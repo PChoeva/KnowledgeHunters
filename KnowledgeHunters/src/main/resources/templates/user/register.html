@@ -1,47 +1,22 @@
-<div class="jumbotron" style="background-color: rgba(220, 220, 220, 0.8); color:black; margin:0px; width:600px !important;">
+<div class="jumbotron" style="background-color: rgba(220, 220, 220, 0.8); color:black; margin:0px; width:800px !important;">
 	<div class="row justify-content-md-center">
 	    <form class="col-12 align-self-center" th:action="@{/login}" method="post">
-		    <div style="padding:8px 16px; width:70%">
-				<div class="form-group">
-		        	<!-- <label for="username">Потребителско име</label> -->
-		        	<input type="text" class="form-control" name="username" id="username" autofocus="autofocus" placeholder="Потребителско име">
+		    <div class="wrap-form" style="padding:8px 16px; width:90%">
+				<div class="form-group row">
+		        	<input type="text" class="form-control col-5" name="username" id="username" autofocus="autofocus" placeholder="Потребителско име">
+		        	<input type="text" class="form-control col-5 offset-2" name="displayName" id="displayName" placeholder="Екранно име">
 		        </div>
-				<div class="form-group">
-		        	<!-- <label for="username">Екранно име</label> -->
-		        	<input type="text" class="form-control" name="displayName" id="displayName" placeholder="Екранно име">
-				</div>
-				<div class="form-group">
-					<!-- <label for="username">Имейл</label> -->
-					<input type="email" class="form-control" name="email" id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" oninvalid="this.setCustomValidity('Невалиден имейл адрес!')" placeholder="Имейл">
-				</div>
-				<div class="form-group">
-		        
-		        <!-- <input type="text" class="form-control" id="username" autofocus="autofocus" placeholder="Училище">-->
-					
-	<!-- 				      <label for="schools">Училище</label> --> 
-					<select class="form-control" name="school" id="schools" style="width:100%; height: 50px;">
-	<!-- 
-						<option value="" disabled selected>Училище</option>
-						<option value="pmg">ПМГ-Хасково</option>
-						<option value="pgds">ПГДС-Хасково</option>
-						<option value="pgmet">ПГМЕТ-Хасково</option>
-						<option value="tues">ТУЕС</option>
-	-->
+				<div class="form-group row">
+					<input type="email" class="form-control col-5" name="email" id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" oninvalid="this.setCustomValidity('Невалиден имейл адрес!')" placeholder="Имейл">
+					<select class="form-control col-5 offset-2" name="school" id="schools" style="width:100%; height: 50px;">
 						<option th:each="school : ${schools}" th:value="${school.id}" th:text="${school.name + ' - ' + school.city.name}"></option>
-						<!-- <td th:each="school: ${schools}" th:text="${school.name}" />-->
 					</select>
 				</div>
-				<div class="form-group">
-					<!-- <label for="password">Парола</label> -->
-			        <input type="password" class="form-control" name="password" id="password" placeholder="Парола">
+				<div class="form-group row">
+			        <input type="password" class="form-control col-5" name="password" id="password" placeholder="Парола">
+			        <input type="password" class="form-control col-5 offset-2" id="repeat_password" placeholder="Повтори парола">
 				</div>
-				<div class="form-group">
-			        <!-- <label for="password">Повтори парола</label> -->
-			        <input type="password" class="form-control" id="repeat_password" placeholder="Повтори парола">
-				</div>
-				<br/>
 				<div class="form-group" style="text-align:left; margin:0;">
-				 	<!-- <input type="checkbox" th:field="*{features}" th:value="${feat}" />-->
 				 	<input type="checkbox" name="isTeacher" style="width:20px; height:20px;"/>
 				    <label style="font-size:20px;">Аз съм учител*</label>
 				</div>
@@ -50,6 +25,41 @@
 		 	<h4>Имаш акаунт?<br/><u><a href="/login" th:href="@{/login}" class="register_txt">Влез.</a></u></h4>
 		</form>
 	</div>
-	<br/>
 	<div style="width:100%; text-align:left; margin-bottom:-60px;">*Моля, представете служебен имейл.</div>
 </div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	$('form').on("change input", function() {
+		var canSave = true;
+		canSave &= ($("input[name='displayName']").val() != '');
+		canSave &= ($("input[name='email']").val() != '');
+		
+		$("input[name='save']").prop('disabled', !canSave);
+	});
+	$('form').trigger('change');
+
+	$(".big_btn").click(function(e) {
+	  	e.preventDefault();
+	  	$(".error").remove();
+		var errDiv;
+	  	
+	  	var username = $("#username").val();
+	  	var password = $("#password").val();
+	  	var passwordRepeat = $("#repeat_password").val();
+
+	  	var hashedPassword = sha256(username + password);
+	  	var hashedPasswordRepeat = sha256(username + passwordRepeat);
+	  	
+	  	if (hashedPassword == hashedPasswordRepeat) {
+	  		$("#password").val(hashedPassword);
+	  		$("form").submit();
+	  	} else {
+  			errDiv = '<div id="error" class="error">В полетата за парола тя не съвпада!</div>';
+  			$('.wrap-form').append(errDiv);
+	  	}
+	});
+});
+/*]]>*/
+</script>
+

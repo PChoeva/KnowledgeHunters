@@ -97,7 +97,12 @@ public class MainController {
 	}
 	
 	@GetMapping("/register")
-	public String register(Model model) {
+	public String register(HttpSession session, Model model) {
+		if (session.getAttribute("errorMsg") != null) {
+			model.addAttribute("errorMsg", session.getAttribute("errorMsg"));
+			session.removeAttribute("errorMsg");
+		}
+		
 		model.addAttribute("view", "user/register");
 		model.addAttribute("schools", schoolService.getAllSchools());
 		List<School> schools = schoolService.getAllSchools();

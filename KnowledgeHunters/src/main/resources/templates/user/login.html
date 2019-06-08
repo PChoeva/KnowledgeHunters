@@ -18,3 +18,20 @@
 		</form>  
 	</div>
 </div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+
+	$(".big_btn").click(function(e) {
+	  	e.preventDefault();
+	  	var password = $("#password").val();
+	  	var username = $("#username").val();
+	  	
+	  	var hashedPassword = sha256(username + password);
+	  	
+	  	$("#password").val(hashedPassword);	  	
+	  	$("form").submit();
+	});
+});
+/*]]>*/
+</script>

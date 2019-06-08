@@ -128,10 +128,22 @@ public class BaseController {
 	}
 
 	@PostMapping("/login")
-	public void saveRegistrationAndLogin(HttpSession session, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password, @RequestParam("isTeacher") boolean isTeacher) throws IOException {
-			
+	public void saveRegistrationAndLogin(HttpSession session, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password, @RequestParam(value = "isTeacher", required=false) boolean isTeacher) throws IOException {
+	
+		if ((username.equals("") || username.equals(null)) || displayName.equals("") || email.equals("") || password.equals("")) {
+			session.setAttribute("errorMsg", "Моля, попълнете всички полета!");
+			response.sendRedirect("/register"); 
+			return;
+		} else
+		
+		if (userService.findUser(username) != null) {
+			session.setAttribute("errorMsg", "Потребителското име " + username + " е заето!");
+			response.sendRedirect("/register");
+			return;
+		}
+		
 		System.out.println("---Entered saveRegistrationAndLogin controller!");
-		System.out.println(username + " | " + displayName + " | " + email + " | " + school + " | " + password);
+		System.out.println("Username type:" + username.getClass().getName() + "|" + username + " | " + displayName + " | " + email + " | " + school + " | " + password);
 		
 		System.out.println("isTeacher: " + isTeacher);
 		
