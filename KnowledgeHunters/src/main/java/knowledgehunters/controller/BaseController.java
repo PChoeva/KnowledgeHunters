@@ -1,21 +1,13 @@
 package knowledgehunters.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -90,10 +82,10 @@ public class BaseController {
 		}
 
 		if (isUserInDB) {
-			response.sendRedirect("home"); 
+			response.sendRedirect("/home"); 
 		} else {
-			//response.sendRedirect("errorPage");
-			response.sendRedirect("login?loginError=true");
+			session.setAttribute("errorMsg", "Невалидни данни!");
+			response.sendRedirect("/login");
 		}
 	}
 	
@@ -120,12 +112,13 @@ public class BaseController {
 		
 		session.setAttribute("sessionUsername", username);
 		session.setAttribute("sessionDisplayName", displayName);
-		
-		response.sendRedirect("home"); 
+		session.setAttribute("successMsg", "Успешно запазване!");
+		System.out.println("In profile POST: " + session.getAttribute("successMsg"));
+		response.sendRedirect("/home"); 
 	}
 
 	@PostMapping("/login")
-	public void saveRegistrationAndLogin(HttpServletResponse response, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password, @RequestParam("isTeacher") boolean isTeacher) throws IOException {
+	public void saveRegistrationAndLogin(HttpSession session, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password, @RequestParam("isTeacher") boolean isTeacher) throws IOException {
 			
 		System.out.println("---Entered saveRegistrationAndLogin controller!");
 		System.out.println(username + " | " + displayName + " | " + email + " | " + school + " | " + password);
@@ -134,7 +127,8 @@ public class BaseController {
 		
 		userService.addUser(new User(0, username, password, new Role(3,null)));
 		personService.addPerson(new Person(0,userService.findUser(username), new School(school,null, null), displayName, email, !isTeacher));
-		response.sendRedirect("login"); 
+		session.setAttribute("successMsg", "Успешно регистриране!");
+		response.sendRedirect("/login"); 
 	}
 	
 	@PostMapping("/lessons/index")
@@ -143,6 +137,7 @@ public class BaseController {
 	    System.out.println("REST Lessons index controller post");
 	    
 	    lessonService.addLesson(new Lesson(lessonID.isEmpty()?0:Integer.parseInt(lessonID), title, new Topic(Integer.parseInt(topicID), null, null),person, description));
+	    session.setAttribute("successMsg", "Успешно запазване!");
 	    response.sendRedirect("/lessons/index");
 	}
 	
@@ -249,6 +244,8 @@ public class BaseController {
 	  		case "MATCH": break;
 	  		case "SORT": break;
 	    }
+	    
+	    session.setAttribute("successMsg", "Успешно запазване!");
 	    response.sendRedirect("/questions/index");
 	}
 	
@@ -269,9 +266,9 @@ public class BaseController {
 		System.out.println("optionOpenEmpty: " + optionOpenEmpty);
 		Question question = null;
 		if (questionID !=0) {
-			question = questionService.updateAndGetQuestion(questionID, new Question(questionID, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint, new Topic(topicID, null, null), QuestionType.valueOf(type)));
+			question = questionService.updateAndGetQuestion(questionID, new Question(questionID, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint.equals("") ? null: hint, new Topic(topicID, null, null), QuestionType.valueOf(type)));
 		} else {
-			question = new Question(0, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint, new Topic(topicID, null, null), QuestionType.valueOf(type));
+			question = new Question(0, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint.equals("") ? null: hint, new Topic(topicID, null, null), QuestionType.valueOf(type));
 			question = questionService.saveQuestion(question);
 		}
 		
@@ -299,7 +296,7 @@ public class BaseController {
 		System.out.println("EDIT TEST new: " + type);
 		System.out.println("EDIT TEST from question: " + questionService.getQuestion(questionID).get().getType());
 		
-		Question updatedQuestion = questionService.updateAndGetQuestion(questionID, new Question(questionID, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint, new Topic(topicID, null, null), QuestionType.valueOf(type)));
+		Question updatedQuestion = questionService.updateAndGetQuestion(questionID, new Question(questionID, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint.equals("") ? null: hint, new Topic(topicID, null, null), QuestionType.valueOf(type)));
     	System.out.println("QuestionType EDIT:" + QuestionType.valueOf(type));
     	
 		

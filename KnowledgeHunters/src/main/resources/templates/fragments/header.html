@@ -8,23 +8,32 @@
 		<div class="hamb middle"></div>
 		<div class="menu-name">МЕНЮ</div>
 
-		<ul id="menu" style="z-index:100;">
-			<a>
-				<li th:unless="${session == null}">
+		<ul id="menu">
+		
+			<li th:unless="${session == null}">
+				<a>
 					<h4 th:text="${session.sessionDisplayName}" style="color:#bdb63b; text-transform: none !important;margin-bottom:50px; text-align: center;">[...]</h4>
 					<h4 th:text="${@personService.getSessionPerson().user.role.getRoleValue()}" style="color:#bdb63b; text-transform: none !important;margin-bottom:50px; text-align: center;">[...]</h4>
-				</li>
-			</a>
+				</a>
+			</li>
 		
-			<a href="/home" th:href="@{/home}"> <li>Начало</li></a>
-			<a href="/profile" th:href="@{/profile}"> <li>Профил</li></a>
-			<a href="#"> <li>Класация</li></a>
+		
+			<li><a href="/home" th:href="@{/home}">Начало</a></li>
+			<li><a href="/profile" th:href="@{/profile}">Профил</a></li>
+			<li><a href="#">Класация</a></li>
+			<li th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}"><a href="/lessons/index" th:href="@{/lessons/index}">Моите уроци</a></li>
+			<li th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}"><a href="/questions/index" th:href="@{/questions/index}">Моите въпроси</a></li>
+			<li th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}"><a href="/userslist" th:href="@{/userslist}">Списък потребители</a></li>
+			<li th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}"><a th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}" href="/teachers-for-approval" th:href="@{/teachers-for-approval}">Учители за одобрение</a></li>
+			
+			<!-- 
 			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}" href="/lessons/index" th:href="@{/lessons/index}"> <li>Моите уроци</li></a>
 			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}" href="/questions/index" th:href="@{/questions/index}"> <li>Моите въпроси</li></a>
 			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}" href="/userslist" th:href="@{/userslist}"> <li>Списък потребители</li></a>
 			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}" href="/teachers-for-approval" th:href="@{/teachers-for-approval}"> <li>Учители за одобрение</li></a>
+			-->
 			<br/><br/><br/><br/>
-			<a href="/logout"> <li>Излез</li></a>
+			<li><a href="/logout">Излез</a></li>
 		</ul>
 	</a>
 	

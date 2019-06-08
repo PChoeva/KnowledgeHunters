@@ -41,7 +41,9 @@
 		         <table class="table" cellspacing="0" cellpadding="1" width="100%"  style="border:0; margin-bottom: 0;">
 		           <tbody>
 				    <tr th:each="question: ${questions}" style="background-color:rgba(220, 220, 220, 0.8);">
-					    <td scope="row" width="30%" th:text="${question.description}" />
+					     <td scope="row" width="30%" >
+							<a class="index-a" th:href="@{'/questions/view/' + ${question.id}}" th:text="${question.description}"></a>    
+						</td>
 					    <td  width="5%" th:text="${question.difficulty.getValue()}" style="text-align:center;"/>
 					    <td  width="15%" th:text="${question.type.getValue()}" style="text-align:center;"/>
 					    <td  width="20%" th:text="${question.topic.name}" />
@@ -53,6 +55,9 @@
 					    	</a>
 					    	<a th:href="@{'/questions/delete/' + ${question.id}}">
 					    		<i class="fas fa-times"></i>
+					    	</a>
+					    	<a th:href="@{'/questions/view/' + ${question.id}}">
+					    		<i class="far fa-eye"></i>
 					    	</a>
 					    </td>
 					</tr>

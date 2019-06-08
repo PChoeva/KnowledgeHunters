@@ -163,7 +163,7 @@ textarea:focus {
 }
 
 .register_txt:hover {
-	color: #824723;
+	color: #824723 !important;
 }
 
 .btn:focus {
@@ -196,8 +196,8 @@ select {
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
+	z-index:11;
 }
-
 
 .reveal {
 	opacity: .70;
@@ -248,9 +248,14 @@ select {
 	/*padding: 24px;*/
 	width: 250px;
 	text-align: left;
+	position:absolute;
+	top:16px;
+	bottom:0;
+	z-index:100;
 }
 
-#menu a li {
+#menu li {
+/*#menu a li {*/
 	text-decoration: none!important;
 	padding-bottom: 10px;
 	margin-bottom: 12px;
@@ -260,18 +265,21 @@ select {
 	transition: all 150ms ease;
 }
 
-#menu a li:hover {
-	color: #bdb63b;
-	padding-right: 3px;
+#menu li:last-child {
+	position: absolute;
+	bottom: 0;
+	width: 84%;
 }
 
-#menu a li:hover:after {
+#menu li:hover a{
+/*#menu a li:hover {*/
+	color: #bdb63b !important;
+	/*padding-right: 3px;*/
 }
-
-
 
 #menu a {
 	text-decoration: none;
+	color: #fff !important;
 }
 
 .rotate {
@@ -363,11 +371,11 @@ select {
 	margin:4px;
 }
 .fa-pencil-alt {
-	color: #824723;
+	color: #938E2D;
 }
 .fa-times{
 	font-size:28px !important;
-	color: red;
+	color: #BD3B41;
 }
 
 .fa-check {
@@ -375,11 +383,15 @@ select {
 }
 
 .fa-ban {
-	color: red;
+	color: #BD3B41;
 }
 
 .fa-eye {
 	color: #824723;
+}
+
+.fa-check-circle {
+	color: darkgreen;
 }
 
 a:hover {
@@ -399,17 +411,37 @@ a:hover {
 	font-size: 20px;
 }
 
-.hide-thead th{
-	padding: 0 12px !important;
-	margin:0 !important;
-	line-height:0 !important;
-	height:0 !important;
-}
-
 .save_btn:disabled {
 	background-color: #CCC !important;
 }
+.successMsg {
+	width: 63%;
+    height:50px;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+    background-color: white;
+    color: darkgreen;
+    border-left: 6px solid darkgreen;
+    font-size: 20px;
+	border-radius: 0 10px 10px 0;
+	z-index:10;
+}
 
+.errorMsg {
+	width: 63%;
+    height:50px;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+    background-color: white;
+    color: #BD3B41;
+    border-left: 6px solid #BD3B41;
+    font-size: 20px;
+	border-radius: 0 10px 10px 0;
+	z-index:10;
+}
+ 
 /*===TABLE CSS===*/
 .table td, .table th{
 	border: none !important;	

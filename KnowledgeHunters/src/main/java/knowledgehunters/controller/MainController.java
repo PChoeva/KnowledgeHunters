@@ -67,7 +67,15 @@ public class MainController {
 	}
 	
 	@GetMapping("/login")
-	public String login(Model model) {
+	public String login(HttpSession session, Model model) {
+		if (session.getAttribute("successMsg") != null) {
+			model.addAttribute("successMsg", session.getAttribute("successMsg"));
+			session.removeAttribute("successMsg");
+		}
+		if (session.getAttribute("errorMsg") != null) {
+			model.addAttribute("errorMsg", session.getAttribute("errorMsg"));
+			session.removeAttribute("errorMsg");
+		}
 		model.addAttribute("view", "user/login");
 		return "start-layout";
 	}
@@ -98,9 +106,15 @@ public class MainController {
 	}
 	
 	@GetMapping("/home")
-	public String home(Model model) {
+	public String home(HttpSession session, Model model) {
 		if (isLogged(model)) return "start-layout"; 
 
+		System.out.println("successMsg: " + session.getAttribute("successMsg"));
+		if (session.getAttribute("successMsg") != null) {
+			System.out.println("successMsg: " + session.getAttribute("successMsg"));
+			model.addAttribute("successMsg", session.getAttribute("successMsg"));
+			session.removeAttribute("successMsg");
+		}
 		model.addAttribute("view", "user/home");
 		System.out.println("---Entered home controller!");
 		return "base-layout";
@@ -126,6 +140,11 @@ public class MainController {
 			return "base-layout";
 		}
 
+		if (session.getAttribute("successMsg") != null) {
+			model.addAttribute("successMsg", session.getAttribute("successMsg"));
+			session.removeAttribute("successMsg");
+		}
+		
 		Person person = personService.getSessionPerson();
 		model.addAttribute("lessons", lessonService.getAllLessonsByAuthor(person));
 		lessonService.getAllLessonsByAuthor(person).forEach(l -> System.out.println("Lesson:" + l));
@@ -208,8 +227,8 @@ public class MainController {
 	  public void LessonsDelete(HttpSession session, HttpServletResponse response, @PathVariable int id) throws IOException {
 		
 	    System.out.println("REST Lessons delete controller post");
-	    
 	    lessonService.deleteLesson(id);
+	    session.setAttribute("successMsg", "Успешно изтриване!");
 	    response.sendRedirect("/lessons/index");
 	}	
 	
@@ -222,6 +241,11 @@ System.out.println("---------in questionIndex controller");
 			return "base-layout";
 		}
 
+		if (session.getAttribute("successMsg") != null) {
+			model.addAttribute("successMsg", session.getAttribute("successMsg"));
+			session.removeAttribute("successMsg");
+		}
+		
 		Person person = personService.getSessionPerson();
 		model.addAttribute("questions", questionService.getAllQuestionsByAuthor(person));
 		questionService.getAllQuestionsByAuthor(person).forEach(q -> System.out.println("Question:" + q));
@@ -286,8 +310,28 @@ System.out.println("---------in questionIndex controller");
 		return "base-layout";
 	}
 	
+	@GetMapping("/questions/view/{id}")
+	public String questionView(HttpSession session, Model model, @PathVariable int id) {
+		
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
+			return "base-layout";
+		}
+		
+		questionService.getQuestion(id).ifPresent(question -> model.addAttribute("question", question));
+		questionService.getQuestion(id).ifPresent(question -> System.out.println("View question: " + question.getDescription()));
+		
+		List<Option> questionOptions = optionService.getAllOptionsByQuestionId(id);
+		questionOptions.forEach(o -> System.out.println("OPTION: " + o.getDescription()));
+		model.addAttribute("options", questionOptions);
+		
+		model.addAttribute("sectionTitle", "Въпрос");		
+		model.addAttribute("view", "question/view");
+		return "base-layout";
+	}
+	
 	@GetMapping("/questions/delete/{id}")
-	public String questionDelete(Model model, @PathVariable int id) {
+	public String questionDelete(HttpSession session, Model model, @PathVariable int id) {
 
 		if (isLogged(model)) return "start-layout"; 
 		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER)))) {
@@ -301,7 +345,7 @@ System.out.println("---------in questionIndex controller");
 			optionService.deleteOption(option.getId());
 		}
 		questionService.deleteQuestion(id);
-		
+		session.setAttribute("successMsg", "Успешно изтриване!");		
 		return "redirect:/questions/index";
 	}
 	
@@ -340,7 +384,7 @@ System.out.println("---------in questionIndex controller");
 	
 	
 	@GetMapping("/teachers-for-approval/approve/{id}")
-	public String teachersApprove(Model model, @PathVariable int id) {
+	public String teachersApprove(HttpSession session, Model model, @PathVariable int id) {
 
 		if (isLogged(model)) return "start-layout"; 
 		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN)))) {
@@ -354,12 +398,12 @@ System.out.println("---------in questionIndex controller");
 		
 		personService.updatePerson(id, teacher);
 		System.out.println("teachersApprove->getApproved: " + personService.getPerson(id).get().getIsApproved());
-		
+		session.setAttribute("successMsg", "Успешно одобряване!");
 		return "redirect:/teachers-for-approval";
 	}
 	
 	@GetMapping("/teachers-for-approval/deny/{id}")
-	public String teachersDeny(Model model, @PathVariable int id) {
+	public String teachersDeny(HttpSession session, Model model, @PathVariable int id) {
 
 		if (isLogged(model)) return "start-layout"; 
 		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN)))) {
@@ -368,7 +412,7 @@ System.out.println("---------in questionIndex controller");
 
 		System.out.println("teachersApprove->id: " + id);		
 		personService.deletePerson(id);
-		
+		session.setAttribute("successMsg", "Успешно изтриване!");
 		return "redirect:/teachers-for-approval";
 	}
 	
@@ -396,7 +440,7 @@ System.out.println("---------in questionIndex controller");
 		if (personService.getSessionPerson() == null) {
 			model.addAttribute("view", "/error");
 			model.addAttribute("errorCode", "403");
-			model.addAttribute("errorMsg", "Трябва да се регистрирате за тази страница!");
+			model.addAttribute("errorMessage", "Трябва да се регистрирате за тази страница!");
 			return true;
 		}
 		return false;
@@ -417,7 +461,7 @@ System.out.println("---------in questionIndex controller");
 		if (!hasPermission) {
 			model.addAttribute("view", "/error");
 			model.addAttribute("errorCode", "403");
-			model.addAttribute("errorMsg", "Нямате права за тази страница!");
+			model.addAttribute("errorMessage", "Нямате права за тази страница!");
 			// replace with setView ??????
 		} 
 		return hasPermission;
@@ -426,6 +470,6 @@ System.out.println("---------in questionIndex controller");
 	public void setView(Model model) {
 		model.addAttribute("view", "/error");
 		model.addAttribute("errorCode", "403");
-		model.addAttribute("errorMsg", "Нямате права за тази страница!");
+		model.addAttribute("errorMessage", "Нямате права за тази страница!");
 	}
 }

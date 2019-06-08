@@ -12,7 +12,7 @@
 				</div>
 				<div class="form-group">
 					<!-- <label for="username">Имейл</label> -->
-					<input type="text" class="form-control" name="email" id="email" placeholder="Имейл">
+					<input type="email" class="form-control" name="email" id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" oninvalid="this.setCustomValidity('Невалиден имейл адрес!')" placeholder="Имейл">
 				</div>
 				<div class="form-group">
 		        
@@ -50,4 +50,6 @@
 		 	<h4>Имаш акаунт?<br/><u><a href="/login" th:href="@{/login}" class="register_txt">Влез.</a></u></h4>
 		</form>
 	</div>
+	<br/>
+	<div style="width:100%; text-align:left; margin-bottom:-60px;">*Моля, представете служебен имейл.</div>
 </div>

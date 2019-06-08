@@ -8,6 +8,8 @@
 		<header th:include="fragments/header"></header>
 		<div class="container-fluid h-100" style="float: right;">
 			<a href="/home" th:href="@{/home}" style="cursor:pointer;text-decoration: none;"><h1 class="app_title logged-title">Търсачи на знания</h1></a>	
+			<div class ="successMsg" th:if="${successMsg != null}"><i class="fas fa-check-circle" style="float:left;"></i><div th:text="${successMsg}" style="float:left; margin-left:10px;"></div></div>
+			<div class ="errorMsg" th:if="${errorMsg != null}"><i class="fas fa-exclamation-circle" style="float:left;"></i><div th:text="${errorMsg}" style="float:left; margin-left:10px;"></div></div>
 			<div th:replace="${view}"></div>
 		</div>
 		<footer th:include="fragments/footer"></footer>

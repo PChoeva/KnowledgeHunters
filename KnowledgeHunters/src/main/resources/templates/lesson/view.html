@@ -4,7 +4,7 @@
 			<center><h2 th:text="${sectionTitle}">Урок</h2></center>
 			<br/>
 		</div>
-		<div class="col-12 align-self-center">
+		<div class="col-12 align-self-center" style="position:absolute; top:120px; bottom:10px;">
 			<div class="row">
 				<div class="col-5">
 					<span class="label-span">Заглавие</span>
@@ -23,7 +23,7 @@
  			<br/>			
 			<div class="col-12" th:text="${lesson?.description}" style="border: 1px solid #555; border-radius:10px; min-height:100px !important; max-height:400px !important; text-align: justify;"></div>			
 		    <br/>
-		    <div class="row align-items-end">
+		    <div class="row align-items-end" style="position:absolute; bottom: 0; width:100%;">
 			  <div class="col-auto mr-auto">
 			  		<input type="button" onclick="window.history.go(-1);" value="Назад" class="btn close_btn" style="width:150px;">
 			  </div>		

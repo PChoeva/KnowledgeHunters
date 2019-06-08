@@ -1,0 +1,53 @@
+<div class="jumbotron" style="background-color: rgba(220, 220, 220, 0.8); color:black; width:600px; height:80%; margin:0px;">
+	<div class="row justify-content-md-center">
+		<div class="col-12">
+			<center><h2 th:text="${sectionTitle}">Урок</h2></center>
+			<br/>
+		</div>
+		<div class="col-12 align-self-center" style="position:absolute; top:120px; bottom:10px;">
+			<div class="row">
+				<div class="col-12">
+					<span class="label-span">Заглавие</span>
+					<div th:text="${question?.description}"></div>
+				</div>
+				<div class="col-6">
+					<span class="label-span">Сложност</span>
+					<div th:text="${question?.difficulty.getValue()}"></div>
+				</div>
+				<div class="col-5 offset-1">
+					<span class="label-span">Тип въпрос</span>
+					<div th:text="${question?.type.getValue()}"></div>
+				</div>
+				<div class="col-6">
+					<span class="label-span">Тема</span>
+					<div th:text="${question?.topic.name}"></div>
+				</div>
+				<div class="col-5 offset-1">
+					<span class="label-span">Автор</span>
+					<div th:text="${question?.author.displayName}"></div>
+				</div>
+			</div>
+			<br/><br/>
+			<div class="row justify-content-md-center">
+				<div class="col-5 offset-1"  th:each="option : ${options}">
+					<span class="label-span"th:if="${option?.correct}" >Верен отговор</span>
+					<span class="label-span"th:unless="${option?.correct}" >Грешен отговор</span>
+					<div th:text="${option?.description}"></div>
+					<br/>
+				</div>
+        	</div>
+ 			<br/><br/>
+ 			<div class="row">
+ 				<div class="col-12">
+					<span class="label-span">Подсказка</span>
+					<div th:text="${question?.hint == null ? 'Няма подсказка ':question?.hint}"></div>
+				</div>
+ 			</div>
+		    <div class="row align-items-end" style="position:absolute; bottom: 0; width:100%;">
+			  <div class="col-auto mr-auto">
+			  		<input type="button" onclick="window.history.go(-1);" value="Назад" class="btn close_btn" style="width:150px;">
+			  </div>		
+			</div>
+		</div>  
+	</div>
+</div>
