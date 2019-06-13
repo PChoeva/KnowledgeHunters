@@ -20,7 +20,7 @@ public class Option {
 	private Question question;
 	
 	private String description;
-	@Column(name = "is_corrrect", nullable = false)
+	@Column(name = "is_correct", nullable = false)
 	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean isCorrect;
 	private int position;

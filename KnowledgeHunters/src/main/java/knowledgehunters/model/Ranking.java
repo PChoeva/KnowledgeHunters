@@ -9,26 +9,26 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Student {
+public class Ranking {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	private Person person;
-	@ManyToOne
-	private Rank rank;
 	
+	@ManyToOne
+	private Subject subject;
+	@ManyToOne
+	private Student student;
 	private int points;
 	
-	public Student() {
+	public Ranking() {
 		
 	}
 
-	public Student(int id, Person person, Rank rank, int points) {
+	public Ranking(int id, Subject subject, Student student, int points) {
 		this.id = id;
-		this.person = person;
-		this.rank = rank;
+		this.subject = subject;
+		this.student = student;
 		this.points = points;
 	}
 
@@ -40,20 +40,20 @@ public class Student {
 		this.id = id;
 	}
 
-	public Person getPerson() {
-		return person;
+	public Subject getSubject() {
+		return subject;
 	}
 
-	public void setPerson(Person person) {
-		this.person = person;
-	}
-	
-	public Rank getRank() {
-		return rank;
+	public void setSubject(Subject subject) {
+		this.subject = subject;
 	}
 
-	public void setRank(Rank rank) {
-		this.rank = rank;
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 
 	public int getPoints() {

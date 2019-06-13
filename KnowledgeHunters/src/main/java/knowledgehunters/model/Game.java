@@ -1,34 +1,34 @@
 package knowledgehunters.model;
 
-import java.util.List;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import knowledgehunters.service.GameMoveService;
 
 @Entity
 public class Game {
-	
+	//game consists of id, overall time(duration), date of game start(timestamp)
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	private String createdAt;
+	private int duration;
 	
-	@ManyToMany
-	private List<Question> questions;
-	
-	@ManyToMany
-	private List<Topic> topics;
 		
 	public Game() {
 		
 	}
 
-	public Game(int id, List<Question> questions, List<Topic> topics) {
+	public Game(int id, String createdAt, int duration) {
 		this.id = id;
-		this.questions = questions;
-		this.topics = topics;
+		this.createdAt = createdAt;
+		this.duration = duration;
 	}
 
 	public int getId() {
@@ -39,19 +39,19 @@ public class Game {
 		this.id = id;
 	}
 
-	public List<Question> getQuestions() {
-		return questions;
+	public int getDuration() {
+		return duration;
 	}
 
-	public void setQuestions(List<Question> questions) {
-		this.questions = questions;
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 
-	public List<Topic> getTopics() {
-		return topics;
+	public String getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setTopics(List<Topic> topics) {
-		this.topics = topics;
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
 	}
 }

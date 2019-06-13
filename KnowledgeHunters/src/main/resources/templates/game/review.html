@@ -1,0 +1,73 @@
+<div class="jumbotron"  style="background-color: rgba(220, 220, 220, 0.8); color:black; width:66%; height:80%; margin:0px;">
+	<center>
+		<h2>Ревю на играта</h2>
+		<h4 th:text="'Точки: ' + ${gamePoints}">Точки</h4>
+		<br/><br/>
+		<h4 th:if="${#lists.isEmpty(gameMoves)}"><center>Няма игра за ревю</center></h4>
+		<table th:if="${not #lists.isEmpty(gameMoves)}" class="table" cellspacing="0" cellpadding="0" border="0" width="325" style="border-top: none;">
+		  <tr>
+		    <td style="padding: 0; padding-bottom:20px;">
+		       <table class="table" cellspacing="0" cellpadding="1" width="100%" style="margin-bottom: 0rem !important; background-color: transparent; border:0; " >
+		         <thead class="thead-light" style="text-align:center;">
+				    <tr>
+				      <th scope="col" width="30%">Въпрос</th>
+				      <th scope="col" width="25%">Даден отговор</th>
+				      <th scope="col" width="20%">Правилен отговор</th>
+				      <th scope="col" width="25%">Подсказка</th>
+				    </tr>
+				  </thead>
+		       </table>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td style="padding: 0;">
+		       <div style="width:100%; height:460px; overflow:auto;">
+		         <table class="table" cellspacing="0" cellpadding="1" width="100%"  style="border:0; margin-bottom: 0;">
+		           <tbody>
+				     <tr  th:each="gameMove: ${gameMoves}" style="background-color:rgba(220, 220, 220, 0.8);">
+					    <td scope="row" width="30%" th:text="${gameMove.question.description}" />
+					    <td width="25%">
+					    	<div class="correct" style="float:left;"><i class="fas fa-check"></i></div>
+					    	<div class="notCorrect" style="float:left;"><i class="fas fa-times"></i></div>
+					    	
+					    	<div th:if="${gameMove.question.type.getValue() == 'Отворен'}" name="answer_desc" th:text="${gameMove.answer_description}" style="margin-left: 20px; padding:5px;"></div>
+					    	<div th:if="${gameMove.question.type.getValue() != 'Отворен'}" name="answer_desc" th:text="${gameMove.answer.description}" style="margin-left: 20px; padding:5px;"></div>
+					    </td>
+					    <td width="20%" th:each="option : ${optionService.getAllOptionsByQuestionId(gameMove.question.id)}" name="correct_desc" th:if="${option?.correct}" th:text="${option.description}" />
+					    <td scope="row" width="25%" th:text="${gameMove.question.hint}" />
+					 </tr>
+				  </tbody>
+		         </table>  
+		       </div>
+		    </td>
+		  </tr>
+		</table>
+	</center>
+</div>
+<script>
+$(document).ready(function() {
+
+	$(".correct").hide();
+	$(".notCorrect").hide();
+	
+	console.log("Correct div" + $(".correct"));
+	console.log("NotCorrect div" + $(".notCorrect"));
+	
+	$("div[name='answer_desc']").each(function (index) {
+		var answer_desc = $(this).text().toLowerCase();
+		console.log("Answer desc: " + $(this).text());
+		
+		var correct_desc = $( "td[name='correct_desc']:eq(" + index + ")" ).text().toLowerCase();;
+		console.log("Correct desc: " + correct_desc);
+		if (answer_desc == correct_desc) {
+			console.log("IF");
+			
+			$(this).closest('td').children('.correct').show();
+		} else {
+			console.log("ELSE");
+			$(this).closest('td').children('.notCorrect').show();
+		}
+	});
+});
+</script>
+

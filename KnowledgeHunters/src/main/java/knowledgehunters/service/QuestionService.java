@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import knowledgehunters.model.Lesson;
 import knowledgehunters.model.Person;
 import knowledgehunters.model.Question;
+import knowledgehunters.enums.QuestionDifficulty;
 import knowledgehunters.repository.QuestionRepository;
 
 @Service
@@ -61,6 +62,24 @@ public class QuestionService {
 	public Question updateAndGetQuestion(int id, Question question) {
 		
 		return questionRepository.save(question);
+	}
+	
+	public List<Question> getQuestionsByDifficultyAndSubjectId(QuestionDifficulty difficulty, int subjectId){
+		System.out.println("IN getQuestionsByDifficultyAndSubjectId:");
+		List<Question> filteredQuestions = new ArrayList<>();
+		for (Question question : questionRepository.findAll()) {
+			
+			System.out.println("DIFFICLUTY: "+ difficulty.getValue());
+			System.out.println("SUBJECT ID: " + subjectId);
+			System.out.println("DIFFICLUTY: "+ difficulty.getValue());
+			
+			if (question.getDifficulty().equals(difficulty) && question.getTopic().getSubject().getId() == subjectId) {
+				filteredQuestions.add(question);
+				System.out.println("In loop and if");
+			}
+		}
+		filteredQuestions.forEach(q -> System.out.println(q.getDescription()));
+		return filteredQuestions;
 	}
 	
 	

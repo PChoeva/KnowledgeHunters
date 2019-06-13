@@ -1,8 +1,12 @@
 package knowledgehunters.controller;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -13,18 +17,29 @@ import org.springframework.web.bind.annotation.RestController;
 
 import knowledgehunters.enums.QuestionDifficulty;
 import knowledgehunters.enums.QuestionType;
+import knowledgehunters.model.Game;
+import knowledgehunters.model.GameMove;
 import knowledgehunters.model.Lesson;
 import knowledgehunters.model.Option;
 import knowledgehunters.model.Person;
 import knowledgehunters.model.Question;
+import knowledgehunters.model.Rank;
+import knowledgehunters.model.Ranking;
 import knowledgehunters.model.Role;
 import knowledgehunters.model.School;
+import knowledgehunters.model.Student;
 import knowledgehunters.model.Topic;
 import knowledgehunters.model.User;
+import knowledgehunters.service.GameMoveService;
+import knowledgehunters.service.GameService;
 import knowledgehunters.service.LessonService;
 import knowledgehunters.service.OptionService;
 import knowledgehunters.service.PersonService;
 import knowledgehunters.service.QuestionService;
+import knowledgehunters.service.RankingService;
+import knowledgehunters.service.RoleService;
+import knowledgehunters.service.StudentService;
+import knowledgehunters.service.SubjectService;
 import knowledgehunters.service.UserService;
 
 
@@ -37,9 +52,21 @@ public class BaseController {
 	@Autowired
 	private LessonService lessonService;
 	@Autowired
+	private SubjectService subjectService;
+	@Autowired
 	private QuestionService questionService;
 	@Autowired
 	private OptionService optionService;
+	@Autowired
+	private GameService gameService;
+	@Autowired
+	private GameMoveService gameMoveService;
+	@Autowired
+	private StudentService studentService;
+	@Autowired
+	private RoleService roleService;
+	@Autowired
+	private RankingService rankingService;
 	
 	
 	Person editedPerson;
@@ -89,6 +116,94 @@ public class BaseController {
 		}
 	}
 	
+	@PostMapping("/game/filters")
+	public void setGameFilters(HttpSession session, HttpServletResponse response, @RequestParam("difficulty") String difficulty, @RequestParam("subject") String subject) throws IOException {
+		
+		System.out.println("====Game Filters====");
+		System.out.println("Post FILTERS difficulty:" + difficulty);
+		System.out.println("Post FILTERS subject:" + subject);
+		System.out.println();
+		session.setAttribute("gameDifficulty", difficulty);
+		session.setAttribute("gameSubject", subject);
+		
+		response.sendRedirect("/game-move");
+	}
+	
+	@PostMapping("/game")
+	public void game(
+			HttpSession session,
+			HttpServletResponse response,
+			HttpServletRequest request
+			) throws IOException {
+
+		String[] questionsIds = request.getParameterValues("questions[]");
+		List<Question> questions = new ArrayList<>();
+
+		for (String questionId : questionsIds) {
+			questionService.getQuestion(Integer.parseInt(questionId)).ifPresent(q ->questions.add(q));
+		}
+
+		long createdAt = new Date().getTime();
+		Game game = gameService.saveGame(new Game(0, String.valueOf(createdAt), 0));
+		
+		System.out.println("===In /game post controller===");
+		questions.forEach(q -> System.out.println(q.getId() + " | " + q.getDescription()));
+
+		for (Question question : questions) {
+			if (question.getType() == QuestionType.OPEN) {
+				String optionStr = request.getParameter("option-" + question.getId());
+				
+				gameMoveService.addGameMove(new GameMove(0, game, studentService.getStudentByPerson(personService.getSessionPerson()), question, null, optionStr, 0, null));
+				
+				System.out.println("Option: " + optionStr);
+			} else {
+				String radio = request.getParameter("radio-" + question.getId());
+
+				optionService
+					.getOption(Integer.parseInt(radio))
+					.ifPresent(answer -> gameMoveService.addGameMove(
+							new GameMove(
+									0,
+									game,
+									studentService.getStudentByPerson(personService.getSessionPerson()),
+									question,
+									answer,
+									null,
+									0,
+									null
+							)
+				));
+				System.out.println("Radio: " + radio);
+			}
+		}
+		int gamePoints = gameService.calcGamePoints(game);
+		
+		if (personService.getSessionPerson().isStudent() &&  studentService.getStudentByPerson(personService.getSessionPerson()) != null) {
+			Student currentStudent = studentService.getStudentByPerson(personService.getSessionPerson());
+			System.out.println("Curr Student: " + currentStudent.getPerson().getDisplayName());
+			currentStudent.setPoints(currentStudent.getPoints() + gamePoints);
+			
+
+			studentService.setStudentRankByCurrentPoints(currentStudent);
+			studentService.updateStudent(currentStudent.getId(), currentStudent);
+			
+			int subjectId = Integer.parseInt((String) session.getAttribute("gameSubject"));
+			Ranking createdRanking = rankingService.findRankingBySubjectIdAndStudent(subjectId, currentStudent);
+			if (createdRanking == null) {
+				subjectService.getSubject(subjectId).ifPresent(subject -> rankingService.addRanking(new Ranking(0, subject, currentStudent, gamePoints)));				
+			} else {
+				createdRanking.setPoints(createdRanking.getPoints() + gamePoints);
+				rankingService.updateRanking(createdRanking.getId(), createdRanking);
+			}
+			
+			
+		}
+				
+		session.setAttribute("gamePoints", gamePoints);
+		session.setAttribute("gameId", game.getId());
+		response.sendRedirect("/game/review");
+	}
+
 	@PostMapping("/profile")
 	public void saveProfile(HttpSession session, HttpServletResponse response, @RequestParam("id") String id, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password) throws IOException {
 	
@@ -147,8 +262,20 @@ public class BaseController {
 		
 		System.out.println("isTeacher: " + isTeacher);
 		
-		userService.addUser(new User(0, username, password, new Role(3,null)));
-		personService.addPerson(new Person(0,userService.findUser(username), new School(school,null, null), displayName, email, !isTeacher));
+		if (isTeacher) {
+			roleService.getRole(2).ifPresent(role -> userService.addUser(new User(0, username, password, role)));
+		} else {
+			roleService.getRole(3).ifPresent(role -> userService.addUser(new User(0, username, password, role)));
+		}
+		System.out.println("User name: " + userService.findUser(username).getUsername());
+		System.out.println("User role: " + userService.findUser(username).getRole().getName());
+		Person registeredPerson = personService.savePerson(new Person(0, userService.findUser(username), new School(school,null, null), displayName, email, !isTeacher));
+		System.out.println("registered Person Name: " + registeredPerson.getDisplayName());
+		System.out.println("registered Person Role: " + registeredPerson.getUser().getRole().getName());
+		if (registeredPerson.isStudent())	{
+			studentService.addStudent(new Student(0, registeredPerson, new Rank(1,null, 0), 0));
+		}
+		
 		session.setAttribute("successMsg", "Успешно регистриране!");
 		response.sendRedirect("/login"); 
 	}

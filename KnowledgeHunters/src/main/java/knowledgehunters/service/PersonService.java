@@ -64,7 +64,10 @@ public class PersonService {
 		return this.sessionPerson = null;
 	}
 	
-	
+	public Person savePerson(Person person) {
+		
+		return personRepository.save(person);
+	}
 }
 
 

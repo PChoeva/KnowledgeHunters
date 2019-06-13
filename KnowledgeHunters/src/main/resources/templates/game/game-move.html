@@ -1,0 +1,82 @@
+<div class="jumbotron" style="background-color: rgba(220, 220, 220, 0.8); color:black; width:600px; height:40%; margin:0px; padding: 20px !important;">
+	<div class="row justify-content-md-center">
+		<div class="col-12">
+			<center><h4 th:text="${gameSubject}">Предмет</h4></center>
+			<center><h6 th:text="${gameDifficulty}">Сложност</h6></center>
+			<br/>
+		</div>
+		<form class="col-12 align-self-center" th:action="@{/game}" method="post" style="position:absolute; top:160px; bottom:10px;">
+			<div class="row">
+				<div class="col-12" th:each="question : ${questions}" th:name="'question-' + ${question.id}">
+												
+					<input type="hidden" name="questions[]" th:value="${question?.id}">
+					<div class="col-12 form-control" th:text="${question.description}"></div>
+					<div class="row justify-content-md-center">
+						<div class="col-5" th:each="option : ${optionService.getAllOptionsByQuestionId(question.id)}" style="margin: 0 20px !important;">
+							<input class="form-control" th:if="${question.type.getValue() == 'Отворен'}" th:name="'option-' + ${question.id}" placeholder="Въведи отговор">
+							
+							<input type="radio" th:if="${question.type.getValue() != 'Отворен'}" th:name="'radio-' +  ${question.id}" th:value="${option?.id}" style="width:20px; height:50px;float:left; margin-right: 10px;"/>
+							<div class="form-control" th:if="${question.type.getValue() != 'Отворен'}" th:text="${option.description}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+ 			<br/><br/>
+		    <div class="row align-items-end" style="position:absolute; bottom: 0; width:100%;">
+			   <div class="col-auto mr-auto">
+			  		<input type="button" id="previous" value="Предишен" class="btn close_btn" style="width:150px;">
+			  </div>
+			  <div class="col-auto ml-auto">
+			  		<input type="button" id="next" value="Следващ" class="btn close_btn" style="width:150px;">
+			  </div>		
+			</div>
+		</form>  
+	</div>
+</div>
+<script>
+$(document).ready(function() {
+	
+	$("div[name^=question-]").hide();
+	$("#previous").hide();
+	$("div[name^=question-]").first().show();
+	var lastQuestion = $("div[name^=question-]").last();
+	
+	$("#next").on("click", function(){
+		if ($(this).val() == "Край") $("form").submit();
+		
+		$("#previous").show();
+		
+		var currentQuestion = $("div[name^=question-]:visible").first(); 
+		$("div[name^=question-]").hide();	
+		var nextQuestion = currentQuestion.next();
+		
+		console.log("Next:" + nextQuestion[0]);
+		console.log("Last:" + lastQuestion[0]);
+		if (typeof nextQuestion.next()[0] === "undefined") {
+			console.log("ELSE -> Finish");
+			$(this).val("Край");
+		} else {
+			$(this).val("Следващ");
+			console.log("IF -> next");
+		}
+		nextQuestion.show();
+	})
+	
+	$("#previous").on("click", function(){
+		var currentQuestion = $("div[name^=question-]:visible").first(); 
+		$("div[name^=question-]").hide();	
+		var nextQuestion = currentQuestion.prev();
+		
+		console.log("Next:" + nextQuestion[0]);
+		console.log("Last:" + lastQuestion[0]);
+		if (typeof nextQuestion.prev()[0] === "undefined") {
+			console.log("ELSE -> previous no");
+			$(this).hide();
+		} else {
+			console.log("IF -> previous");
+			$("#next").val("Следващ");
+		}
+		nextQuestion.show();
+	})
+});
+</script>

@@ -3,8 +3,16 @@ package knowledgehunters.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,46 +26,68 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import knowledgehunters.enums.QuestionDifficulty;
 import knowledgehunters.enums.QuestionType;
+import knowledgehunters.model.GameMove;
 import knowledgehunters.model.Lesson;
 import knowledgehunters.model.Option;
 import knowledgehunters.model.Person;
+import knowledgehunters.model.Question;
+import knowledgehunters.model.Ranking;
 import knowledgehunters.model.School;
+import knowledgehunters.model.Student;
+import knowledgehunters.model.Subject;
+import knowledgehunters.repository.StudentRepository;
+import knowledgehunters.service.GameMoveService;
+import knowledgehunters.service.GameService;
 import knowledgehunters.service.LessonService;
 import knowledgehunters.service.OptionService;
 import knowledgehunters.service.PersonService;
 import knowledgehunters.service.QuestionService;
+import knowledgehunters.service.RankingService;
 import knowledgehunters.service.RoleService;
 import knowledgehunters.service.SubjectService;
 import knowledgehunters.service.TopicService;
 import knowledgehunters.service.UserService;
 import knowledgehunters.service.SchoolService;
+import knowledgehunters.service.StudentService;
 
 @Controller
 @SpringBootApplication
 public class MainController {
 	
 	@Autowired
-	UserService userService;
+	private UserService userService;
 	@Autowired
-	PersonService personService;
+	private PersonService personService;
 	@Autowired
-	SubjectService subjectService;
+	private StudentService studentService;
 	@Autowired
-	SchoolService schoolService;
+	private SubjectService subjectService;
 	@Autowired
-	TopicService topicService;
+	private SchoolService schoolService;
 	@Autowired
-	LessonService lessonService;
+	private TopicService topicService;
 	@Autowired
-	RoleService roleService;
+	private LessonService lessonService;
 	@Autowired
-	QuestionService questionService;
+	private RoleService roleService;
 	@Autowired
-	OptionService optionService;
+	private QuestionService questionService;
+	@Autowired
+	private OptionService optionService;
+	@Autowired
+	private GameService gameService;
+	@Autowired
+	private GameMoveService gameMoveService;
+	@Autowired
+	private RankingService rankingService;
+	
+	@Autowired
+	StudentRepository studentRepository;
 	
 	private static String ADMIN = "Admin";
 	private static String TEACHER = "Teacher";
 	private static String STUDENT = "Student";
+	private static int NUMBER_OF_QUESTIONS_PER_GAME = 5;
 	
 	
 	@GetMapping(value= {"/", "/index"})
@@ -442,6 +472,221 @@ System.out.println("---------in questionIndex controller");
 		model.addAttribute("lessons", lessonService.getAllLessons());
 		return "base-layout";
 	}
+	
+	@GetMapping("/game/filters")
+	public String gameFilters(HttpSession session, Model model) {
+		
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER, STUDENT)))) {
+			return "base-layout";
+		}
+		
+		List<QuestionDifficulty> questionDifficulties = Arrays.asList(QuestionDifficulty.values());
+		System.out.println("====Question difficulties====");
+		questionDifficulties.forEach(d -> System.out.println(d.getValue()));
+		model.addAttribute("difficulties", questionDifficulties);
+		
+		
+		List<Question> questions = questionService.getAllQuestions();
+		List<Subject> subjects = subjectService.getAllSubjects();
+		
+		Map<Integer, Integer> subjectIDsWithNumberOfQuestions = new HashMap<Integer, Integer>();
+		
+		for (Subject subject: subjects) {
+			subjectIDsWithNumberOfQuestions.put(subject.getId(), 0);
+		}
+		
+		for (Question question : questions) {
+			int currNumberOfQuestions = subjectIDsWithNumberOfQuestions.get(question.getTopic().getSubject().getId());
+			subjectIDsWithNumberOfQuestions.put(question.getTopic().getSubject().getId(), currNumberOfQuestions + 1);
+		}
+		
+		subjectIDsWithNumberOfQuestions.entrySet().forEach(entry->{
+			    System.out.println(entry.getKey() + " " + entry.getValue());  
+		});
+		
+		
+		List<Subject> subjectsWith5orMoreQuestions = new ArrayList<>();
+		subjectIDsWithNumberOfQuestions.entrySet().forEach(entry->{
+		    if (entry.getValue() >= NUMBER_OF_QUESTIONS_PER_GAME) {
+		    	subjectService.getSubject(entry.getKey()).ifPresent(subject ->subjectsWith5orMoreQuestions.add(subject));		    	
+		    }
+		});
+		System.out.println("====subjectsWith5orMoreQuestions====");
+		subjectsWith5orMoreQuestions.forEach(s -> System.out.println(s.getId() + " | " + s.getName()));
+		
+		model.addAttribute("subjects", subjectsWith5orMoreQuestions);
+		model.addAttribute("sectionTitle", "Избери");		
+		model.addAttribute("view", "game/filters");
+		return "base-layout";
+	}
+	
+	
+	@GetMapping("/game/filters/subject/{id}")
+	public String gameFiltersSubject(HttpSession session, Model model, @PathVariable int id) {
+		
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER, STUDENT)))) {
+			return "base-layout";
+		}
+		
+		
+		//Set<QuestionDifficulty> questionDifficultiesWithQuestions = new HashSet<>();
+		
+		HashMap<QuestionDifficulty, Integer> questionDifficultiesCountQuestions = new HashMap<QuestionDifficulty, Integer>();
+		questionDifficultiesCountQuestions.put(QuestionDifficulty.EASY, 0);
+		questionDifficultiesCountQuestions.put(QuestionDifficulty.MEDIUM, 0);
+		questionDifficultiesCountQuestions.put(QuestionDifficulty.HARD, 0);
+		List<Question> questions = questionService.getAllQuestions();
+		for (Question question :questions) {
+			if (question.getTopic().getSubject().getId() == id) {
+				questionDifficultiesCountQuestions.put(question.getDifficulty(), questionDifficultiesCountQuestions.get(question.getDifficulty()) + 1);
+			}
+		}
+		Set<QuestionDifficulty> difficultiesWithNQuestions =  new HashSet<>();
+		
+//		for (int i = 0; i < NUMBER_OF_QUESTIONS_PER_GAME ; i++) {
+//			questionDifficultiesCountQuestions.values().remove(i);
+//		}
+		
+		for (Map.Entry<QuestionDifficulty, Integer> entry : questionDifficultiesCountQuestions.entrySet()) {
+		    if (entry.getValue() >= NUMBER_OF_QUESTIONS_PER_GAME) {
+		    	difficultiesWithNQuestions.add(entry.getKey());
+		    }
+		}
+		
+		
+		model.addAttribute("difficulties", difficultiesWithNQuestions);
+		return "ajax-layout";
+		/*
+		List<QuestionDifficulty> questionDifficulties = Arrays.asList(QuestionDifficulty.values());
+		System.out.println("====Question difficulties====");
+		questionDifficulties.forEach(d -> System.out.println(d.getValue()));
+		model.addAttribute("difficulties", questionDifficulties);
+		
+		List<Question> questions = questionService.getAllQuestions();
+		List<Subject> subjects = subjectService.getAllSubjects();
+		
+		Map<Integer, Integer> subjectIDsWithNumberOfQuestions = new HashMap<Integer, Integer>();
+		
+		for (Subject subject: subjects) {
+			subjectIDsWithNumberOfQuestions.put(subject.getId(), 0);
+		}
+		
+		for (Question question : questions) {
+			int currNumberOfQuestions = subjectIDsWithNumberOfQuestions.get(question.getTopic().getSubject().getId());
+			subjectIDsWithNumberOfQuestions.put(question.getTopic().getSubject().getId(), currNumberOfQuestions + 1);
+		}
+		
+		subjectIDsWithNumberOfQuestions.entrySet().forEach(entry->{
+			    System.out.println(entry.getKey() + " " + entry.getValue());  
+		});
+		
+		
+		List<Subject> subjectsWith5orMoreQuestions = new ArrayList<>();
+		subjectIDsWithNumberOfQuestions.entrySet().forEach(entry->{
+		    if (entry.getValue() >= NUMBER_OF_QUESTIONS_PER_GAME) {
+		    	subjectService.getSubject(entry.getKey()).ifPresent(subject ->subjectsWith5orMoreQuestions.add(subject));		    	
+		    }
+		});
+		System.out.println("====subjectsWith5orMoreQuestions====");
+		subjectsWith5orMoreQuestions.forEach(s -> System.out.println(s.getId() + " | " + s.getName()));
+		
+		model.addAttribute("subjects", subjectsWith5orMoreQuestions);
+		*/
+	}
+	
+	@GetMapping("/game-move")
+	public String gameMove(HttpSession session, Model model) {
+		
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER, STUDENT)))) {
+			return "base-layout";
+		}
+		
+		String difficulty = (String) session.getAttribute("gameDifficulty");
+		String subjectId = (String) session.getAttribute("gameSubject");
+		
+		QuestionDifficulty diff = QuestionDifficulty.valueOf(difficulty);
+		
+		List<Question> filteredQuestions = questionService.getQuestionsByDifficultyAndSubjectId(diff, Integer.parseInt(subjectId));
+		System.out.println("====GET FILTERED QUESTIONS====");
+		filteredQuestions.forEach(q -> System.out.println("Filtered Q:" + q.getDescription()));
+		List<Question> firstNQuestions = filteredQuestions.stream().limit(NUMBER_OF_QUESTIONS_PER_GAME).collect(Collectors.toList());
+		
+		firstNQuestions.forEach(q -> System.out.println("First N Q:" + q.getDescription()));
+
+		model.addAttribute("questions", firstNQuestions);
+		model.addAttribute("optionService", optionService);
+		model.addAttribute("typeOpen", QuestionType.OPEN);
+		String subjectName = subjectService.getSubject(Integer.parseInt(subjectId)).get().getName();
+		model.addAttribute("gameSubject", "Тема - " + subjectName);		
+		model.addAttribute("gameDifficulty", "Сложност - " + diff.getValue());
+		model.addAttribute("view", "game/game-move");
+		return "base-layout";
+	}
+	
+	@GetMapping("/game/review")
+	public String gameReview(HttpSession session, Model model) {
+		
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER, STUDENT)))) {
+			return "base-layout";
+		}
+		// smqtame tochkite i sravnqvame otgovori
+		
+		//vypros, daden otg(tikche/X), veren otg(samo ako negoviq e greshen)  --> v tablica
+		int gameId = (int) session.getAttribute("gameId");
+		int gamePoints = (int) session.getAttribute("gamePoints");
+		List<GameMove> gameMoves = gameMoveService.getGameMovesByGameId(gameId);
+		
+		model.addAttribute("gameMoves", gameMoves);
+		model.addAttribute("gamePoints", gamePoints);
+		model.addAttribute("optionService", optionService);
+		model.addAttribute("view", "game/review");
+		return "base-layout";
+	}
+	
+	@GetMapping("/ranking/subject/{id}")
+	public String rankingBySubject(HttpSession session, Model model, @PathVariable int id) {
+
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER, STUDENT)))) {
+			return "base-layout";
+		}
+		
+		List<Student> students;
+		if (id == 0) students = studentService.getAllStudents();
+		else {
+			students = new ArrayList<>();
+			List<Ranking> rankings = rankingService.findAllRankingsBySubjectId(id);
+			if (rankings != null) {
+				for (Ranking ranking :rankings) {
+					ranking.getStudent().setPoints(ranking.getPoints());
+					students.add(ranking.getStudent());
+				}
+				students.forEach(s -> System.out.println("Student: " + s.getPerson().getDisplayName() + " | points: " + s.getPoints()));
+			}
+			
+		}
+		
+		
+		
+		Collections.sort(students, new Comparator<Student>(){
+		    public int compare(Student s1, Student s2) {
+		    	if (s1.getPoints() > s2.getPoints()) return -1;
+		    	if (s1.getPoints() < s2.getPoints()) return 1;
+		        return 0;
+		    }
+		});
+
+		model.addAttribute("students", students);
+		model.addAttribute("currSubject", id);
+		model.addAttribute("subjects", subjectService.getAllSubjects());
+		model.addAttribute("view", "game/ranking");
+		return "base-layout";
+	}
+	
 	
 	@GetMapping("/error")
 	public String error(Model model) {

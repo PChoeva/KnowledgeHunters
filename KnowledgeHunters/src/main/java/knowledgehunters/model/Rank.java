@@ -12,16 +12,16 @@ public class Rank {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private String name;
-	private int points; 
+	private int minPoints; 
 
 	public Rank() {
 		
 	}
 
-	public Rank(int id, String name, int points) {
+	public Rank(int id, String name, int minPoints) {
 		this.id = id;
 		this.name = name;
-		this.points = points;
+		this.minPoints = minPoints;
 	}
 
 	public int getId() {
@@ -40,11 +40,11 @@ public class Rank {
 		this.name = name;
 	}
 
-	public int getPoints() {
-		return points;
+	public int getMinPoints() {
+		return minPoints;
 	}
 
-	public void setPoints(int points) {
-		this.points = points;
+	public void setMinPoints(int minPoints) {
+		this.minPoints = minPoints;
 	}	
 }

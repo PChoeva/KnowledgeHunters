@@ -21,18 +21,11 @@
 			<li><a href="/home" th:href="@{/home}">Начало</a></li>
 			<li><a href="/profile" th:href="@{/profile}">Профил</a></li>
 			<li><a href="/user/change-password">Промени парола</a></li>
-			<li><a href="#">Класация</a></li>
+			<li><a href="/ranking/subject/0">Класация</a></li>
 			<li th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}"><a href="/lessons/index" th:href="@{/lessons/index}">Моите уроци</a></li>
 			<li th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}"><a href="/questions/index" th:href="@{/questions/index}">Моите въпроси</a></li>
 			<li th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}"><a href="/userslist" th:href="@{/userslist}">Списък потребители</a></li>
 			<li th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}"><a th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}" href="/teachers-for-approval" th:href="@{/teachers-for-approval}">Учители за одобрение</a></li>
-			
-			<!-- 
-			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}" href="/lessons/index" th:href="@{/lessons/index}"> <li>Моите уроци</li></a>
-			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() != 'Student'}" href="/questions/index" th:href="@{/questions/index}"> <li>Моите въпроси</li></a>
-			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}" href="/userslist" th:href="@{/userslist}"> <li>Списък потребители</li></a>
-			<a th:if="${@personService.getSessionPerson().getUser().getRole().getName() == 'Admin'}" href="/teachers-for-approval" th:href="@{/teachers-for-approval}"> <li>Учители за одобрение</li></a>
-			-->
 			<br/><br/><br/><br/>
 			<li><a href="/logout">Излез</a></li>
 		</ul>
@@ -42,7 +35,7 @@
 	<div class="navbar navbar-default navbar-static-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
-				<a th:href="@{/}" class="navbar-brand">SOFTUNI BLOG</a>
+				<a th:href="@{/}" class="navbar-brand">BLOG</a>
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>

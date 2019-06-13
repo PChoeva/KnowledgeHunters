@@ -16,25 +16,13 @@
 	        <div class="form-group row">
 	        	<select class="form-control col-md-4 col-sm-12" name="topic" title="Задължително поле" id="topic" style="width:100%; height: 50px;">
 	        		<option th:each="topic : ${topics}" th:selected="${topic.id == question?.topic?.id}" th:value="${topic.id}" th:text="${topic.name}"></option>
-	        		<!-- 
-					<option th:each="topic : ${topics}" th:if="${topic.id == question?.topic?.id}" th:value="${question?.topic?.id}" th:text="${topic.name}">...</option>
-					<option th:each="topic : ${topics}" th:if="${topic.id != question?.topic?.id}" th:value="${topic.id}" th:text="${topic.name}"></option>
-					 -->
 				</select>
 				<select class="form-control col-md-3 col-sm-12 offset-md-1" name="difficulty" title="Задължително поле" id="difficulty" style="width:100%; height: 50px;">
 					<option th:each="difficulty : ${difficulties}" th:selected="${difficulty == question?.difficulty}" th:value="${difficulty}" th:text="${difficulty.getValue()}"></option>
-					<!-- 
-					<option th:each="difficulty : ${difficulties}" th:if="${difficulty == question?.difficulty}" th:value="${question?.difficulty}" th:text="${difficulty.getValue()}">...</option>
-					<option th:each="difficulty : ${difficulties}" th:if="${difficulty != question?.difficulty}" th:value="${difficulty}" th:text="${difficulty.getValue()}"></option>
-					 -->
 				</select>
 				<select class="form-control col-md-3 col-sm-12 offset-md-1" name="type" title="Задължително поле" id="type" style="width:100%; height: 50px;">
 					
 					<option th:each="type : ${types}" th:selected="${type == question?.type}" th:value="${type?.name()}" th:text="${type.getValue()}">...</option>
-					<!-- 
-					<option th:each="type : ${types}" th:if="${type == question?.type}" th:value="${question?.type?.name()}" th:text="${type.getValue()}">...</option>
-					<option th:each="type : ${types}" th:if="${type != question?.type}" th:value="${type?.name()}" th:text="${type.getValue()}"></option>
-					 -->
 				</select>
 	        </div>
 	        <div class="form-group row justify-content-md-center">
@@ -128,7 +116,6 @@ $(document).ready(function() {
     	}
     	
     	$("input[name='save']").prop('disabled', !canSave);
-    	/*$("input[name='save']").disabled = canSave;*/
     });
 	$('form').trigger('change');
     
@@ -137,8 +124,6 @@ $(document).ready(function() {
 	setQuestionType();
     
     document.getElementById('type').onchange = function() {
-    	
-    	//changeQuestionType($("#type option:selected").val());
     	changeQuestionType($("select#type option").filter(":selected").val());
     }
 });
@@ -170,9 +155,6 @@ function setQuestionType() {
 		case "SORT": break;
 		case null:{
 			$(".question-filled").hide();
-			//changeQuestionType($("#type option:selected").val());
-			
-			//$("select#type option").filter(":selected").val();
 			changeQuestionType($("select#type option").filter(":selected").val());
 			
 			break;

@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import knowledgehunters.model.Option;
-import knowledgehunters.model.Person;
-import knowledgehunters.model.Question;
 import knowledgehunters.repository.OptionRepository;
 
 @Service
@@ -43,7 +41,6 @@ public class OptionService {
 	}
 	public List<Option> getAllOptionsByQuestionId(int questionId){
 		List<Option> optionsByQuestionId = new ArrayList<>();
-//		System.out.println("getAllQuestionsByAuthor: " + questionRepository.findAll());
 		for (Option option: optionRepository.findAll()) {
 			if (option.getQuestion().getId() == questionId) {
 				optionsByQuestionId.add(option);
