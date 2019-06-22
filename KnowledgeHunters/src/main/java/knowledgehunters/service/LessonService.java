@@ -1,6 +1,8 @@
 package knowledgehunters.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import knowledgehunters.model.Lesson;
 import knowledgehunters.model.Person;
+import knowledgehunters.model.Student;
 import knowledgehunters.repository.LessonRepository;
 
 @Service
@@ -50,7 +53,8 @@ public class LessonService {
 			}
 		}
 		lessonsByAuthor.forEach(l -> System.out.println("getAllLessonsByAuthor -> Lesson: " + l));
-		return lessonsByAuthor;
+
+		return sortedLessons(lessonsByAuthor);
 	}
 	
 	public List<Lesson> getAllLessonsBySubjectId(int subjectId){
@@ -62,8 +66,25 @@ public class LessonService {
 			}
 		}
 		lessonsBySubject.forEach(l -> System.out.println("getAllLessonsBySubjectId -> Lesson: " + l));
-		return lessonsBySubject;
+
+		return sortedLessons(lessonsBySubject);
 	}
+	
+	public List<Lesson> sortedLessons(List<Lesson> lessons) {
+		Collections.sort(lessons, new Comparator<Lesson>(){
+		    public int compare(Lesson lesson1, Lesson lesson2) {
+		    	if (lesson1.getTitle().compareToIgnoreCase(lesson2.getTitle()) > 0) {
+		    		return 1;
+		    	}
+		    	if (lesson1.getTitle().compareToIgnoreCase(lesson2.getTitle()) < 0) {
+		    		return -1;
+		    	}
+		        return 0;
+		    }
+		});
+		return lessons;
+	}
+	
 }
 
 

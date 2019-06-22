@@ -5,14 +5,12 @@ public enum QuestionDifficulty {
    
     private String value; 
     
-    public String getValue() 
-    { 
+    public String getValue() { 
         return this.value; 
     } 
   
     // enum constructor - cannot be public or protected 
-    private QuestionDifficulty(String value) 
-    { 
+    private QuestionDifficulty(String value) { 
         this.value = value; 
     } 
 }

@@ -233,7 +233,7 @@ public class BaseController {
 	}
 	
 	@PostMapping("/change-password")
-	public void saveProfile(HttpSession session, HttpServletResponse response, @RequestParam("password-old") String passwordОld, @RequestParam("password") String passwordNew, @RequestParam("password-repeat") String passwordNewRepeat) throws IOException {
+	public void savePassword(HttpSession session, HttpServletResponse response, @RequestParam("password-old") String passwordОld, @RequestParam("password") String passwordNew, @RequestParam("password-repeat") String passwordNewRepeat) throws IOException {
 		Person sessionPerson = personService.getSessionPerson();
 		sessionPerson.getUser().setPassword(passwordNew);
 		userService.updateUser(sessionPerson.getUser().getId(), sessionPerson.getUser());

@@ -1,6 +1,8 @@
 package knowledgehunters.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +54,8 @@ public class QuestionService {
 			}
 		}
 		questionsByAuthor.forEach(q -> System.out.println("getAllQuestionsByAuthor -> Question: " + q));
-		return questionsByAuthor;
+
+		return sortedQuestions(questionsByAuthor);
 	}
 		
 	public Question saveQuestion(Question question) {
@@ -82,7 +85,20 @@ public class QuestionService {
 		return filteredQuestions;
 	}
 	
-	
+	public List<Question> sortedQuestions(List<Question> questions) {
+		Collections.sort(questions, new Comparator<Question>(){
+		    public int compare(Question q1, Question q2) {
+		    	if (q1.getDescription().compareToIgnoreCase(q2.getDescription()) > 0) {
+		    		return 1;
+		    	}
+		    	if (q1.getDescription().compareToIgnoreCase(q2.getDescription()) < 0) {
+		    		return -1;
+		    	}
+		        return 0;
+		    }
+		});
+		return questions;
+	}
 }
 
 
