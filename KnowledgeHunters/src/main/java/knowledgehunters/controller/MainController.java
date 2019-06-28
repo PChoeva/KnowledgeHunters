@@ -5,15 +5,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -409,7 +422,7 @@ System.out.println("---------in questionIndex controller");
 	}
 	
 	@GetMapping("/teachers-for-approval")
-	public String teachersForApproval(Model model) {
+	public String teachersForApproval(HttpSession session, Model model) {
 
 		if (isLogged(model)) return "start-layout"; 
 		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN)))) {
@@ -423,6 +436,11 @@ System.out.println("---------in questionIndex controller");
 			}
 		}
 		
+		if (session.getAttribute("successMsg") != null) {
+			model.addAttribute("successMsg", session.getAttribute("successMsg"));
+			session.removeAttribute("successMsg");
+		}
+		
 		model.addAttribute("view", "user/teachers-for-approval");
 		model.addAttribute("teachers", teachersForApproval);
 		return "base-layout";
@@ -430,7 +448,7 @@ System.out.println("---------in questionIndex controller");
 	
 	
 	@GetMapping("/teachers-for-approval/approve/{id}")
-	public String teachersApprove(HttpSession session, Model model, @PathVariable int id) {
+	public String teachersApprove(HttpSession session, Model model, @PathVariable int id) throws AddressException, MessagingException {
 
 		if (isLogged(model)) return "start-layout"; 
 		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN)))) {
@@ -443,8 +461,13 @@ System.out.println("---------in questionIndex controller");
 		teacher.setIsApproved(true);
 		
 		personService.updatePerson(id, teacher);
+		
+		String email = teacher.getEmail();
+		sendmail(email);
+		
 		System.out.println("teachersApprove->getApproved: " + personService.getPerson(id).get().getIsApproved());
-		session.setAttribute("successMsg", "Успешно одобряване!");
+		session.setAttribute("successMsg", "Учителят " + teacher.getDisplayName() + " е успешно одобрен и ще бъде известен на посочения от него E-mail!");
+		System.out.println("TEACHERS APPROVAL: " + session.getAttribute("successMsg"));
 		return "redirect:/teachers-for-approval";
 	}
 	
@@ -733,4 +756,64 @@ System.out.println("---------in questionIndex controller");
 		model.addAttribute("errorCode", "403");
 		model.addAttribute("errorMessage", "Нямате права за тази страница!");
 	}
+	
+	
+	
+	
+	@GetMapping(value = "/sendemail")
+	public String sendEmail(Model model) throws AddressException, MessagingException {
+
+		if (isLogged(model)) return "start-layout"; 
+		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN)))) {
+			return "base-layout";
+		}
+	   sendmail("pepi22@mail.bg");
+	   
+	  
+	   model.addAttribute("successMsg", "Учителят е успешно одобрен и ще бъде известен за това!");
+	   
+	   model.addAttribute("view", "user/home");
+	   System.out.println("---Entered email controller!");
+	   return "base-layout"; 
+	}
+	
+	private void sendmail(String email) throws AddressException, MessagingException  {
+		  Properties props = new Properties();
+		  String applicationEmail = "petya.choeva@gmail.com";
+		  String applicationEmailPassword = "";
+		  
+		  props.put("mail.smtp.auth", "true");
+		  props.put("mail.smtp.starttls.enable", "true");
+		  props.put("mail.smtp.host", "smtp.gmail.com");
+		  props.put("mail.smtp.port", "587");
+		  System.out.println("After props mail");
+		  Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+		     protected PasswordAuthentication getPasswordAuthentication() {
+		        return new PasswordAuthentication(applicationEmail, applicationEmailPassword);
+		     }
+		  });
+		   
+		  System.out.println("After session mail");
+		  Message msg = new MimeMessage(session);
+		  msg.setFrom(new InternetAddress("petya.choeva@gmail.com", false));
+		  System.out.println("After my adress p.c.@gmail.com");
+		  
+		  msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+		  msg.setSubject("KnowledgeHunters approval email");
+		  msg.setContent("KnowledgeHunters approval email", "text/html");
+		  msg.setSentDate(new Date());
+		   		   
+		  MimeBodyPart messageBodyPart = new MimeBodyPart();
+		  messageBodyPart.setContent("Вашият учителски профил в 'Търсачи на знания' е одобрен! Моля влезте от следния адрес: http://localhost:8080/login", "text/plain; charset=UTF-8");
+
+		  Multipart multipart = new MimeMultipart();
+		  multipart.addBodyPart(messageBodyPart);
+		  msg.setContent(multipart);
+			  
+		  Transport.send(msg);
+		}
+	
+	
+	
+	
 }
