@@ -538,6 +538,19 @@ System.out.println("---------in questionIndex controller");
 		System.out.println("====subjectsWith5orMoreQuestions====");
 		subjectsWith5orMoreQuestions.forEach(s -> System.out.println(s.getId() + " | " + s.getName()));
 		
+		
+		Collections.sort(subjectsWith5orMoreQuestions, new Comparator<Subject>(){
+		    public int compare(Subject s1, Subject s2) {
+		    	if (s1.getName().compareToIgnoreCase(s2.getName()) > 0) {
+		    		return 1;
+		    	}
+		    	if (s1.getName().compareToIgnoreCase(s2.getName()) < 0) {
+		    		return -1;
+		    	}
+		        return 0;
+		    }
+		});
+		
 		model.addAttribute("subjects", subjectsWith5orMoreQuestions);
 		model.addAttribute("sectionTitle", "Избери");		
 		model.addAttribute("view", "game/filters");
@@ -553,9 +566,6 @@ System.out.println("---------in questionIndex controller");
 			return "base-layout";
 		}
 		
-		
-		//Set<QuestionDifficulty> questionDifficultiesWithQuestions = new HashSet<>();
-		
 		HashMap<QuestionDifficulty, Integer> questionDifficultiesCountQuestions = new HashMap<QuestionDifficulty, Integer>();
 		questionDifficultiesCountQuestions.put(QuestionDifficulty.EASY, 0);
 		questionDifficultiesCountQuestions.put(QuestionDifficulty.MEDIUM, 0);
@@ -568,10 +578,6 @@ System.out.println("---------in questionIndex controller");
 		}
 		Set<QuestionDifficulty> difficultiesWithNQuestions =  new HashSet<>();
 		
-//		for (int i = 0; i < NUMBER_OF_QUESTIONS_PER_GAME ; i++) {
-//			questionDifficultiesCountQuestions.values().remove(i);
-//		}
-		
 		for (Map.Entry<QuestionDifficulty, Integer> entry : questionDifficultiesCountQuestions.entrySet()) {
 		    if (entry.getValue() >= NUMBER_OF_QUESTIONS_PER_GAME) {
 		    	difficultiesWithNQuestions.add(entry.getKey());
@@ -581,42 +587,6 @@ System.out.println("---------in questionIndex controller");
 		
 		model.addAttribute("difficulties", difficultiesWithNQuestions);
 		return "ajax-layout";
-		/*
-		List<QuestionDifficulty> questionDifficulties = Arrays.asList(QuestionDifficulty.values());
-		System.out.println("====Question difficulties====");
-		questionDifficulties.forEach(d -> System.out.println(d.getValue()));
-		model.addAttribute("difficulties", questionDifficulties);
-		
-		List<Question> questions = questionService.getAllQuestions();
-		List<Subject> subjects = subjectService.getAllSubjects();
-		
-		Map<Integer, Integer> subjectIDsWithNumberOfQuestions = new HashMap<Integer, Integer>();
-		
-		for (Subject subject: subjects) {
-			subjectIDsWithNumberOfQuestions.put(subject.getId(), 0);
-		}
-		
-		for (Question question : questions) {
-			int currNumberOfQuestions = subjectIDsWithNumberOfQuestions.get(question.getTopic().getSubject().getId());
-			subjectIDsWithNumberOfQuestions.put(question.getTopic().getSubject().getId(), currNumberOfQuestions + 1);
-		}
-		
-		subjectIDsWithNumberOfQuestions.entrySet().forEach(entry->{
-			    System.out.println(entry.getKey() + " " + entry.getValue());  
-		});
-		
-		
-		List<Subject> subjectsWith5orMoreQuestions = new ArrayList<>();
-		subjectIDsWithNumberOfQuestions.entrySet().forEach(entry->{
-		    if (entry.getValue() >= NUMBER_OF_QUESTIONS_PER_GAME) {
-		    	subjectService.getSubject(entry.getKey()).ifPresent(subject ->subjectsWith5orMoreQuestions.add(subject));		    	
-		    }
-		});
-		System.out.println("====subjectsWith5orMoreQuestions====");
-		subjectsWith5orMoreQuestions.forEach(s -> System.out.println(s.getId() + " | " + s.getName()));
-		
-		model.addAttribute("subjects", subjectsWith5orMoreQuestions);
-		*/
 	}
 	
 	@GetMapping("/game-move")
@@ -635,6 +605,8 @@ System.out.println("---------in questionIndex controller");
 		List<Question> filteredQuestions = questionService.getQuestionsByDifficultyAndSubjectId(diff, Integer.parseInt(subjectId));
 		System.out.println("====GET FILTERED QUESTIONS====");
 		filteredQuestions.forEach(q -> System.out.println("Filtered Q:" + q.getDescription()));
+		
+		Collections.shuffle(filteredQuestions); 
 		List<Question> firstNQuestions = filteredQuestions.stream().limit(NUMBER_OF_QUESTIONS_PER_GAME).collect(Collectors.toList());
 		
 		firstNQuestions.forEach(q -> System.out.println("First N Q:" + q.getDescription()));
@@ -656,13 +628,17 @@ System.out.println("---------in questionIndex controller");
 		if (!hasRights(model, new ArrayList<>(Arrays.asList(ADMIN, TEACHER, STUDENT)))) {
 			return "base-layout";
 		}
-		// smqtame tochkite i sravnqvame otgovori
 		
-		//vypros, daden otg(tikche/X), veren otg(samo ako negoviq e greshen)  --> v tablica
 		int gameId = (int) session.getAttribute("gameId");
 		int gamePoints = (int) session.getAttribute("gamePoints");
 		List<GameMove> gameMoves = gameMoveService.getGameMovesByGameId(gameId);
+		System.out.println("===More sokol pie0");
+		gameMoveService.deleteGameMovesByGameId(gameId);
+		System.out.println("===More sokol pie");
+		gameMoves.forEach(gm-> System.out.println("Game/Review/Get controller get gameMoves:" + gm.getId()));
 		
+		model.addAttribute("duration", session.getAttribute("duration"));
+		model.addAttribute("startDate", session.getAttribute("startDate"));
 		model.addAttribute("gameMoves", gameMoves);
 		model.addAttribute("gamePoints", gamePoints);
 		model.addAttribute("optionService", optionService);
@@ -743,15 +719,12 @@ System.out.println("---------in questionIndex controller");
 		
 		
 		if (!hasPermission) {
-			model.addAttribute("view", "/error");
-			model.addAttribute("errorCode", "403");
-			model.addAttribute("errorMessage", "Нямате права за тази страница!");
-			// replace with setView ??????
+			setError403View(model);
 		} 
 		return hasPermission;
 	}
 		
-	public void setView(Model model) {
+	public void setError403View(Model model) {
 		model.addAttribute("view", "/error");
 		model.addAttribute("errorCode", "403");
 		model.addAttribute("errorMessage", "Нямате права за тази страница!");
@@ -811,9 +784,5 @@ System.out.println("---------in questionIndex controller");
 		  msg.setContent(multipart);
 			  
 		  Transport.send(msg);
-		}
-	
-	
-	
-	
+	}	
 }

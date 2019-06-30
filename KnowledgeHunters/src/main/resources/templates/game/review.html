@@ -1,7 +1,12 @@
 <div class="jumbotron"  style="background-color: rgba(220, 220, 220, 0.8); color:black; width:66%; height:80%; margin:0px;">
 	<center>
-		<h2>Ревю на играта</h2>
-		<h4 th:text="'Точки: ' + ${gamePoints}">Точки</h4>
+		<h2>Преглед на играта</h2>
+		<br/>
+		<div class="row">
+			<div class="col-4"><h4 th:text="'Точки: ' + ${gamePoints}">Точки</h4></div>
+			<div class="col-4"><h4 th:text="'Начало на играта: ' + ${startDate}">Начало на играта</h4></div>
+			<div class="col-4"><h4 th:text="'Времетраене: ' + ${duration} + ' секунди'">Времетраене</h4></div>
+		</div>
 		<br/><br/>
 		<h4 th:if="${#lists.isEmpty(gameMoves)}"><center>Няма игра за ревю</center></h4>
 		<table th:if="${not #lists.isEmpty(gameMoves)}" class="table" cellspacing="0" cellpadding="0" border="0" width="325" style="border-top: none;">

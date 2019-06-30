@@ -2,15 +2,20 @@ package knowledgehunters.controller;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,7 +77,13 @@ public class BaseController {
 	Person editedPerson;
 	
 	@PostMapping("/home")
-	public void homeLogged(HttpSession session, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("password") String password) throws IOException {
+	public void homeLogged(
+		HttpSession session,
+		HttpServletResponse response,
+		@RequestParam("username") String username,
+		@RequestParam("password") String password
+	) throws IOException {
+		
 		System.out.println("---Entered home logged controller!");
 		System.out.println("User:" + username);
 		System.out.println("Pass:" + password);
@@ -88,8 +99,9 @@ public class BaseController {
 			System.out.println("Is Approved? " );
 			// System.out.println("Is Approved: " + personService.findPersonByUserID(userService.findUser(username).getId()).getIsApproved());
 			
-			if (user.getUsername().equals(username) && user.getPassword().equals(password) && personService.findPersonByUserID(userService.findUser(username).getId()).getIsApproved()) 
-			{
+			if (user.getUsername().equals(username) && user.getPassword().equals(password) &&
+				personService.findPersonByUserID(userService.findUser(username).getId()).getIsApproved()){
+				
 				System.out.println("in if for users");
 				session.setAttribute("sessionUserID", user.getId());
 				Person person = personService.findPersonByUserID(user.getId());
@@ -117,7 +129,12 @@ public class BaseController {
 	}
 	
 	@PostMapping("/game/filters")
-	public void setGameFilters(HttpSession session, HttpServletResponse response, @RequestParam("difficulty") String difficulty, @RequestParam("subject") String subject) throws IOException {
+	public void setGameFilters(
+		HttpSession session,
+		HttpServletResponse response,
+		@RequestParam("difficulty") String difficulty,
+		@RequestParam("subject") String subject
+	) throws IOException {
 		
 		System.out.println("====Game Filters====");
 		System.out.println("Post FILTERS difficulty:" + difficulty);
@@ -133,18 +150,34 @@ public class BaseController {
 	public void game(
 			HttpSession session,
 			HttpServletResponse response,
-			HttpServletRequest request
+			HttpServletRequest request,
+			@RequestParam("timestamp") String timestamp,
+			@RequestParam("duration") String duration
 			) throws IOException {
-
+System.out.println("Start game timestamp: " + timestamp);
+System.out.println("Game duration: " + duration);
+		
 		String[] questionsIds = request.getParameterValues("questions[]");
 		List<Question> questions = new ArrayList<>();
 
 		for (String questionId : questionsIds) {
 			questionService.getQuestion(Integer.parseInt(questionId)).ifPresent(q ->questions.add(q));
 		}
+		
+		Game game = gameService.saveGame(new Game(0, timestamp, Integer.parseInt(duration)));
+		java.util.Date time=new java.util.Date(Long.parseLong(timestamp)*1000);
+		
+		LocalDateTime dateNow = LocalDateTime.now();
+//		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("HH:mm:ss - E, dd MM yyyy").withLocale(Locale.forLanguageTag("bg-BG")); 
+		DateTimeFormatter dateNowFormatted = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(Locale.forLanguageTag("bg-BG"));
 
-		long createdAt = new Date().getTime();
-		Game game = gameService.saveGame(new Game(0, String.valueOf(createdAt), 0));
+		String formattedDate = dateNow.format(dateNowFormatted);
+		
+		session.setAttribute("startDate", formattedDate);
+		session.setAttribute("duration", duration);
+		
+		
+		
 		
 		System.out.println("===In /game post controller===");
 		questions.forEach(q -> System.out.println(q.getId() + " | " + q.getDescription()));
@@ -154,11 +187,9 @@ public class BaseController {
 				String optionStr = request.getParameter("option-" + question.getId());
 				
 				gameMoveService.addGameMove(new GameMove(0, game, studentService.getStudentByPerson(personService.getSessionPerson()), question, null, optionStr, 0, null));
-				
 				System.out.println("Option: " + optionStr);
 			} else {
 				String radio = request.getParameter("radio-" + question.getId());
-
 				optionService
 					.getOption(Integer.parseInt(radio))
 					.ifPresent(answer -> gameMoveService.addGameMove(
@@ -177,7 +208,7 @@ public class BaseController {
 			}
 		}
 		int gamePoints = gameService.calcGamePoints(game);
-		
+
 		if (personService.getSessionPerson().isStudent() &&  studentService.getStudentByPerson(personService.getSessionPerson()) != null) {
 			Student currentStudent = studentService.getStudentByPerson(personService.getSessionPerson());
 			System.out.println("Curr Student: " + currentStudent.getPerson().getDisplayName());
@@ -205,7 +236,16 @@ public class BaseController {
 	}
 
 	@PostMapping("/profile")
-	public void saveProfile(HttpSession session, HttpServletResponse response, @RequestParam("id") String id, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password) throws IOException {
+	public void saveProfile(
+		HttpSession session,
+		HttpServletResponse response,
+		@RequestParam("id") String id,
+		@RequestParam("username") String username,
+		@RequestParam("displayName") String displayName,
+		@RequestParam("email") String email,
+		@RequestParam("school") int school,
+		@RequestParam("password") String password
+	) throws IOException {
 	
 		System.out.println("---Entered saveProfile controller!");
 		System.out.println("profile-id: " + id);
@@ -233,7 +273,14 @@ public class BaseController {
 	}
 	
 	@PostMapping("/change-password")
-	public void savePassword(HttpSession session, HttpServletResponse response, @RequestParam("password-old") String passwordОld, @RequestParam("password") String passwordNew, @RequestParam("password-repeat") String passwordNewRepeat) throws IOException {
+	public void savePassword(
+		HttpSession session,
+		HttpServletResponse response,
+		@RequestParam("password-old") String passwordОld,
+		@RequestParam("password") String passwordNew,
+		@RequestParam("password-repeat") String passwordNewRepeat
+	) throws IOException {
+		
 		Person sessionPerson = personService.getSessionPerson();
 		sessionPerson.getUser().setPassword(passwordNew);
 		userService.updateUser(sessionPerson.getUser().getId(), sessionPerson.getUser());
@@ -243,7 +290,16 @@ public class BaseController {
 	}
 
 	@PostMapping("/login")
-	public void saveRegistrationAndLogin(HttpSession session, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("displayName") String displayName, @RequestParam("email") String email, @RequestParam("school") int school, @RequestParam("password") String password, @RequestParam(value = "isTeacher", required=false) boolean isTeacher) throws IOException {
+	public void saveRegistrationAndLogin(
+		HttpSession session,
+		HttpServletResponse response,
+		@RequestParam("username") String username,
+		@RequestParam("displayName") String displayName,
+		@RequestParam("email") String email,
+		@RequestParam("school") int school,
+		@RequestParam("password") String password,
+		@RequestParam(value = "isTeacher", required=false) boolean isTeacher
+	) throws IOException {
 	
 		if ((username.equals("") || username.equals(null)) || displayName.equals("") || email.equals("") || password.equals("")) {
 			session.setAttribute("errorMsg", "Моля, попълнете всички полета!");
@@ -281,7 +337,15 @@ public class BaseController {
 	}
 	
 	@PostMapping("/lessons/index")
-	  public void LessonsIndex(HttpSession session, HttpServletResponse response, @RequestParam("id") String lessonID, @RequestParam("title") String title, @RequestParam("topic") String topicID, @RequestParam("description") String description) throws IOException {
+	  public void LessonsIndex(
+		HttpSession session,
+		HttpServletResponse response,
+		@RequestParam("id") String lessonID,
+		@RequestParam("title") String title,
+		@RequestParam("topic") String topicID,
+		@RequestParam("description") String description
+	) throws IOException {
+		
 		Person person = personService.getSessionPerson();
 	    System.out.println("REST Lessons index controller post");
 	    
@@ -293,6 +357,7 @@ public class BaseController {
 	@PostMapping("/questions/index")
 	  public void questionsIndex(
 			  HttpSession session,
+			  HttpServletRequest request,
 			  HttpServletResponse response,
 			  @RequestParam("id") String questionID,
 			  @RequestParam("title") String description,
@@ -301,21 +366,21 @@ public class BaseController {
 			  @RequestParam("hint") String hint,
 			  @RequestParam("topic") String topicID,
 			  @RequestParam("type") String type,
-			  
+
 			  @RequestParam(value = "radio-multiple-choice-filled", required=false) String radioMultipleFilled,
 			  @RequestParam(value = "radio-multiple-choice-empty", required=false) String radioMultipleEmpty,
 			  @RequestParam(value = "radio-true-false-filled", required=false) String radioTrueFalseFilled,
 			  @RequestParam(value = "radio-true-false-empty", required=false) String radioTrueFalseEmpty,
 			  @RequestParam(value = "radio-open-filled", required=false) String radioOpenFilled,
 			  @RequestParam(value = "radio-open-empty", required=false) String radioOpenEmpty,
-			
+
 			  @RequestParam(value = "multiple-option-filled[]", required=false) List<String> optionMultipleFilled,
 			  @RequestParam(value = "multiple-option-empty[]", required=false) List<String> optionMultipleEmpty,
 			  @RequestParam(value = "true-false-option-filled[]", required=false) List<String> optionTrueFalseFilled,
 			  @RequestParam(value = "true-false-option-empty[]", required=false) List<String> optionTrueFalseEmpty,
 			  @RequestParam(value = "open-option-filled[]", required=false) List<String> optionOpenFilled,
 			  @RequestParam(value = "open-option-empty[]", required=false) List<String> optionOpenEmpty,
-			  
+
 			  @RequestParam(value = "multiple-index-filled[]", required=false) List<String> indexMultipleFilled,
 			  @RequestParam(value = "multiple-index-empty[]", required=false) List<String> indexMultipleEmpty,
 			  @RequestParam(value = "true-false-index-filled[]", required=false) List<String> indexTrueFalseFilled,
@@ -323,6 +388,24 @@ public class BaseController {
 			  @RequestParam(value = "open-index-filled[]", required=false) List<String> indexOpenFilled,
 			  @RequestParam(value = "open-index-empty[]", required=false) List<String> indexOpenEmpty
 		) throws IOException {
+		
+		System.out.println("Req Method: "+ request.getMethod());
+		System.out.println("Req Param filled: "+ request.getParameter("radio-open-filled"));
+		System.out.println("Req Param empty: "+ request.getParameter("radio-open-empty"));
+		Enumeration<String> lst = request.getParameterNames();
+		while (lst.hasMoreElements()) {
+			String name = lst.nextElement();
+			System.out.print(name + ": [");
+			String[] vals = request.getParameterValues(name);
+			for(String val : vals) {
+				System.out.print(val + ", ");
+			}
+			System.out.println("]");
+		}
+		
+		System.out.println("PRINT radioOpenFilled:" + radioOpenFilled);
+		System.out.println("PRINT radioOpenEmpty:" + radioOpenEmpty);
+		
 		
 		Person person = personService.getSessionPerson();
 	    System.out.println("REST Questions index controller post");
@@ -337,13 +420,35 @@ public class BaseController {
 		    	if (radioMultipleEmpty != null) {
 
 		    		System.out.println("SWITCH CASE optionOpenEmpty: " + optionMultipleEmpty);
-		    		addQuestion((questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0, description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexMultipleEmpty, optionMultipleEmpty, radioMultipleEmpty);		    		
+		    		addQuestion(
+	    				(questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0,
+	    				description,
+	    				difficulty,
+	    				hint,
+	    				type,
+	    				Integer.parseInt(topicID),
+	    				Integer.parseInt(authorID),
+	    				indexMultipleEmpty,
+	    				optionMultipleEmpty,
+	    				radioMultipleEmpty
+	    			);		    		
 		    		break;
 		    	}
 		    	
 		    	if (radioMultipleFilled != null) {
 		    		System.out.println("IN IF, authorID:" + authorID);
-		    		editQuestion(Integer.parseInt(questionID), description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexMultipleFilled, optionMultipleFilled, radioMultipleFilled);
+		    		editQuestion(
+	    				Integer.parseInt(questionID),
+	    				description,
+	    				difficulty,
+	    				hint,
+	    				type,
+	    				Integer.parseInt(topicID),
+	    				Integer.parseInt(authorID),
+	    				indexMultipleFilled,
+	    				optionMultipleFilled,
+	    				radioMultipleFilled
+	    			);
 			    	break;
 		    	}
 		    	
@@ -359,12 +464,34 @@ public class BaseController {
 		    	System.out.println("option True False empty:" + optionTrueFalseEmpty);
 		    	
 		    	if (radioTrueFalseEmpty != null) {
-		    		addQuestion((questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0, description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexTrueFalseEmpty, optionTrueFalseEmpty, radioTrueFalseEmpty);		    		
+		    		addQuestion(
+		    			(questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0,
+		    			description,
+		    			difficulty,
+		    			hint,
+		    			type,
+		    			Integer.parseInt(topicID),
+		    			Integer.parseInt(authorID),
+		    			indexTrueFalseEmpty,
+		    			optionTrueFalseEmpty,
+		    			radioTrueFalseEmpty
+		    		);		    		
 		    		break;
 		    	}
 		    	
 		    	if (radioTrueFalseFilled != null) {
-		    		editQuestion(Integer.parseInt(questionID), description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexTrueFalseFilled, optionTrueFalseFilled, radioTrueFalseFilled);
+		    		editQuestion(
+		    			Integer.parseInt(questionID),
+		    			description,
+		    			difficulty,
+		    			hint,
+		    			type,
+		    			Integer.parseInt(topicID),
+		    			Integer.parseInt(authorID),
+		    			indexTrueFalseFilled,
+		    			optionTrueFalseFilled,
+		    			radioTrueFalseFilled
+		    		);
 			    	break;
 		    	}
 		    	
@@ -376,15 +503,36 @@ public class BaseController {
 		    	System.out.println("radio Open empty:" + radioOpenEmpty);
 		    	
 		    	System.out.println("===========ADD MODE===========");
-		    	System.out.println("radioOpenEmpty: <" + radioOpenEmpty.getClass().getName() + ">:" + radioOpenEmpty);
 		    	if (radioOpenEmpty != null) {
-		    		addQuestion((questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0, description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexOpenEmpty, optionOpenEmpty, radioOpenEmpty);
+		    		addQuestion(
+		    			(questionID != null && !questionID.equals(""))? Integer.parseInt(questionID): 0,
+		    			description,
+		    			difficulty,
+		    			hint,
+		    			type,
+		    			Integer.parseInt(topicID),
+		    			Integer.parseInt(authorID),
+		    			indexOpenEmpty,
+		    			optionOpenEmpty,
+		    			radioOpenEmpty
+		    		);
 		    		break;
 		    	}
 		    	
 		    	System.out.println("===========EDIT MODE===========");
 		    	if (radioOpenFilled != null) {
-		    		editQuestion(Integer.parseInt(questionID), description, difficulty, hint, type, Integer.parseInt(topicID), Integer.parseInt(authorID), indexOpenFilled, optionOpenFilled, radioOpenFilled);
+		    		editQuestion(
+		    			Integer.parseInt(questionID),
+		    			description,
+		    			difficulty,
+		    			hint,
+		    			type,
+		    			Integer.parseInt(topicID),
+		    			Integer.parseInt(authorID),
+		    			indexOpenFilled,
+		    			optionOpenFilled,
+		    			radioOpenFilled
+		    		);
 			    	break;
 		    	}
 
@@ -399,95 +547,121 @@ public class BaseController {
 	}
 	
 	
-	public void addQuestion(int questionID, String description, String difficulty, String hint, String type, int topicID, int authorID, List<String> indexOpenEmpty, List<String> optionOpenEmpty, String radioOpenEmpty) {
-		System.out.println("IN ADD??");
-		if(questionID != 0) 	{
-			System.out.println("Question ID: " + questionID	);
-			System.out.println("Open empty in questionID!=null if");
+	public void addQuestion(
+		int questionID,
+		String description,
+		String difficulty,
+		String hint,
+		String type,
+		int topicID,
+		int authorID,
+		List<String> indexEmpty,
+		List<String> optionEmpty,
+		String radioEmpty
+	) {
+		
+		if(questionID != 0) {
     		List<Option> options = optionService.getAllOptionsByQuestionId(questionID);
     		for (Option option : options) {
-    			System.out.println("Open empty in questionID!=null if for delete");
     			optionService.deleteOption(option.getId());
     		}
     	
     	}
-		System.out.println("Open empty between ifs");
-		System.out.println("optionOpenEmpty: " + optionOpenEmpty);
 		Question question = null;
 		if (questionID !=0) {
-			question = questionService.updateAndGetQuestion(questionID, new Question(questionID, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint.equals("") ? null: hint, new Topic(topicID, null, null), QuestionType.valueOf(type)));
+			question = questionService.updateAndGetQuestion(
+				questionID,
+				new Question(
+					questionID,
+					description,
+					QuestionDifficulty.valueOf(difficulty),
+					personService.getSessionPerson(),
+					hint.equals("") ? null: hint,
+					new Topic(topicID, null, null),
+					QuestionType.valueOf(type)
+				)
+			);
 		} else {
-			question = new Question(0, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint.equals("") ? null: hint, new Topic(topicID, null, null), QuestionType.valueOf(type));
+			question = new Question(
+				0,
+				description,
+				QuestionDifficulty.valueOf(difficulty),
+				personService.getSessionPerson(),
+				hint.equals("") ? null: hint,
+				new Topic(topicID, null, null),
+				QuestionType.valueOf(type)
+			);
 			question = questionService.saveQuestion(question);
 		}
 		
-		for(int index = 0; index < optionOpenEmpty.size(); index++) {
-
-			System.out.println("Option: " + optionOpenEmpty.get(index));
-			
-			System.out.println("After question, before addOption:");
-			System.out.println("After question, before addOption authorID:" + authorID);
-			System.out.println("After question, before addOption questionID:" + question.getId());
-			
+		for(int index = 0; index < optionEmpty.size(); index++) {			
 			boolean isCorrect = false;
-			if (index == Integer.parseInt(radioOpenEmpty)) {
+			if (index == Integer.parseInt(radioEmpty)) {
 				isCorrect = true;
 			}
-			optionService.addOption(new Option(0, question, optionOpenEmpty.get(index), isCorrect, 0, null));
+			optionService.addOption(new Option(0, question, optionEmpty.get(index), isCorrect, 0, null));
 		}
 		
 	}
 
-	public void editQuestion(int questionID, String description, String difficulty, String hint, String type, int topicID, int authorID, List<String> indexOpenFilled, List<String> optionOpenFilled, String radioOpenFilled) {
-		System.out.println("IN editQuestion, authorID:" + authorID);
+	public void editQuestion(
+		int questionID,
+		String description,
+		String difficulty,
+		String hint,
+		String type,
+		int topicID,
+		int authorID,
+		List<String> indexFilled,
+		List<String> optionFilled,
+		String radioFilled
+	) {
+		
 		List<Option> options = optionService.getAllOptionsByQuestionId(questionID);
 		
-		System.out.println("EDIT TEST new: " + type);
-		System.out.println("EDIT TEST from question: " + questionService.getQuestion(questionID).get().getType());
-		
-		Question updatedQuestion = questionService.updateAndGetQuestion(questionID, new Question(questionID, description, QuestionDifficulty.valueOf(difficulty), personService.getSessionPerson(), hint.equals("") ? null: hint, new Topic(topicID, null, null), QuestionType.valueOf(type)));
-    	System.out.println("QuestionType EDIT:" + QuestionType.valueOf(type));
-    	
-		
-		if (!questionService.getQuestion(questionID).get().getType().equals(type)) {
+		Question updatedQuestion = questionService.updateAndGetQuestion(
+			questionID,
+			new Question(
+				questionID,
+				description,
+				QuestionDifficulty.valueOf(difficulty),
+				personService.getSessionPerson(),
+				hint.equals("") ? null: hint,
+				new Topic(topicID, null, null),
+				QuestionType.valueOf(type)
+			)
+		);
+    
+		if (!questionService.getQuestion(questionID).get().getType().name().equals(type)) {
 			for (Option option: options) {
-				System.out.println("DELETE OPTION: " + option.getId());
 				optionService.deleteOption(option.getId());
+			}
+
+			for(int index = 0; index < optionFilled.size(); index++) {
 				
-				for(int index = 0; index < optionOpenFilled.size(); index++) {
-				
-					System.out.println("Option: " + optionOpenFilled.get(index));
-					
-					System.out.println("After question, before addOption:");
-					System.out.println("After question, before addOption authorID:" + authorID);
-					System.out.println("After question, before addOption questionID:" + updatedQuestion.getId());
-					
-					boolean isCorrect = false;
-					if (index == Integer.parseInt(radioOpenFilled)) {
-						isCorrect = true;
-					}
-					optionService.addOption(new Option(0, updatedQuestion, optionOpenFilled.get(index), isCorrect, 0, null));
-					
-					
-					System.out.println("Unreachable?");
+				boolean isCorrect = false;
+				if (index == Integer.parseInt(radioFilled)) {
+					isCorrect = true;
 				}
+				optionService.addOption(new Option(0, updatedQuestion, optionFilled.get(index), isCorrect, 0, null));
 			}
 		} else {
 			for (Option option : options) {
-	    		for(int index = 0; index < indexOpenFilled.size(); index++) {
-	    			if (option.getId() == Integer.parseInt(indexOpenFilled.get(index))) {
-	    				option.setDescription(optionOpenFilled.get(index));
-	    				option.setCorrect(option.getId() == Integer.parseInt(radioOpenFilled));
+	    		for(int index = 0; index < indexFilled.size(); index++) {
+	    			if (option.getId() == Integer.parseInt(indexFilled.get(index))) {
+	    				option.setDescription(optionFilled.get(index));
+	    				option.setCorrect(option.getId() == Integer.parseInt(radioFilled));
 	    				optionService.updateOption(option.getId(), option);
+	    				System.out.println("Option updated!");
 	    			}
 	    		}
 	    	}
 		}
 
-    	for (String option : optionOpenFilled) {
+    	for (String option : optionFilled) {
 	    	System.out.println("option Open filled:" + option);
     	}
-    	for (String index : indexOpenFilled) {
+    	for (String index : indexFilled) {
 	    	System.out.println("index Open filled:" + index);
     	}
 	}

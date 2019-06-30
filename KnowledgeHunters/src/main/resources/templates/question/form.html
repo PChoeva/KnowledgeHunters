@@ -58,7 +58,7 @@
 	        		<input type="hidden" name="open-index-filled[]" th:value="${option?.id}">
 	        	</div>
 	        	<div class="col-5 question-open question-empty">
-	        		<input type="radio" name="radio-open-empty" checked th:value = "0" style="width:20px; height:20px;float:left; display:none;"/>
+	        		<input type="radio" name="radio-open-empty" th:value = "0" style="width:20px; height:20px;float:left; display:none;"/>
 	        		<input type="text" title="Задължително поле" class="form-control" name="open-option-empty[]" autofocus="autofocus" placeholder="Въведи отговор" style="margin: 0 20px;">
 	        	</div>
 	        </div>
@@ -94,21 +94,22 @@ $(document).ready(function() {
     	
     	switch ($("select#type option").filter(":selected").val()) {
     		case "MULTIPLE_CHOICE": {
-    			$("input[name^='multiple-option']").each(function () {
+
+    			$("input[name^='multiple-option']:visible").each(function () {
     				canSave &= ($(this).val() != '');
     			});
     			canSave &= ($("input[name^='radio-multiple-choice']:visible:checked").length > 0);
     			break;
     		}
     		case "TRUE_FALSE": {
-    			$("input[name^='true-false-option']").each(function () {
+    			$("input[name^='true-false-option']:visible").each(function () {
     				canSave &= ($(this).val() != '');
     			});
     			canSave &= ($("input[name^='radio-true-false']:visible:checked").length > 0);
     			break;
     		}
     		case "OPEN": {
-    			canSave &= ($("input[name^='open-option']").val() != '');
+    			canSave &= ($("input[name^='open-option']:visible").val() != '');
     			break;
     		}
 			case "MATCH": break;
@@ -119,12 +120,18 @@ $(document).ready(function() {
     });
 	$('form').trigger('change');
     
-    console.log(document.getElementById("type"));
-    console.log($("select#type option").filter(":selected").val());
 	setQuestionType();
-    
+	$('form').trigger('change');
+	
+	
+    var question_type = /*[[${question?.type?.name()}]]*/ '-';
     document.getElementById('type').onchange = function() {
-    	changeQuestionType($("select#type option").filter(":selected").val());
+    	if ($("select#type option").filter(":selected").val() == question_type) {
+    		setQuestionType();
+    	} else {
+    		changeQuestionType($("select#type option").filter(":selected").val());
+    	}
+    	
     }
 });
 function setQuestionType() {
@@ -170,6 +177,7 @@ function changeQuestionType(selectType) {
 		$(".question-empty").hide();
 		
 		$(".question-multiple-choice.question-empty").show();
+		$('input[name="radio-open-empty"]').prop('checked', false);
 
 		console.log("in MULTIPLE_CHOICE | changeQuestionType");
 		break;
@@ -180,6 +188,7 @@ function changeQuestionType(selectType) {
 		$(".question-empty").hide();
 		
 		$(".question-true-false.question-empty").show();
+		$('input[name="radio-open-empty"]').prop('checked', false);
 		
 		console.log("in TRUE_FALSE | changeQuestionType");
 		break;
@@ -190,6 +199,7 @@ function changeQuestionType(selectType) {
 		$(".question-empty").hide();
 		
 		$(".question-open.question-empty").show();
+		$('input[name="radio-open-empty"]').prop('checked', true);
 
 		console.log("in OPEN | changeQuestionType");
 

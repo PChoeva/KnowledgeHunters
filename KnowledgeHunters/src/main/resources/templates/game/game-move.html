@@ -7,9 +7,12 @@
 		</div>
 		<form class="col-12 align-self-center" th:action="@{/game}" method="post" style="position:absolute; top:160px; bottom:10px;">
 			<div class="row">
+				<input type="hidden" name="timestamp">
+				<input type="hidden" name="duration">
 				<div class="col-12" th:each="question : ${questions}" th:name="'question-' + ${question.id}">
 												
 					<input type="hidden" name="questions[]" th:value="${question?.id}">
+					
 					<div class="col-12 form-control" th:text="${question.description}"></div>
 					<div class="row justify-content-md-center">
 						<div class="col-5" th:each="option : ${optionService.getAllOptionsByQuestionId(question.id)}" style="margin: 0 20px !important;">
@@ -36,13 +39,25 @@
 <script>
 $(document).ready(function() {
 	
+	//pass the timestamp and duration to post method!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	console.log("Date Now Timestamp:" + Math.floor(Date.now()/1000)); //timestamp in seconds
+	$("input[name='timestamp']").val(Math.floor(Date.now()/1000));
+	
+	var timeStart = performance.now();
+	
 	$("div[name^=question-]").hide();
 	$("#previous").hide();
 	$("div[name^=question-]").first().show();
 	var lastQuestion = $("div[name^=question-]").last();
 	
 	$("#next").on("click", function(){
-		if ($(this).val() == "Край") $("form").submit();
+		if ($(this).val() == "Край") {
+			var timeEnd = performance.now();
+			console.log("Game duration: " + Math.round(timeEnd - timeStart) + " milliseconds");
+			console.log("Game duration: " + Math.round((timeEnd - timeStart)/1000) + " seconds");
+			$("input[name='duration']").val(Math.round((timeEnd - timeStart)/1000));
+			$("form").submit();
+		}
 		
 		$("#previous").show();
 		

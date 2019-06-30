@@ -40,12 +40,19 @@ public class GameMoveService {
 		gameMoveRepository.deleteById(id);
 	}
 	
-	public List<GameMove> getGameMovesByGameId(int gameId) {	
+	public List<GameMove> getGameMovesByGameId(int gameId) {
 		List<GameMove> gameMoves = new ArrayList<>();
 		for (GameMove gameMove : gameMoveRepository.findAll()) {
 			if (gameMove.getGame().getId() == gameId) gameMoves.add(gameMove);
 		}
 		return gameMoves;
+	}
+	
+	
+	public void deleteGameMovesByGameId(int id) {
+		for (GameMove gameMove : gameMoveRepository.findAll()) {
+			if (gameMove.getGame().getId() == id) gameMoveRepository.deleteById(gameMove.getId());
+		}
 	}
 }
 

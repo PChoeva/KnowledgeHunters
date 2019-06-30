@@ -7,7 +7,8 @@
 		        <input type="text" name="username" class="form-control" id="username" autofocus="autofocus" placeholder="Потребителско име">
 				</div>
 				<div class="form-group">
-			        <input type="password" name="password" class="form-control" id="password" placeholder="Парола">
+			        <input type="password" name="log-password" class="form-control" id="log-password" placeholder="Парола">
+			        <input type="hidden" name="password" class="form-control" id="password" placeholder="Парола" >
 				</div>
 			</div>
 			<br/>
@@ -22,7 +23,7 @@ $(document).ready(function() {
 
 	$(".big_btn").click(function(e) {
 	  	e.preventDefault();
-	  	var password = $("#password").val();
+	  	var password = $("#log-password").val();
 	  	var username = $("#username").val();
 	  	
 	  	var hashedPassword = sha256(username + password);
