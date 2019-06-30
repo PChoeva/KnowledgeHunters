@@ -107,6 +107,13 @@ public class BaseController {
 				Person person = personService.findPersonByUserID(user.getId());
 				personService.saveSessionPerson(person);
 				
+				if (person.getUser().getRole().getName().equals("Student")) {
+					Student student = studentService.getStudentByPerson(person);
+					session.setAttribute("sessionStudentRank", student.getRank());
+				}
+				
+				
+				
 				System.out.println(session.getAttribute("sessionUserID"));
 				session.setAttribute("sessionUsername", username);
 				
@@ -207,7 +214,7 @@ System.out.println("Game duration: " + duration);
 				System.out.println("Radio: " + radio);
 			}
 		}
-		int gamePoints = gameService.calcGamePoints(game);
+		int gamePoints = gameService.calcGamePoints(game, Integer.parseInt(duration));
 
 		if (personService.getSessionPerson().isStudent() &&  studentService.getStudentByPerson(personService.getSessionPerson()) != null) {
 			Student currentStudent = studentService.getStudentByPerson(personService.getSessionPerson());

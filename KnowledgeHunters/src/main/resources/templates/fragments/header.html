@@ -14,6 +14,7 @@
 				<a>
 					<h4 th:text="${session.sessionDisplayName}" style="color:#bdb63b; text-transform: none !important;margin-bottom:50px; text-align: center;">[...]</h4>
 					<h4 th:text="${@personService.getSessionPerson().user.role.getRoleValue()}" style="color:#bdb63b; text-transform: none !important;margin-bottom:50px; text-align: center;">[...]</h4>
+					<h4 th:if="${session.sessionStudentRank != null}" th:text="${session.sessionStudentRank.getName()}" style="color:#bdb63b; text-transform: none !important;margin-bottom:50px; text-align: center;">[...]</h4>
 				</a>
 			</li>
 		

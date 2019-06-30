@@ -50,7 +50,7 @@ public class GameService {
 	    return gameRepository.save(game);
 	}
 	
-	public int calcGamePoints(Game game) {
+	public int calcGamePoints(Game game, int duration) {
 		List<GameMove> gameMoves = gameMoveService.getGameMovesByGameId(game.getId());
 		
 		int points = 0;
@@ -67,6 +67,8 @@ public class GameService {
 				}
 			}
 		}
+		
+		points *= calcCoeffForPointsByGameDuration(gameMoves.get(0).getQuestion().getDifficulty(), duration);
 		return points;
 	}
 	private double calcPointsByQuestionDifficulty(GameMove gameMove) {
@@ -76,6 +78,32 @@ public class GameService {
 			case HARD: {return 3;}
 			default: {return 0;}
 		}
+	}
+	
+	private int calcCoeffForPointsByGameDuration(QuestionDifficulty difficulty, int duration) {
+		int minDuration;
+		switch (difficulty) {
+			case EASY: {
+				minDuration = 20;
+				break;
+			}
+			case MEDIUM: {
+				minDuration = 40;
+				break;
+			}
+			case HARD: {
+				minDuration = 60;
+				break;
+			}
+			default: {
+				minDuration = 20;
+			}
+		}
+		
+		if (duration <= minDuration) return 4;
+		if (duration <= (minDuration*1.5)) return 3;
+		if (duration <= (minDuration*2)) return 2;
+		return 1;		
 	}
 	
 }

@@ -760,6 +760,9 @@ System.out.println("---------in questionIndex controller");
 		  props.put("mail.smtp.host", "smtp.gmail.com");
 		  props.put("mail.smtp.port", "587");
 		  System.out.println("After props mail");
+		  
+		  if (applicationEmail.isEmpty() || applicationEmailPassword.isEmpty()) return;
+		  
 		  Session session = Session.getInstance(props, new javax.mail.Authenticator() {
 		     protected PasswordAuthentication getPasswordAuthentication() {
 		        return new PasswordAuthentication(applicationEmail, applicationEmailPassword);
